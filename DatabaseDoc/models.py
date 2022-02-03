@@ -6,7 +6,7 @@ from django.db.models.fields import AutoField
 # TODO:
 # Checar como hacer constrains en DJANGO
 # Comentar lo del FileField
-# Checar las llaves foraneas para que estén acorde a la ubicación de los archivos 
+# Checar las llaves foraneas para que estén acorde a la ubicación de los archivos
 
 
 choices_career = (
@@ -69,6 +69,7 @@ class Generan(models.Model):
     ID_Generacion = models.AutoField(primary_key=True, null=False)
     Estatus = models.CharField(choises=choises_status, null= False)
     Path_PDF = models.FileField(max_length=254, null=False)
+    Semememestre = models.CharField(max_length= 50, null = False)
     ID_Materia = models.ForeignKey('Materias', on_delete=models.CASCADE)
     ID_Usuario = models.ForeignKey('Usuarios', on_delete=models.CASCADE)
     ID_Reporte = models.ForeignKey('Reportes', on_delete=models.CASCADE)
