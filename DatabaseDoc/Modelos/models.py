@@ -1,3 +1,4 @@
+from math import fabs
 from django.db import models
 from django.db.models.enums import Choices
 from django.db.models.expressions import F
@@ -37,7 +38,6 @@ class Usuarios(models.Model):
     Nombre_Usuario = models.CharField(max_length=70, null=False)
     User = models.CharField(max_length=10, null= False)
     Password = models.CharField(max_length=20, null= False)
-    Carrera = models.CharField(choices=choices_career, null= False)
     Tipo_Usuario = models.CharField(choices=choises_users, null=False)
     CorreoE = models.EmailField(max_length=254, null=False)
 
@@ -46,6 +46,7 @@ class Reportes(models.Model):
         db_table = 'Reportes'
     ID_Reporte = models.AutoField(primary_key=True, null= False)
     Nombre_Reporte = models.CharField(max_length= 100, null= False)
+    Fecha_Entrega =models.DateField(null=False)
 
 
 class Materias(models.Model):

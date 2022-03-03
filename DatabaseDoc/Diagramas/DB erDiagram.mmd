@@ -1,0 +1,45 @@
+erDiagram
+
+Usuarios {
+    auto_increment ID_Usuario PK
+    varchar-70 Nombre_Usuario
+    varchar-10 User
+    varchar-20 Password
+    choise Tipo_usuario
+    email CorreoE
+}
+
+Reportes {
+    auto_increment ID_Reporte PK
+    varchar-100 Nombre_Reporte
+    date Fecha_Entrega
+}
+
+Materias {
+    auto_increment ID_Materia PK
+    varchar-100 Nombre_Materia
+    int ID_Detalle FK "from Detalle_Materias"
+}
+
+Detalle_Materias{
+    auto_increment ID_Detalle PK
+    varchar-50 Semestre
+    choise Carrera
+}
+
+Generan {
+    auto_increment ID_Generacion PK
+    varchar Estatus
+    file Path_PDF
+    varchar Sememestre
+    int ID_Materia FK "from Materias"
+    int ID_Usuario FK "from Usuarios"
+    int ID_Reporte FK "from Reportes"
+}
+
+Usuarios ||--|{ Generan: c 
+Materias ||--|{ Generan: c 
+Reportes ||--|{ Generan: c
+
+Detalle_Materias ||--|{ Materias: c
+
