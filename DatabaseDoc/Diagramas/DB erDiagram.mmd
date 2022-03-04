@@ -3,9 +3,9 @@ erDiagram
 Usuarios {
     auto_increment ID_Usuario PK
     varchar-70 Nombre_Usuario
-    varchar-10 User
+    varchar-20 User
     varchar-20 Password
-    choise Tipo_usuario
+    choice Tipo_usuario
     email CorreoE
 }
 
@@ -13,7 +13,9 @@ Reportes {
     auto_increment ID_Reporte PK
     varchar-100 Nombre_Reporte
     date Fecha_Entrega
-}
+    varchar-1000 Descripcion
+    choice Opcional
+} 
 
 Materias {
     auto_increment ID_Materia PK
@@ -24,22 +26,27 @@ Materias {
 Detalle_Materias{
     auto_increment ID_Detalle PK
     varchar-50 Semestre
-    choise Carrera
+    choice Carrera FK "from Carreras"
 }
 
 Generan {
     auto_increment ID_Generacion PK
-    varchar Estatus
+    varchar-20 Estatus
     file Path_PDF
-    varchar Sememestre
+    varchar-20 Sememestre
     int ID_Materia FK "from Materias"
     int ID_Usuario FK "from Usuarios"
     int ID_Reporte FK "from Reportes"
 }
 
+Carreras {
+    auto_increment ID_Carrera PK
+    varchar-50 Nombre_Carrera
+}
+
+
 Usuarios ||--|{ Generan: c 
 Materias ||--|{ Generan: c 
 Reportes ||--|{ Generan: c
-
 Detalle_Materias ||--|{ Materias: c
-
+Carreras ||--|| Detalle_Materias: c
