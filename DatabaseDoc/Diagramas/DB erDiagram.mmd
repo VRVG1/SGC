@@ -19,15 +19,12 @@ Reportes {
 
 Materias {
     auto_increment ID_Materia PK
-    varchar-100 Nombre_Materia
-    int ID_Detalle FK "from Detalle_Materias"
+    varchar-100 Nombre_Materia    
+    choice Carrera FK "from Carreras"
+    varchar-50 Grado
+    choise Grupo
 }
 
-Detalle_Materias{
-    auto_increment ID_Detalle PK
-    varchar-50 Semestre
-    choice Carrera FK "from Carreras"
-}
 
 Generan {
     auto_increment ID_Generacion PK
@@ -44,9 +41,15 @@ Carreras {
     varchar-50 Nombre_Carrera
 }
 
+Asignan {
+    int ID_Materia PK "being also a foreign key from Materias"
+    int ID_Usuario PK "being also a foreign key from Usuarios"
+}
 
-Usuarios ||--|{ Generan: c 
-Materias ||--|{ Generan: c 
+
+
+Usuarios ||--|{ Asignan: c 
+Materias ||--|{ Asignan: c 
+Asignan ||-- |{ Generan: c
 Reportes ||--|{ Generan: c
-Detalle_Materias ||--|{ Materias: c
-Carreras ||--|| Detalle_Materias: c
+Carreras||--|{ Materias: c
