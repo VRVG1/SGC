@@ -1,3 +1,6 @@
 EnvPython/*
+**/__pycache__/*
+**/migrations/*
+**/.lh/*
 my.cnf
 secret_key.txt
