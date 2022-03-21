@@ -76,7 +76,6 @@ def borrarM(request, pk):
     elif request.method == 'DELETE':
         materia.delete()
         return Response({'Mensaje': 'Materia borrada'}, status=status.HTTP_200_OK)
-    pass
 
 
 @api_view(['GET', 'PUT'])

@@ -19,3 +19,6 @@ class Usuarios(models.Model):
     Tipo_Usuario = models.CharField(
         max_length=13, choices=choices_users, null=False)  # NECESITA MAX LENGTH
     CorreoE = models.EmailField(max_length=254, null=False)
+
+    def __str__(self) -> str:
+        return f"{self.Nombre_Usuario}"
