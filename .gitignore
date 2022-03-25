@@ -7,3 +7,4 @@ secret_key.txt
 celerybeat-schedule.bak
 celerybeat-schedule.dat
 celerybeat-schedule.dir
+mail.txt
