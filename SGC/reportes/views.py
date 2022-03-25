@@ -29,6 +29,7 @@ class CreateReportesView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
+            print('ES VALIDO')
             name = serializer.validated_data.get('Nombre_Reporte')
             serializer.save()
             ID_Reporte = Reportes.objects.get(Nombre_Reporte=name)
@@ -45,6 +46,7 @@ class CreateReportesView(APIView):
             for i in asignan:
                 generate = Generan(Estatus=None, Path_PDF=None, Sememestre=semestre, ID_Materia=i.ID_Materia,
                                    ID_Usuario=i.ID_Usuario, ID_Reporte=ID_Reporte)
+                print(generate)
                 generate.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

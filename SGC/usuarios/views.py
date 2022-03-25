@@ -70,7 +70,6 @@ def borrar(request, pk=None):
     """
     try:
         usuario = Usuarios.objects.get(PK=pk)
-        print(usuario)
     except Usuarios.DoesNotExist:
         return Response({'ERROR': 'El usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -95,7 +94,6 @@ def actualizar(request, pk=None):
 
     elif request.method == 'PUT':
         serializer_class = UpdateUsuarioSerializer(usuario, data=request.data)
-        print(request.data)
         if serializer_class.is_valid():
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_200_OK)

@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-
+from datetime import date, datetime
 from usuarios.models import Usuarios
 from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
+from reportes.models import Generan, Reportes
 
 # Create your views here.
 
@@ -58,7 +59,29 @@ class AsignarMateriaView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
+            usuario = serializer.validated_data.get('ID_Usuario')
+            materia = serializer.validated_data.get('ID_Materia')
             serializer.save()
+            reportes = Reportes.objects.all()
+            if not reportes:
+                pass
+            else:
+                date01 = 'Jun 20'
+                fecha = date.today()
+                parse01 = datetime.strptime(
+                    date01, '%b %d').date().replace(year=fecha.year)
+
+                if fecha < parse01:
+                    semestre = '01-' + str(fecha.year)
+                else:
+                    semestre = '02-' + str(fecha.year)
+
+                asignan = Asignan.objects.get(
+                    ID_Usuario=usuario, ID_Materia=materia)
+                for x in reportes:
+                    generate = Generan(Estatus=None, Path_PDF=None, Sememestre=semestre,
+                                       ID_Materia=asignan.ID_Materia, ID_Usuario=asignan.ID_Usuario, ID_Reporte=x)
+                    generate.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
