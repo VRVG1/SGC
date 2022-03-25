@@ -22,7 +22,6 @@ def tareaconjunta():
     hoy = date.today()
     From = settings.DEFAULT_FROM_EMAIL
     To = []
-
     for i in usuarios:
         To.append(i.CorreoE)
 
