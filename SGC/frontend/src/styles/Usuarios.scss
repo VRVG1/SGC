@@ -10,8 +10,8 @@ $select-color: #a7a7a7;
     justify-content: center;
     width: 60%;
     margin-left: 20%;
-    margin-top: 10%; 
-    margin-bottom: 10%;
+    margin-top: 5%; 
+    margin-bottom: 0%;
     border-radius: 15px 15px 15px 15px;
     -webkit-box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61); 
     box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61);
@@ -143,47 +143,47 @@ select {
   }
   
 /* Invalid email style */
-  input[type="email"].inputUsuarios:invalid {
-    color: #E00005;
-  }
+//   input[type="email"].inputUsuarios:invalid {
+//     color: #E00005;
+//   }
 
-  input[type="email"].inputUsuarios:invalid ~ label.Usuarios		{
-    top:-25%;
-    font-size:0.85rem;
-    color: #E00005;
-  }
+//   input[type="email"].inputUsuarios:invalid ~ label.Usuarios		{
+//     top:-25%;
+//     font-size:0.85rem;
+//     color: #E00005;
+//   }
 
-input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomBar.Usuarios:after 	{
-  content:'';
-  height:2px; 
-  width:0;
-  bottom: 0%; 
-  position:absolute;
-  background:#E00005; 
-  transition:0.2s ease all; 
-  -moz-transition:0.2s ease all; 
-  -webkit-transition:0.2s ease all;
-  }
-  input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before {
-    left:50%;
-  }
-  input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:after {
-    right:50%; 
-  }
+// input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomBar.Usuarios:after 	{
+//   content:'';
+//   height:2px; 
+//   width:0;
+//   bottom: 0%; 
+//   position:absolute;
+//   background:#E00005; 
+//   transition:0.2s ease all; 
+//   -moz-transition:0.2s ease all; 
+//   -webkit-transition:0.2s ease all;
+//   }
+//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before {
+//     left:50%;
+//   }
+//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:after {
+//     right:50%; 
+//   }
 
-  input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, input[type="email"]:invalid ~  .bottomBar:after {
-    width:50%;
-  }
+//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, input[type="email"]:invalid ~  .bottomBar:after {
+//     width:50%;
+//   }
 
-  input[type="email"].inputUsuarios:invalid ~ .highlight.Usuarios {
-    position:relative;
-    height:60%; 
-    width:100px; 
-    top:25%; 
-    left:10%;
-    pointer-events:none;
-    opacity:0.5;
-  }
+//   input[type="email"].inputUsuarios:invalid ~ .highlight.Usuarios {
+//     position:relative;
+//     height:60%; 
+//     width:100px; 
+//     top:25%; 
+//     left:10%;
+//     pointer-events:none;
+//     opacity:0.5;
+//   }
 /* end of Invalid email style */
 
 
@@ -205,6 +205,16 @@ input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomB
     left: 0%; 
     
   }
+
+  .bottomBar.inputUsuarios 	{ 
+    background: #111111;
+    position:absolute; 
+    display:block; 
+    height: 2px;
+    width:73%;
+    left: 10%; 
+  }
+
   .bottomBar.Usuarios:before, .bottomBar.Usuarios:after 	{
     content:'';
     height:2px; 
@@ -216,6 +226,19 @@ input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomB
     -moz-transition:0.2s ease all; 
     -webkit-transition:0.2s ease all;
   }
+
+  .bottomBar.inputUsuarios:before, .bottomBar.inputUsuarios:after 	{
+    content:'';
+    height:2px; 
+    width:0;
+    bottom: 0%; 
+    position:absolute;
+    background:#111111; 
+    transition:0.2s ease all; 
+    -moz-transition:0.2s ease all; 
+    -webkit-transition:0.2s ease all;
+  }
+
   .bottomBar.Usuarios:before {
     left:50%;
   }
@@ -223,6 +246,13 @@ input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomB
     right:50%; 
   }
   
+  .bottomBar.inputUsuarios:before {
+    left:50%;
+  }
+  .bottomBar.inputUsuarios:after {
+    right:50%; 
+  }
+
   input.inputUsuarios:focus ~ .bottomBar.Usuarios:before,  input.inputUsuarios:focus ~ .bottomBar.Usuarios:after {
     width:50%;
   }
@@ -236,40 +266,17 @@ input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomB
     pointer-events:none;
     opacity:0.5;
   }
+
+  .highlight.inputUsuarios {
+    position:absolute;
+    height:60%; 
+    width:100px; 
+    top:25%; 
+    left:0;
+    pointer-events:none;
+    opacity:0.5;
+  }
 /* Tabla */
-  .tabla.Usuarios {
-      width: 90%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-  }
-
-  tbody {
-    display: grid;
-    overflow: auto;
-    width: 100%;
-    height: 300px;
-
-  }
-
-  tr:nth-child(even) {
-    background-color: #DDD;
-  }
-
-  th {
-    background-color: #005B8E;
-  }
-
-  th, td {
-    padding: 5px;
-    text-align: center;
-    transition: .5s ease all;
-    cursor: default;
-  }
-
-  td:hover{
-    background-color: rgb(167, 167, 167);
-  }
 
 
   /*botones */

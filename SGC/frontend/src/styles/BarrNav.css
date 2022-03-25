@@ -106,19 +106,19 @@ main{
 .sidebar.close .nav-links i.arrow{
   display: none;
 }
-.sidebar .nav-links li a{
+.sidebar .nav-links li .a{
   display: flex;
   align-items: center;
   text-decoration: none;
 }
-.sidebar .nav-links li a .link_name{
+.sidebar .nav-links li .a .link_name{
   font-size: 18px;
   font-weight: 400;
   color: #fff;
   transition: all 0.4s ease;
   text-align: initial;
 }
-.sidebar.close .nav-links li a .link_name{
+.sidebar.close .nav-links li .a .link_name{
   opacity: 0;
   pointer-events: none;
 }
@@ -131,15 +131,15 @@ main{
 .sidebar .nav-links li.showMenu .sub-menu{
   display: block;
 }
-.sidebar .nav-links li .sub-menu a{
+.sidebar .nav-links li .sub-menu .a{
   color: #fff;
   font-size: 15px;
   padding: 5px 0;
   white-space: nowrap;
-  opacity: 0.6;
+  opacity: 1;
   transition: all 0.3s ease;
 }
-.sidebar .nav-links li .sub-menu a:hover{
+.sidebar .nav-links li .sub-menu .a:hover{
   opacity: 1;
 }
 .sidebar.close .nav-links li .sub-menu{
@@ -262,3 +262,19 @@ main{
     display: none;
   }
 }
+ .link{
+   text-decoration: none;
+   bottom: unset;
+ }
+
+ .li{
+   color: #fff;
+   font-size: 0.85rem;
+   opacity: 0.8;
+   margin-bottom: 2%;
+   margin-top: 2%;
+ }
+
+ .li:hover {
+   opacity: 1;
+ }

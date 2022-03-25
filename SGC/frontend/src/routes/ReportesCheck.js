@@ -28,19 +28,12 @@ const ReportesCheck = props => {
                             <label className="reportes-check">Nombre de Materia</label>
                         </div>
                         <div className="search-button-dialog">
-                            <fieldset className="reportes-check">
-                                <legend>Filtro</legend>
-                                <div className="reportes-check-grid1">
-                                    <p><input type="radio" name="rbtn-search" value="Maestro" />Maestro</p>
-                                    <p><input type="radio" name="rbtn-search" value="Carrera" />Carrera</p>
-
-                                </div>
-                                <div className="reportes-check-grid2">
-                                    <p><input type="radio" name="rbtn-search" value="Grupo" />Grupo</p>
-                                    <p><input type="radio" name="rbtn-search" value="Materia" />Materia</p>
-
-                                </div>
-                            </fieldset>
+                            <div className="search-button-dialog__content">
+                                <p><input type="radio" name="rbtn-search" value="Maestro" />Maestro</p>
+                                <p><input type="radio" name="rbtn-search" value="Carrera" />Carrera</p>
+                                <p><input type="radio" name="rbtn-search" value="Grupo" />Grupo</p>
+                                <p><input type="radio" name="rbtn-search" value="Materia" />Materia</p>
+                            </div>
                         </div>
                     </form>
 

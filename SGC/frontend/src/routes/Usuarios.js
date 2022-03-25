@@ -216,10 +216,9 @@ const Usuarios = props => {
 
           <div className="form group modal Usuario">
             <input
-              type="email"
+              type="text"
               id="usuario-email"
               name="usuario-email"
-              // pattern=".+@cdguzman.tecnm.com"
               title="Correo electronico Institucional del ITCG"
               className="inputUsuarios"
               required
@@ -314,7 +313,7 @@ const Usuarios = props => {
 
           <div className="form group modal Usuario">
             <input
-              type="email"
+              type="text"
               id="usuario-email"
               name="usuario-email"
               pattern=".+@cdguzman.tecnm.com"
