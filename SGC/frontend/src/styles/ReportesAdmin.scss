@@ -1,0 +1,105 @@
+.ModalReportes {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+.LabelModalReportesAdmin {
+    color: #111111;
+    font-size: 1rem;
+    font-weight: normal;
+    position: unset;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+    transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+    margin: 0% 40% 2% 38%;
+}
+
+.textareaModalReportesAdmin {
+    width:90%;
+    height: 20vh;
+    font-size: 1rem;
+    resize: none;
+    margin-bottom: 2%;
+}
+
+.Modal-Reportes-Admin-Date {
+    border: none;
+    background-color: #f3f3f3;
+}
+
+.Modal-Reportes-Admin-Radios {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2%;
+}
+.Modal-Reportes-Admin-p {
+    margin-right: 5%;
+}
+
+.Modal-Reportes-Admin-Select {
+    padding: 0;
+    left: 0;
+    margin-bottom: 2%;
+    margin-top: 2%;
+  }
+
+.Modal-Reportes-Admin-Select-hidden {
+    padding: 0;
+    left: 0;
+    margin-bottom: 1%;
+    visibility: hidden;
+}
+.form-reportesAdmin-modal {
+    width: 100%;
+}
+
+.Reportes-Admin-mensajes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2%;
+}
+
+.Reportes-Admin-mensajes-radios {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.Label-ReportesAdmin {
+    color: #111111;
+    font-size: 1rem;
+    font-weight: normal;
+    position: unset;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+    transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+    margin: 0% 40% 2% 38%;
+}
+
+.LabelModalReportesAdmin-detalles {
+    color: #111111;
+    font-size: 1rem;
+    font-weight: normal;
+    position: unset;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+    transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+    margin: 0% 5% 2% 0%;
+}
+
+input[type="submit"].btn-eliminar-reportes-admin {
+    background-color: #b8000f;
+}
