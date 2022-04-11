@@ -15,6 +15,9 @@ import ReportesCheck from "./routes/ReportesCheck";
 import Carreras from "./routes/Carreras";
 import ExportData from "./routes/ExportData";
 import BackUpRestore from "./routes/BackUpRestore";
+import Home2 from './routes/usuario/home';
+import BarNav from './routes/usuario/BarNav'
+import SysSettings from './routes/SysSettings';
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -25,6 +28,8 @@ import "./styles/ERROR.scss"
 import "./styles/ReportesCheck.scss"
 import "./styles/ExportData.scss"
 import "./styles/BackUpRestore.scss"
+import "./styles/usuario/home.scss"
+import "./styles/Home.scss"
 
 
 ReactDOM.render(
@@ -43,10 +48,11 @@ ReactDOM.render(
           <Route path="reportes/check" element={<ReportesCheck />} />
           <Route path="exportardatos" element={<ExportData />} />
           <Route path="Respadoyrestauraciones" element={<BackUpRestore />} />
-          <Route path="master" element={<BarrNav />}>
-          </Route>
+          <Route path='ajustes' element={<SysSettings />} />
         </Route>
-
+        <Route path='usuario' element={<BarNav />}>
+          <Route path=':usuario/home' element={<Home2 />}/>
+        </Route>
         <Route path="*" element={<NotMatch />} />
       </Routes>
     </BrowserRouter>

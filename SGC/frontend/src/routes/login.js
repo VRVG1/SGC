@@ -34,9 +34,10 @@ export const Login = () => {
               <label>Contrasena</label>
             </div>
           </form>
-          <button
+          <Link to="/admin"><button
             className="fadeIn cuarto"
-          ><Link to="/admin">Log In</Link></button>
+          >Log In</button></Link>
+
         </div>
         <div id="footer">
           <a className="underlineHover" href="#">

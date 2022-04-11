@@ -6,9 +6,6 @@ const putCarrera = async (dataPost, id) => {
             Nombre_Carrera: dataPost
         })
     };
-    console.log("dataPost",dataPost)
-    console.log("id", id)
-    console.log(post)
     const res = await fetch('http://localhost:8000/materia/update-carrera/'+ id, post);
     const result = res.statusText;
     return result;

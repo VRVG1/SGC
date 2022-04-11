@@ -17,11 +17,19 @@ const Materias = props => {
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [showModalResultado, setShowModalResultado] = useState(false);
     const [carreraData, setCareraData] = useState({});
+    const [filtrados, setFiltrados] = useState({})
     const [carrera, setCarrera] = useState({});
     const [nombre_Carrera, setNombre_Carrera] = useState("");
+    const [ID_Carrera, setID_Carrera] = useState("")
     const [actualizar, setActualizar] = useState(0);
     const [datainput, setDataInput] = useState({
-        carrera_nombre: ''
+        carrera_nombre: '',
+        id_carrera: ''
+    });
+
+    const [regex, setRegex] = useState({
+        carrera_nombre: /^[A-Za-z\sÀ-ÿ]{0,80}$/,
+        id_carrera: /^[A-Z]{0,3}-{0,1}[0-9]{0,4}$/
     });
     const [statusContenido, setStatusContenido] = useState("");
     const [resultado, setResultado] = useState("");
@@ -36,6 +44,7 @@ const Materias = props => {
     const obtenerCarrera = () => {
         getAllCarrera().then((data) => {
             setCareraData(data);
+            setFiltrados(data)
         })
     }
     /**
@@ -43,10 +52,13 @@ const Materias = props => {
      * @param {*} event 
      */
     const handleInputOnChange = (event) => {
-        setDataInput({
-            ...datainput,
-            [event.target.name]: event.target.value
-        });
+        //console.log(event.target.value.match(regex[event.target.name]))
+        if (event.target.value.match(regex[event.target.name]) != null) {
+            setDataInput({
+                ...datainput,
+                [event.target.name]: event.target.value
+            });
+        }
     }
 
     /**
@@ -84,7 +96,7 @@ const Materias = props => {
             setShowModalResultado(true);
             setActualizar(Math.random());
         }
-        
+
         setLoading(false);
     }, [borrado]);
     /**
@@ -109,7 +121,8 @@ const Materias = props => {
     const updateCarrera = () => {
         setDataInput({
             ...datainput,
-            carrera_nombre: carrera.Nombre_Carrera
+            carrera_nombre: carrera.Nombre_Carrera,
+            id_carrera: carrera.ID_Carrera,
         });
         setPutCarreras('');
         setShowModalModify(true);
@@ -122,7 +135,8 @@ const Materias = props => {
         setCarrera(carrera);
         //const carrera = carreraData.find(element => element.ID_Carrera === id);
         setNombre_Carrera(carrera.Nombre_Carrera);
-        setShowModalDetails(true)
+        setID_Carrera(carrera.ID_Carrera);
+        setShowModalDetails(true);
         setBorrado('');
     }
     /**
@@ -131,7 +145,8 @@ const Materias = props => {
     const add = () => {
         setDataInput({
             ...datainput,
-            carrera_nombre: ''
+            carrera_nombre: '',
+            id_carrera: ''
         });
         setResultado('');
         setShowModalAdd(true);
@@ -154,8 +169,6 @@ const Materias = props => {
 
     const put = async () => {
         setLoading(true);
-        // console.log("ID", carrera.ID_Carrera);
-        // console.log("Nombre", carrera.Nombre_Carrera);
         setPutCarreras(await putCarrera(datainput.carrera_nombre, carrera.ID_Carrera))
     }
 
@@ -163,6 +176,7 @@ const Materias = props => {
      * Metodo para cerra todas los modales 
      */
     const closeAdd = () => {
+        setPutCarreras('');
         setShowModalAdd(false);
         setShowModalResultado(false);
         setShowModalDelete(false);
@@ -170,11 +184,26 @@ const Materias = props => {
         setShowModalDetails(false);
         setShowModalModify(false);
     }
+    /**
+     * Metodo para buscar en la tabla elementos
+     * @param {*} event 
+     */
+    const buscador = (event) => {
+        var filtrados = carreraData.map((carrera) => {
+            if (carrera.Nombre_Carrera.toLowerCase().includes(event.target.value.toLowerCase())) {
+                return carrera;
+            }
+        })
+        filtrados = filtrados.filter((elemento) => {
+            return elemento !== undefined
+        })
+        setFiltrados(filtrados)
+    }
 
     return (
         <>
-        { loading === false ? (
-                    <div className="containerMaterias">
+            {loading === false ? (
+                <div className="containerMaterias">
                     <h1>Carreras</h1>
                     <form>
                         <div className="form group modal Materia">
@@ -183,6 +212,7 @@ const Materias = props => {
                                 id="Materia-name"
                                 name="carrera_nombre"
                                 className="inputMaterias-search"
+                                onChange={buscador}
                                 required
                             />
                             <span className="highlight Materias"></span>
@@ -193,7 +223,7 @@ const Materias = props => {
                     <div className="tabla">
                         <table>
                             <tbody>
-                                {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
+                                {Object.keys(filtrados).length !== 0 ? (filtrados.map((carrera) =>
                                     <tr key={carrera.ID_Carrera}>
                                         <td onClick={() => detalles(carrera)}>
                                             {carrera.Nombre_Carrera}
@@ -202,9 +232,9 @@ const Materias = props => {
                                 )) : (<></>)}
                             </tbody>
                         </table>
-        
+
                     </div>
-        
+
                     <input
                         type="submit"
                         className="button Materias"
@@ -214,8 +244,13 @@ const Materias = props => {
                     {/* Detalles */}
                     <Modal show={showModalDetails} setShow={setShowModalDetails} title={nombre_Carrera}>
                         <div className="Materias-Detalles grid">
-        
                             <div className="Materias-Detalles one">
+                                <label className="Materias-Detalles">ID:</label>
+                                <p className="Materias-Detalles">{ID_Carrera}</p>
+                                <span className="bottomBar Materias-Detalles"></span>
+                            </div>
+
+                            <div className="Materias-Detalles two">
                                 <label className="Materias-Detalles">Carrera:</label>
                                 <p className="Materias-Detalles">{nombre_Carrera}</p>
                                 <span className="bottomBar Materias-Detalles"></span>
@@ -249,6 +284,20 @@ const Materias = props => {
                                 <input
                                     type="text"
                                     id="Materia-name"
+                                    name="id_carrera"
+                                    className="inputMaterias"
+                                    onChange={handleInputOnChange}
+                                    value={datainput.id_carrera}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">ID de la carrera</label>
+                            </div>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
                                     name="carrera_nombre"
                                     className="inputMaterias"
                                     onChange={handleInputOnChange}
@@ -259,8 +308,9 @@ const Materias = props => {
                                 <span className="bottomBar Materias"></span>
                                 <label className="Materias">Nombre de la carrera</label>
                             </div>
+
                         </form>
-        
+
                         <input
                             type="submit"
                             className="button Materias"
@@ -268,7 +318,7 @@ const Materias = props => {
                             onClick={save}
                         />
                     </Modal>
-        
+
                     {/* Eliminar */}
                     <Modal show={showModalDelete} setShow={setShowModalDelete} title={"Eliminar Carrera"}>
                         <p>Realmente esta seguro que quiere eliminar la Carrera: <strong className="Resaltado">{nombre_Carrera}</strong></p>
@@ -294,6 +344,20 @@ const Materias = props => {
                                 <input
                                     type="text"
                                     id="Materia-name"
+                                    name="id_carrera"
+                                    className="inputMaterias"
+                                    onChange={handleInputOnChange}
+                                    value={datainput.id_carrera}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">ID de la carrera</label>
+                            </div>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
                                     name="carrera_nombre"
                                     className="inputMaterias"
                                     onChange={handleInputOnChange}
@@ -305,13 +369,13 @@ const Materias = props => {
                                 <label className="Materias">Nombre de la Carrera</label>
                             </div>
                         </form>
-        
+
                         <input
                             type="submit"
                             className="button Materias"
                             value="Cerrar"
                             onClick={() => setShowModalModify(false)} />
-        
+
                         <input
                             type="submit"
                             className="button Materias"
@@ -319,7 +383,7 @@ const Materias = props => {
                             onClick={put}
                         />
                     </Modal>
-        
+
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
                         <div className="modal group">
                             <p>Realmente esta seguro que quiere actualizar los datos de la Carrera:<strong className="Resaltado">{"Carrera actualizar"}</strong></p>
@@ -337,7 +401,7 @@ const Materias = props => {
                             onClick={() => updateCarrera()}
                         />
                     </Modal>
-        
+
                     {/* Resultado de agregar */}
                     <Modal show={showModalResultado} setShow={setShowModalResultado} title={resultado || borrado}>
                         <div className="modal group">
@@ -351,9 +415,9 @@ const Materias = props => {
                         />
                     </Modal>
                 </div>
-        ) : (
-            <Loader />
-        )}
+            ) : (
+                <Loader />
+            )}
         </>
     );
 }

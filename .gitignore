@@ -4,4 +4,4 @@ EnvPython/*
 **/.lh/*
 my.cnf
 secret_key.txt
-db.sqlite3
+*.sqlite3

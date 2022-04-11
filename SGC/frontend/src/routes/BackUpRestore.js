@@ -30,17 +30,19 @@ const BackUpRestore = props => {
                         <input
                             type={'button'}
                             value="BackUp"
+                            className='Espacios'
                             onClick={() => setLodaing(true)}
                         />
                     </form>
                 </div>
 
                 <div className='conteiner-BUR__R'>
-                    <h1>Restaurar</h1>
-                    <form>
-                        <input type="file" />
+                    <h1 >Restaurar</h1>
+                    <form className='conteiner-BUR_R__form'>
+                        <input type="file" className='Espacios'/>
                         <input type="button"
                             value={"Restaurar"}
+                            className='Espacios'
                             onClick={() => setLodaing(true)}
                         />
                     </form>

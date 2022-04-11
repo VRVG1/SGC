@@ -21,6 +21,12 @@ $blur: #08080850;
     border-radius: 15px 15px 15px 15px;
     -webkit-box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61); 
     box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61);
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    flex-basis: fit-content;
 }
 
 .conteiner-BUR__R {
@@ -31,5 +37,23 @@ $blur: #08080850;
     border-radius: 15px 15px 15px 15px;
     -webkit-box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61); 
     box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61);
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    flex-basis: fit-content;
 }
 
+h1 {
+    text-align: center;
+}
+
+.conteiner-BUR_R__form {
+    display: flex;
+    flex-direction: column;
+}
+ .Espacios{
+     margin-bottom: 5%;
+     margin-top: 5%;
+ }
