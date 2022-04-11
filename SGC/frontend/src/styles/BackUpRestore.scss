@@ -1,0 +1,59 @@
+$blanco: #F3F3F3;
+$color-text: #111111;
+$select-color: #a7a7a7;
+$button-blue: #005b8e;
+$blur: #08080850;
+.conteiner-BUR {
+    background-color: rgba(240, 255, 255, 0);
+    width: 80%;
+    position: relative;
+    margin: 15% auto auto auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.conteiner-BUR__BU{
+    background-color: $blanco;
+    width: 40%;
+    height: 50%;
+    margin: auto;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61); 
+    box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61);
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    flex-basis: fit-content;
+}
+
+.conteiner-BUR__R {
+    background-color: $blanco;
+    width: 40%;
+    height: 50%;
+    margin: auto;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61); 
+    box-shadow: 12px 12px 11px 3px rgba(0,0,0,0.61);
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    flex-basis: fit-content;
+}
+
+h1 {
+    text-align: center;
+}
+
+.conteiner-BUR_R__form {
+    display: flex;
+    flex-direction: column;
+}
+ .Espacios{
+     margin-bottom: 5%;
+     margin-top: 5%;
+ }
