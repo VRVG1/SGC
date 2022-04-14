@@ -30,7 +30,6 @@ Materias {
 Generan {
     auto_increment ID_Generacion PK
     varchar-20 Estatus
-    file Path_PDF
     varchar-20 Sememestre
     int ID_Asignan FK "from Asignan"
     int ID_Reporte FK "from Reportes"
@@ -49,8 +48,16 @@ Asignan {
 
 
 
+Alojan {
+    int ID_Generacion PK " FK from Generan"
+    auto_increment ID_Alojan PK
+    file Path_PDF
+}
+
 Usuarios ||--|{ Asignan: c 
 Materias ||--|{ Asignan: c 
 Asignan ||-- |{ Generan: c
 Reportes ||--|{ Generan: c
 Carreras||--|{ Materias: c
+Generan||--|{Alojan: c
+
