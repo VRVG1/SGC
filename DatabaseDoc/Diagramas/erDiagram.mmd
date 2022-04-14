@@ -7,6 +7,7 @@ Usuarios {
     varchar-20 Password
     choice Tipo_usuario
     email CorreoE
+    boolean Permiso
 }
 
 Reportes {
@@ -22,7 +23,7 @@ Materias {
     varchar-100 Nombre_Materia    
     choice Carrera FK "from Carreras"
     varchar-50 Grado
-    choise Grupo
+    choice Grupo
 }
 
 
@@ -31,8 +32,7 @@ Generan {
     varchar-20 Estatus
     file Path_PDF
     varchar-20 Sememestre
-    int ID_Materia FK "from Materias"
-    int ID_Usuario FK "from Usuarios"
+    int ID_Asignan FK "from Asignan"
     int ID_Reporte FK "from Reportes"
 }
 
