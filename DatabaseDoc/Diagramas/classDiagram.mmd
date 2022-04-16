@@ -1,0 +1,77 @@
+classDiagram 
+Usuarios "1" --> "*" Asignan
+Carreras "1" --> "*" Materias
+Materias "1" --> "*" Asignan
+Asignan "1" --> "*" Generan
+Reportes "1" --> "*" Generan
+Generan "1" --> "*" Alojan
+
+class Usuarios {
+    +int ID_Usuario KEY
+    +String Nombre_Usuario
+    -String User
+    +choise Tipo_Usuario
+    -email CorreoE
+    -boolean Permiso
+    +agregarUsuario()
+    +buscarUsuario()
+    +modificarUsuario()
+    +EliminarUsuario()
+}
+
+class Carreras{
+    +String ID_Carrera KEY
+    +String Nombre-ID_Carrera
+    +agregarCarrera()
+    +buscarCarrera()
+    +modificarCarrera()
+    +EliminarCarrera()
+}
+
+class Materias{
+    +String ID_Materia KEY
+    +String Nombre_Materia
+    +String Carrera
+    +String Grado
+    +String Grupo
+    +agregarMaterias()
+    +buscarMaterias()
+    +modificarMaterias()
+    +EliminarMaterias()
+}
+
+class Asignan {
+    +int ID_Asignan KEY
+    +int ID_Materia
+    +int ID_Usuario
+}
+
+class Generan{
+    +int ID_Generacion KEY
+    +String Estatus
+    +String Sememestre
+    +int ID_Asignan
+    +int ID_Reporte
+    +buscarGeneracion()
+    +descargarReportes()
+}
+
+class Alojan{
+    +int ID_Generacion KEY
+    +int ID_Alojan KEY
+    +file Path_PDF
+}
+
+class Reportes {
+    +int ID_Reporte KEY
+    +String Nombre_Reporte
+    +date Fecha_Entrega
+    +String Descripcion
+    +boolean Opcional
+    +agregarReportes()
+    +buscarReportes()
+    +modificarReportes()
+    +EliminarReportes()
+}
+
+
