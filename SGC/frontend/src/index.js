@@ -18,6 +18,7 @@ import BackUpRestore from "./routes/BackUpRestore";
 import Home2 from './routes/usuario/home';
 import BarNav from './routes/usuario/BarNav'
 import SysSettings from './routes/SysSettings';
+import OlvideContra from './routes/OlivdeContra';
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -39,6 +40,7 @@ ReactDOM.render(
         <Route path='/' element={<Navigate to={'login'} />} >
         </Route>
         <Route path='login' element={<Login />} />
+        <Route path="recuperar" element={<OlvideContra />} />
         <Route path="admin" element={<BarrNav />}>
           <Route path="home" element={<Home />} />
           <Route path="usuarios" element={<Usuarios />} />

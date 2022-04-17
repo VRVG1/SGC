@@ -10,31 +10,108 @@ const ReportesCheck = props => {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalDetails, setShowModalDetails] = useState(false);
     const [selector, setSelector] = useState("Modal-Reportes-Admin-Select-hidden")
+    const [hidden, setHidden] = useState({
+        hidden1: "form group reportes-check",
+        hidden2: "form group reportes-check hidden",
+        hidden3: "form group reportes-check hidden",
+        hidden4: "form group reportes-check hidden",
+        hidden5: "form group reportes-check hidden",
+    });
+    const [oculto, setOculto] = useState({
+        hidden1: "",
+        hidden2: " hidden",
+        hidden3: " hidden",
+        hidden4: " hidden",
+        hidden5: " hidden",
+    })
+
+    const changeEstado = (e) => {
+        console.log(e.target.checked)
+        if (e.target.checked === true) {
+            setHidden({
+                ...hidden,
+                [e.target.id]: "form group reportes-check",
+            });
+            setOculto({
+                ...oculto,
+                [e.target.id]: "",
+            });
+        } else {
+            setHidden({
+                ...hidden,
+                [e.target.id]: "form group reportes-check hidden",
+            });
+            setOculto({
+                ...oculto,
+                [e.target.id]: " hidden",
+            });
+        }
+    }
 
     return (
         <>
             <div className="container-ReportesCheck">
                 <div className="ReportesCheck-search">
                     <h1> Reportes Check </h1>
+
+                    <div className="search-button-dialog">
+                        <div className="search-button-dialog__content">
+                            <p><input type="checkbox" id="hidden1" name="rbtn-search" value="Maestro"
+                                onClick={changeEstado}
+                            />Maestro</p>
+
+                            <p><input type="checkbox" id="hidden2" name="rbtn-search" value="Carrera"
+                                onClick={changeEstado} />Carrera</p>
+
+                            <p><input type="checkbox" id="hidden3" name="rbtn-search" value="Grupo"
+                                onClick={changeEstado} />Grupo</p>
+
+                            <p><input type="checkbox" id="hidden4" name="rbtn-search" value="Materia"
+                                onClick={changeEstado} />Materia</p>
+                        </div>
+                    </div>
                     <form>
-                        <div className="form group reportes-check">
+                        <div className={hidden.hidden1}>
                             <input
                                 type="text"
-                                className="input-report-check-search"
+                                className={"input-report-check-search" + oculto.hidden1}
                                 required
                             />
-                            <span className="highlight reportes-check"></span>
-                            <span className="bottomBar reportes-check"></span>
-                            <label className="reportes-check">Nombre de Materia</label>
+                            <span className={"highlight reportes-check" + oculto.hidden1}></span>
+                            <span className={"bottomBar reportes-check" + oculto.hidden1}></span>
+                            <label className={"reportes-check" + oculto.hidden1}>Nombre del Maestro</label>
                         </div>
-                        <div className="search-button-dialog">
-                            <div className="search-button-dialog__content">
-                                <p><input type="radio" name="rbtn-search" value="Maestro" />Maestro</p>
-                                <p><input type="radio" name="rbtn-search" value="Carrera" />Carrera</p>
-                                <p><input type="radio" name="rbtn-search" value="Grupo" />Grupo</p>
-                                <p><input type="radio" name="rbtn-search" value="Materia" />Materia</p>
-                            </div>
+                        <div className={hidden.hidden2}>
+                            <input
+                                type="text"
+                                className={"input-report-check-search" + oculto.hidden2}
+                                required
+                            />
+                            <span className={"highlight reportes-check" + oculto.hidden2}></span>
+                            <span className={"bottomBar reportes-check" + oculto.hidden2}></span>
+                            <label className={"reportes-check" + oculto.hidden2}>Nombre de la Carrera</label>
                         </div>
+                        <div className={hidden.hidden3}>
+                            <input
+                                type="text"
+                                className={"input-report-check-search" + oculto.hidden3}
+                                required
+                            />
+                            <span className={"highlight reportes-check" + oculto.hidden3}></span>
+                            <span className={"bottomBar reportes-check" + oculto.hidden3}></span>
+                            <label className={"reportes-check" + oculto.hidden3}>Grupo</label>
+                        </div>
+                        <div className={hidden.hidden4}>
+                            <input
+                                type="text"
+                                className={"input-report-check-search" + oculto.hidden4}
+                                required
+                            />
+                            <span className={"highlight reportes-check" + oculto.hidden4}></span>
+                            <span className={"bottomBar reportes-check" + oculto.hidden4}></span>
+                            <label className={"reportes-check" + oculto.hidden4}>Nombre de la Materia</label>
+                        </div>
+
                     </form>
 
                 </div>

@@ -245,14 +245,38 @@ const Usuarios = props => {
                 <span className="bottomBar Usuarios-Detalles"></span>
               </div>
 
+              <div className="Usuarios-Detalles four">
+                <label className="Usuarios-Detalles">Seleccion de Materias</label>
+                <input type={"checkbox"} className="Usuarios-Detalles checkbox" />
+              </div>
+            </div>
+            <div className="tabla">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Materias</th>
+                  </tr>
+                  <tr>
+                    <th>Semestre</th>
+                  </tr>
+                  <tr>
+                    <th>Grupo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matematicas</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>A</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div className="Usuarios-Detalles buttons">
-              <input
-                type="submit"
-                className="button Usuarios"
-                value="Cerrar"
-                onClick={() => setShowModalDetails(false)}
-              />
               <input
                 type="submit"
                 className="button Usuarios"
