@@ -450,10 +450,11 @@ label.Usuarios-Detalles {
 
 .Usuarios-Detalles.checkbox {
   position: relative;
-  margin: auto;
-  left: -10%;
-  width: 50%;
-  height: 50%;
+  width: 1.5em;
+  height: 1.5em;
+  margin: unset;
+  top: 0.3em;
+  left: 0.3em;
 }
 h2.Resaltado {
   font-style: oblique;
