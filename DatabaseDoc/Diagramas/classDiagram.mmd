@@ -1,6 +1,6 @@
 classDiagram 
 Usuarios "1" --> "*" Asignan
-Carreras "1" --> "*" Materias
+Carreras "1" --> "*" Asignan
 Materias "1" --> "*" Asignan
 Asignan "1" --> "*" Generan
 Reportes "1" --> "*" Generan
@@ -32,8 +32,7 @@ class Materias{
     +String ID_Materia KEY
     +String Nombre_Materia
     +String Carrera
-    +String Grado
-    +String Grupo
+    
     +agregarMaterias()
     +buscarMaterias()
     +modificarMaterias()
@@ -44,6 +43,9 @@ class Asignan {
     +int ID_Asignan KEY
     +int ID_Materia
     +int ID_Usuario
+    +int ID_Materia
+    +String Grado
+    +String Grupo
 }
 
 class Generan{

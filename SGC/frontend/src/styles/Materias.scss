@@ -241,6 +241,7 @@ input[type="email"].inputMaterias:invalid ~ .bottomBar.Materias:before, .bottomB
     overflow-y: auto;
     height: 30vh;
     margin-bottom: 3%;
+    margin: auto;
   }
 
   table {

@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from './modal/Modal.js'
+import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
+import postUsuario from "./helpers/Usuarios/postUsuario.js"
+import putUsuario from "./helpers/Usuarios/putUsuario.js";
+import deleteUser from "./helpers/Usuarios/deleteUser.js";
+import Loader from "./Loader.js";
 
 const Usuarios = props => {
   const [showModalAdd, setShowModalAdd] = useState(false);
@@ -7,373 +12,514 @@ const Usuarios = props => {
   const [showModalModify, setShowModalModify] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [showModalResultado, setShowModalResultado] = useState(false);
+  const [statusContenido, setStatusContenido] = useState('');
+  const [userActualizar, setUserActualizar] = useState('');
+  const [userData, setUserData] = useState({});
+  const [filtrados, setFiltrados] = useState({})
+  const [actualizarUsuario, setActualizarUsuario] = useState(0);
+  const [dataInput, setdataInput] = useState({
+    PK: "",
+    username: '',
+    password: '',
+    Nombre_Usuario: '',
+    Tipo_Usuario: 'Docente',
+    CorreoE: '',
+  });
+  const [regex, setRegex] = useState({
+    PK: /\d+/,
+    username: /^[a-zA-Z\d@~._-]{0,20}$/,
+    password: /.{0,20}/,
+    Nombre_Usuario: /^[A-Za-z\sÀ-ÿ]{0,100}$/,
+    Tipo_Usuario: /.*/,
+    CorreoE: /.*/,
+  })
+  //^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$
+  //Regex para validar correos
+  const [username, setUsername] = useState('');
+  const [Nombre_Usuario, setNombre_Usuario] = useState('');
+  const [Tipo_Usuario, setTipo_Usuario] = useState('');
+  const [CorreoE, setCorreoE] = useState('');
+  const [password, setPassword] = useState('')
+  const [pk, setPk] = useState('');
 
-  let apodo = "FatNDepresse";
-  let UserType = "Maestro";
-  let emailUser = "ejemplo@ejemplo.com"
   let usuarioEliminar = "Victor Rafael Valdivia Gomez"
   let usuarioActualizar = "Pedro Nicolas Rios Vargas"
 
-  function deleteUsuario() {
-    setShowModalDelete(false);
-    setShowModalDetails(false);
-    //Poner en este metodo los pasos requeridos para borrar un usuario
+  /**
+   * Recibe los datos escritos en un input
+   * @param {*} event 
+   */
+  const handleInputOnChange = (event) => {
+    if (event.target.value.match(regex[event.target.name]) != null) {
+      setdataInput({
+        ...dataInput,
+        [event.target.name]: event.target.value
+      });
+    }
+  }
+  /**
+   * Metodo para obtener los usuarios desde la base de datos
+   */
+  const obtenerUsuarios = async () => {
+    await getAllUsuarios().then((data) => {
+      setUserData(data);
+      setFiltrados(data)
+    })
+  }
+  /**
+   * useEffect para actualizar los datos generales
+   */
+  useEffect(() => {
+    obtenerUsuarios();
+  }, [actualizarUsuario]);
+
+  /**
+   * useEffect para mostrar mensaje de resultado al momento de agregar
+   */
+  useEffect(() => {
+    if (userActualizar === "OK" || userActualizar === "Created") {
+      setShowModalResultado(true);
+      setStatusContenido("Se realizo la operacion con exito");
+      setActualizarUsuario(Math.random())
+    } else if (userActualizar !== '') {
+      setShowModalResultado(true);
+      setStatusContenido("Problemas al realizar la operacion, intente mas tarde")
+      setActualizarUsuario(Math.random())
+    }
+    setloading(false);
+  }, [userActualizar]);
+
+  const add = async () => {
+    setloading(true);
+    setUserActualizar(await postUsuario(dataInput));
   }
 
-  function updateUser() {
+  /**
+   * Metodo para mostrar el formulario agregar
+   */
+  const abrirAgregar = () => {
+    setdataInput({
+      ...dataInput,
+      CorreoE: '',
+      Nombre_Usuario: '',
+      PK: '',
+      Tipo_Usuario: 'Docente',
+      password: '',
+      username: ''
+    });
+    setUserActualizar('');
+    setShowModalAdd(true);
+  }
+  /**
+   * Metodo para abrir el formulario de actualizar usuario
+   */
+  const modifyUser = () => {
+    setdataInput({
+      ...dataInput,
+      CorreoE: CorreoE,
+      Nombre_Usuario: Nombre_Usuario,
+      Tipo_Usuario: Tipo_Usuario,
+      username: username,
+      password: "password"
+    });
+    setUserActualizar('');
+    setShowModalModify(true);
+  };
+  /**
+   * Metodo para llamar al helper putUsuario y asi modificar los datos de la base de datos
+   */
+  const modifyUserGuardar = async () => {
+    setloading(true);
+    setUserActualizar(await putUsuario(dataInput, pk));
+  };
+  /**
+   * Metodo para eliminar un usuario de la base de datos
+   */
+  const deleteUserConfirm = async () => {
+    setloading(true);
+    setUserActualizar(await deleteUser(pk));
+  }
+  /**
+   *  Metodo para mostrar los detalles del usuario
+   * @param {*} id id del usuario a buscar 
+   */
+  function detalles(id) {
+    const user = userData.find(elemento => elemento.PK === id);
+    setCorreoE(user.CorreoE);
+    setNombre_Usuario(user.Nombre_Usuario);
+    setTipo_Usuario(user.Tipo_Usuario);
+    setUsername(user.ID_Usuario.username);
+    setPassword(user.ID_Usuario.password);
+    setPk(user.PK);
+    setShowModalDetails(true);
+
+  }
+  /**
+ * Metodo para cerra todas los modales 
+ */
+  const closeAll = () => {
+    setUserActualizar('');
+    setShowModalAdd(false);
+    setShowModalResultado(false);
+    setShowModalDelete(false);
     setShowModalConfirm(false);
-    setShowModalModify(false);
     setShowModalDetails(false);
-    //Poner en este metodo los pasos requeridos para actualizar un usuario
+    setShowModalModify(false);
+  }
+  /**
+   * Metodo para buscar en la tabla elementos
+   * @param {*} event 
+   */
+  const buscador = (event) => {
+    var filtrados = userData.map((user) => {
+      if (user.Nombre_Usuario.toLowerCase().includes(event.target.value.toLowerCase())) {
+        return user;
+      }
+    })
+    filtrados = filtrados.filter((elemento) => {
+      return elemento !== undefined
+    })
+    setFiltrados(filtrados)
   }
 
   return (
-    <div className="containerUsuarios">
-      <h1>Usuarios</h1>
-      <form>
-        <div className="form group modal Usuario">
-          <input
-            type="text"
-            id="usuario-name"
-            name="usuario-name"
-            className="inputUsuarios-search"
-            required
-          />
-          <span className="highlight Usuarios"></span>
-          <span className="bottomBar Usuarios-main"></span>
-          <label className="Usuarios-search">Nombre de Usuario</label>
-        </div>
-      </form>
+    <>
+      {loading === false ? (
+        <div className="containerUsuarios">
+          <h1>Usuarios</h1>
+          <form>
+            <div className="form group modal Usuario">
+              <input
+                type="text"
+                id="usuario-name"
+                name="usuario-name"
+                className="inputUsuarios-search"
+                required
+                onChange={buscador}
+              />
+              <span className="highlight Usuarios"></span>
+              <span className="bottomBar Usuarios-main"></span>
+              <label className="Usuarios-search">Nombre de Usuario</label>
+            </div>
+          </form>
 
-      <table className="tabla Usuarios">
-        <tbody>
-          <tr>
-            <td onClick={() => setShowModalDetails(true)}>
-              Cesareo De-La-Fuente
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Valeria Redondo
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Paloma Montoya
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Nazaret Oliver
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Gala Miro
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Glória Cañadas
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Pedro-Pablo Mendez
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Cesareo De-La-Fuente
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Valeria Redondo
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Paloma Montoya
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Nazaret Oliver
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Gala Miro
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Glória Cañadas
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Pedro-Pablo Mendez
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <input
-        type="submit"
-        className="button Usuarios"
-        value="Agregar"
-        onClick={() => setShowModalAdd(true)}
-      ></input>
-
-      <Modal show={showModalDetails} setShow={setShowModalDetails} title={"Nombre del Usuario"}>
-        <div className="Usuarios-Detalles grid">
-          <div className="Usuarios-Detalles one">
-            <label className="Usuarios-Detalles">Apodo de Usuario:</label>
-            <p className="Usuarios-Detalles">{apodo}</p>
-            <span className="bottomBar Usuarios-Detalles"></span>
+          <div className="tabla">
+            <table >
+              <tbody>
+                {Object.keys(filtrados).length !== 0 ? (filtrados.map((user) =>
+                  <tr key={user.PK}>
+                    <td onClick={() => detalles(user.PK)}>
+                      {user.Nombre_Usuario}
+                    </td>
+                  </tr>)) : (<></>)}
+              </tbody>
+            </table>
           </div>
 
-          <div className="Usuarios-Detalles two">
-            <label className="Usuarios-Detalles">Tipo de Usuario:</label>
-            <p className="Usuarios-Detalles">{UserType}</p>
-            <span className="bottomBar Usuarios-Detalles"></span>
-          </div>
-
-          <div className="Usuarios-Detalles three">
-            <label className="Usuarios-Detalles">Correo del Usuario:</label>
-            <p className="Usuarios-Detalles">{emailUser}</p>
-            <span className="bottomBar Usuarios-Detalles"></span>
-          </div>
-
-          <div className="Usuarios-Detalles four">
-            <label className="Usuarios-Detalles">Correo del Usuario:</label>
-            <p className="Usuarios-Detalles">{emailUser}</p>
-            <span className="bottomBar Usuarios-Detalles"></span>
-          </div>
-        </div>
-        <div className="Usuarios-Detalles buttons">
           <input
             type="submit"
             className="button Usuarios"
-            value="Cerrar"
-            onClick={() => setShowModalDetails(false)}
-          />
-          <input
-            type="submit"
-            className="button Usuarios"
-            value="Modificar"
-            onClick={() => setShowModalModify(true)}
-          />
-          <input
-            type="submit"
-            className="button Usuarios delete"
-            value="Eliminar"
-            onClick={() => setShowModalDelete(true)}
-          />
-        </div>
-      </Modal>
+            value="Agregar"
+            onClick={abrirAgregar}
+          ></input>
+          {/* Modal detalles */}
+          <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Usuario}>
+            <div className="Usuarios-Detalles grid">
+              <div className="Usuarios-Detalles one">
+                <label className="Usuarios-Detalles">Apodo de Usuario:</label>
+                <p className="Usuarios-Detalles">{username}</p>
+                <span className="bottomBar Usuarios-Detalles"></span>
+              </div>
 
-      <Modal show={showModalAdd} setShow={setShowModalAdd} title={"Agregar Usuario"}>
-        <form>
-          <div className="form group modal Usuario">
+              <div className="Usuarios-Detalles two">
+                <label className="Usuarios-Detalles">Tipo de Usuario:</label>
+                <p className="Usuarios-Detalles">{Tipo_Usuario}</p>
+                <span className="bottomBar Usuarios-Detalles"></span>
+              </div>
+
+              <div className="Usuarios-Detalles three">
+                <label className="Usuarios-Detalles">Correo del Usuario:</label>
+                <p className="Usuarios-Detalles">{CorreoE}</p>
+                <span className="bottomBar Usuarios-Detalles"></span>
+              </div>
+
+              <div className="Usuarios-Detalles four">
+                <label className="Usuarios-Detalles">Seleccion de Materias</label>
+                <input type={"checkbox"} className="Usuarios-Detalles checkbox" />
+              </div>
+            </div>
+            <div className="tabla">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Materias</th>
+                  </tr>
+                  <tr>
+                    <th>Semestre</th>
+                  </tr>
+                  <tr>
+                    <th>Grupo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matematicas</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>A</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="Usuarios-Detalles buttons">
+              <input
+                type="submit"
+                className="button Usuarios"
+                value="Modificar"
+                onClick={modifyUser}
+              />
+              <input
+                type="submit"
+                className="button Usuarios delete"
+                value="Eliminar"
+                onClick={() => setShowModalDelete(true)}
+              />
+            </div>
+          </Modal>
+          {/** Modal add */}
+          <Modal show={showModalAdd} setShow={setShowModalAdd} title={"Agregar Usuario"}>
+            <form>
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-name"
+                  name="Nombre_Usuario"
+                  onChange={handleInputOnChange}
+                  value={dataInput.Nombre_Usuario}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Nombre de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Docente" >Docente</option>
+                  <option value="Supervisor">Supervisor</option>
+                </select>
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Tipo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-nickname"
+                  name="username"
+                  onChange={handleInputOnChange}
+                  value={dataInput.username}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Apodo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-email"
+                  name="CorreoE"
+                  onChange={handleInputOnChange}
+                  value={dataInput.CorreoE}
+                  title="Correo electronico Institucional del ITCG"
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Correo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="password"
+                  id="usuario-password"
+                  name="password"
+                  onChange={handleInputOnChange}
+                  value={dataInput.password}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Contrasena de Usuario</label>
+              </div>
+            </form>
+
             <input
-              type="text"
-              id="usuario-name"
-              name="usuario-name"
-              className="inputUsuarios"
-              required
+              type="submit"
+              className="button Usuarios"
+              value="Guardar"
+              onClick={add}
             />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Nombre de Usuario</label>
-          </div>
 
-          <div className="form group modal Usuario">
-            <select>
-              <option value="Maestro">Maestro</option>
-              <option value="Administrados">Administrados</option>
-              <option value="Supervisor">Supervisor</option>
-            </select>
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Tipo de Usuario</label>
-          </div>
+          </Modal>
+          {/**Modal Delete */}
+          <Modal show={showModalDelete} setShow={setShowModalDelete} title={"Eliminar Usuario"}>
+            <p>Realmente esta seguro que quiere eliminar al usuario:<strong className="Resaltado">{Nombre_Usuario}</strong></p>
+            <div className="Usuarios-Detalles buttons">
+              <input
+                type="submit"
+                className="button Usuarios"
+                value="Calcelar"
+                onClick={() => setShowModalDelete(false)}
+              />
+              <input
+                type="submit"
+                className="button Usuarios delete"
+                value="Confirmar"
+                onClick={deleteUserConfirm}
+              />
+            </div>
+          </Modal>
+          {/**Modal Modify */}
+          <Modal show={showModalModify} setShow={setShowModalModify} title={Nombre_Usuario}>
+            <form>
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-name"
+                  name="Nombre_Usuario"
+                  className="inputUsuarios"
+                  value={dataInput.Nombre_Usuario}
+                  onChange={handleInputOnChange}
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Nombre de Usuario</label>
+              </div>
 
-          <div className="form group modal Usuario">
-            <input
-              type="text"
-              id="usuario-nickname"
-              name="usuario-nickname"
-              className="inputUsuarios"
-              required
-            />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Apodo de Usuario</label>
-          </div>
-
-          <div className="form group modal Usuario">
-            <input
-              type="text"
-              id="usuario-email"
-              name="usuario-email"
-              title="Correo electronico Institucional del ITCG"
-              className="inputUsuarios"
-              required
-            />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Correo de Usuario</label>
-          </div>
-
-          <div className="form group modal Usuario">
-            <input
-              type="password"
-              id="usuario-password"
-              name="usuario-password"
-              className="inputUsuarios"
-              required
-            />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Contrasena de Usuario</label>
-          </div>
-        </form>
-
-        <input
-          type="submit"
-          className="button Usuarios"
-          value="Guardar"
-          onClick={() => setShowModalAdd(false)}
-        />
-
-      </Modal>
-
-      <Modal show={showModalDelete} setShow={setShowModalDelete} title={"Eliminar Usuario"}>
-        <p>Realmente esta seguro que quiere eliminar al usuario:<h2 className="Resaltado">{usuarioEliminar}</h2></p>
-        <div className="Usuarios-Detalles buttons">
-          <input
-            type="submit"
-            className="button Usuarios"
-            value="Calcelar"
-            onClick={() => setShowModalDelete(false)}
-          />
-          <input
-            type="submit"
-            className="button Usuarios delete"
-            value="Confirmar"
-            onClick={() => deleteUsuario()}
-          />
-        </div>
-      </Modal>
-
-      <Modal show={showModalModify} setShow={setShowModalModify} title={"Modificar Usuario"}>
-        <form>
-          <div className="form group modal Usuario">
-            <input
-              type="text"
-              id="usuario-name"
-              name="usuario-name"
-              className="inputUsuarios"
-              required
-            />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Nombre de Usuario</label>
-          </div>
-
-          <div className="form group modal Usuario">
-            <select>
-              <option value="Maestro">Maestro</option>
-              <option value="Administrados">Administrados</option>
-              <option value="Supervisor">Supervisor</option>
-            </select>
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Tipo de Usuario</label>
-            {/* <span className="highlight Usuario"></span>
+              <div className="form group modal Usuario">
+                <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Docente" >Docente</option>
+                  <option value="Espectador">Espectador</option>
+                </select>
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Tipo de Usuario</label>
+                {/* <span className="highlight Usuario"></span>
             <span className="bottomBar Usuario"></span>
             <label>Tipo de Usuario</label>  */}
-          </div>
+              </div>
 
-          <div className="form group modal Usuario">
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-nickname"
+                  name="username"
+                  value={dataInput.username}
+                  onChange={handleInputOnChange}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Apodo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-email"
+                  name="CorreoE"
+                  title="Correo electronico Institucional del ITCG"
+                  className="inputUsuarios"
+                  value={dataInput.CorreoE}
+                  onChange={handleInputOnChange}
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Correo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="password"
+                  id="usuario-password"
+                  name="password"
+                  onChange={handleInputOnChange}
+                  value={dataInput.password}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Contrasena de Usuario</label>
+              </div>
+            </form>
+
             <input
-              type="text"
-              id="usuario-nickname"
-              name="usuario-nickname"
-              className="inputUsuarios"
-              required
+              type="submit"
+              className="button Usuarios"
+              value="Cerrar"
+              onClick={() => setShowModalModify(false)}
             />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Apodo de Usuario</label>
-          </div>
 
-          <div className="form group modal Usuario">
             <input
-              type="text"
-              id="usuario-email"
-              name="usuario-email"
-              pattern=".+@cdguzman.tecnm.com"
-              title="Correo electronico Institucional del ITCG"
-              className="inputUsuarios"
-              required
+              type="submit"
+              className="button Usuarios"
+              value="Guardar"
+              onClick={() => setShowModalConfirm(true)}
             />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Correo de Usuario</label>
-          </div>
 
-          <div className="form group modal Usuario">
+          </Modal>
+
+          <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
+            <div className="modal group">
+              <p>Realmente esta seguro que quiere actualizar los datos del usuario:<strong className="Resaltado">{Nombre_Usuario}</strong></p>
+            </div>
             <input
-              type="password"
-              id="usuario-password"
-              name="usuario-password"
-              className="inputUsuarios"
-              required
+              type="submit"
+              className="button Usuarios"
+              value="Cancelar"
+              onClick={() => setShowModalConfirm(false)}
             />
-            <span className="highlight Usuarios"></span>
-            <span className="bottomBar Usuarios"></span>
-            <label className="Usuarios">Contrasena de Usuario</label>
-          </div>
-        </form>
-
-        <input
-          type="submit"
-          className="button Usuarios"
-          value="Cerrar"
-          onClick={() => setShowModalModify(false)}
-        />
-
-        <input
-          type="submit"
-          className="button Usuarios"
-          value="Guardar"
-          onClick={() => setShowModalConfirm(true)}
-        />
-
-      </Modal>
-
-      <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
-        <div className="modal group">
-          <p>Realmente esta seguro que quiere actualizar los datos del usuario:<h2 className="Resaltado">{usuarioActualizar}</h2></p>
+            <input
+              type="submit"
+              className="button Usuarios delete"
+              value="Confirmar"
+              onClick={modifyUserGuardar}
+            />
+          </Modal>
+          {/* Resultado de agregar */}
+          <Modal show={showModalResultado} setShow={setShowModalResultado} title={userActualizar}>
+            <div className="modal group">
+              <p><strong>{statusContenido}</strong></p>
+            </div>
+            <input
+              type="submit"
+              className="button Materias"
+              onClick={closeAll}
+              value="OK"
+            />
+          </Modal>
         </div>
-        <input
-          type="submit"
-          className="button Usuarios"
-          value="Cancelar"
-          onClick={() => setShowModalConfirm(false)}
-        />
-        <input
-          type="submit"
-          className="button Usuarios delete"
-          value="Confirmar"
-          onClick={() => updateUser()}
-        />
-      </Modal>
-    </div>
+      ) : (<Loader />)}
+    </>
   );
 }
 
