@@ -17,6 +17,8 @@ export default class Nav extends Component {
     toggleMenu = (event) => {
         let sidebar = document.querySelector(".sidebar");
         sidebar.classList.toggle("close");
+        let icon = document.querySelector(".bx-menu");
+        icon.classList.toggle("close");
         //this.setState({
         //    collapsed: !this.state.collapsed,
         //})

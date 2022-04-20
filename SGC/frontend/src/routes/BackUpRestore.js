@@ -80,7 +80,7 @@ const BackUpRestore = props => {
                         <h1 >Restaurar</h1>
                         <form className='conteiner-BUR_R__form' onSubmit={onSubmit}>
                             <div class="file-upload">
-                                    <p className='subidor__p'>Soltar archivo(s)</p>
+                                <p className='subidor__p'>Soltar archivo(s)</p>
                                 <div className='subidor'>
                                     <input
                                         id="file"
@@ -92,7 +92,9 @@ const BackUpRestore = props => {
                                     />
                                 </div>
                             </div>
-                            {fileNames()}
+                            <div className='fileNames-container'>
+                                {fileNames()}
+                            </div>
                             <input type="button"
                                 value={"Restaurar"}
                                 className='Espacios'
