@@ -4112,6 +4112,32 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAGAJhHLelMdJkE="
 							}
+						},
+						{
+							"_type": "UMLTextView",
+							"_id": "AAAAAAGAOt5hH6SI0WM=",
+							"_parent": {
+								"$ref": "AAAAAAGAJglgSFC79IY="
+							},
+							"font": "Arial;13;0",
+							"left": 448,
+							"top": 432,
+							"width": 60,
+							"height": 25,
+							"text": "No"
+						},
+						{
+							"_type": "UMLTextView",
+							"_id": "AAAAAAGAOt5/3KSNsCY=",
+							"_parent": {
+								"$ref": "AAAAAAGAJglgSFC79IY="
+							},
+							"font": "Arial;13;0",
+							"left": 352,
+							"top": 368,
+							"width": 60,
+							"height": 25,
+							"text": "Si"
 						}
 					]
 				}

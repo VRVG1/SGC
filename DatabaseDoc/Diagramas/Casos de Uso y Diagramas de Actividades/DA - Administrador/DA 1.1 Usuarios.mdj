@@ -1542,7 +1542,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFwyf1U5rbyTKk="
 					},
-					"name": "DA - 3 Modificar Materias",
+					"name": "DA - 3 Modificar Usuarios",
 					"ownedViews": [
 						{
 							"_type": "UMLSwimlaneView",
@@ -4548,7 +4548,7 @@
 											"top": 119,
 											"width": 261.5107421875,
 											"height": 13,
-											"text": "Muestra Interfaz de Materias"
+											"text": "Muestra Interfaz de Usuarios"
 										},
 										{
 											"_type": "LabelView",
@@ -9278,7 +9278,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFwyf9l57caWv4="
 							},
-							"name": "Muestra Interfaz de Materias"
+							"name": "Muestra Interfaz de Usuarios"
 						},
 						{
 							"_type": "UMLInitialNode",
@@ -9802,7 +9802,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFxBQsWPNdRxe4="
 					},
-					"name": "DA - 2 Consultar Materias",
+					"name": "DA - 2 Consultar Usuarios",
 					"ownedViews": [
 						{
 							"_type": "UMLSwimlaneView",
@@ -11491,7 +11491,7 @@
 											"top": 87,
 											"width": 243.4580078125,
 											"height": 13,
-											"text": "Muestra Interfaz de Materias"
+											"text": "Muestra Interfaz de Usuarios"
 										},
 										{
 											"_type": "LabelView",
@@ -15141,7 +15141,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFxBQuIANeA9PI="
 							},
-							"name": "Muestra Interfaz de Materias"
+							"name": "Muestra Interfaz de Usuarios"
 						},
 						{
 							"_type": "UMLInitialNode",
@@ -15225,7 +15225,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFxBSmbcdqNu5k="
 					},
-					"name": "DA - 4 Eliminar Materias",
+					"name": "DA - 4 Eliminar Usuarios",
 					"ownedViews": [
 						{
 							"_type": "UMLSwimlaneView",
@@ -15436,7 +15436,7 @@
 											"top": 111,
 											"width": 234.7998046875,
 											"height": 13,
-											"text": "Muestra interfaz de Materias"
+											"text": "Muestra interfaz de Usuarios"
 										},
 										{
 											"_type": "LabelView",
@@ -22092,7 +22092,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFxBSoQttrmuG4="
 							},
-							"name": "Muestra interfaz de Materias"
+							"name": "Muestra interfaz de Usuarios"
 						},
 						{
 							"_type": "UMLAction",
@@ -25562,7 +25562,7 @@
 					"_parent": {
 						"$ref": "AAAAAAF8CJztAJMDUWM="
 					},
-					"name": "DA - 1 Agregar Materias",
+					"name": "DA - 1 Agregar Usuarios",
 					"ownedViews": [
 						{
 							"_type": "UMLSwimlaneView",
@@ -25738,7 +25738,7 @@
 											"top": 303,
 											"width": 253.576171875,
 											"height": 13,
-											"text": "Muestra interfaz de Materias"
+											"text": "Muestra interfaz deUsuarios"
 										},
 										{
 											"_type": "LabelView",
@@ -27968,7 +27968,7 @@
 											"top": 391,
 											"width": 244.20703125,
 											"height": 13,
-											"text": "Muestra ventana para agregar Materias"
+											"text": "Muestra ventana para agregar Usuarios"
 										},
 										{
 											"_type": "LabelView",
@@ -28659,7 +28659,7 @@
 					"_parent": {
 						"$ref": "AAAAAAF8CJztAJMDUWM="
 					},
-					"name": "Muestra interfaz de Materias"
+					"name": "Muestra interfaz deUsuarios"
 				},
 				{
 					"_type": "UMLAction",
@@ -29204,7 +29204,7 @@
 							"_parent": {
 								"$ref": "AAAAAAF8Cg+ydgd5vyY="
 							},
-							"name": "Muestra ventana para agregar Materias"
+							"name": "Muestra ventana para agregar Usuarios"
 						}
 					]
 				},
