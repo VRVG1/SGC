@@ -2,11 +2,14 @@ from urllib.request import Request
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSerializer, CambioPassSerializer
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
+from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission, AdminDocentePermission
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 # Create your views here.
@@ -15,7 +18,12 @@ from rest_framework.permissions import IsAuthenticated
 class UsuarioView(generics.ListAPIView):
     """
     VISTA GENERAL DE USUARIOS
+    Unicamente los administradores pueden visualizar todos los usuarios.
+    Supongo...
     """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
 
@@ -23,7 +31,12 @@ class UsuarioView(generics.ListAPIView):
 class CreateUsuarioView(APIView):
     """
     VISTA PARA CREAR UN USUARIO DEL SISTEMA
+    Unicamente los administradores pueden crear un usuario.
+    Supongo...
     """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = UsuarioSerializer
 
     def post(self, request, format=None):
@@ -37,7 +50,12 @@ class CreateUsuarioView(APIView):
 class CambiarPass(generics.UpdateAPIView):
     """
     VISTA PARA HACER CAMBIO DE CONTRASEÑA
+    Solo los usuarios de tipo administrador y docente pueden cambiar la
+    contraseña del usuario.
     """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
     serializer_class = CambioPassSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -63,9 +81,13 @@ class CambiarPass(generics.UpdateAPIView):
 
 
 @api_view(['GET', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrar(request, pk=None):
     """
-    BORRAR UN USUARIO DEL SISTEMA (HAY QUE VER SI BORRANDO USUARIO SE BORRA USER NO CREO PERO XD)
+    BORRAR UN USUARIO DEL SISTEMA
+    (HAY QUE VER SI BORRANDO USUARIO SE BORRA USER NO CREO PERO XD)
+    Unicamente los usuarios de tipo administrador pueden borrar el usuario.
     """
     try:
         usuario = Usuarios.objects.get(PK=pk)
@@ -81,7 +103,14 @@ def borrar(request, pk=None):
 
 
 @api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def actualizar(request, pk=None):
+    """
+    ACTUALIZA UN USUARIO DEL SISTEMA
+    Solo los usuarios de tipo administrador pueden realizar modificaciones
+    en los usuarios.
+    """
     try:
         usuario = Usuarios.objects.get(PK=pk)
     except Usuarios.DoesNotExist:
@@ -100,9 +129,13 @@ def actualizar(request, pk=None):
 
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def get(request, string):
     """
     OBTENER USUARIOS DEPENDIENDO DE LO BUSCADO (SOLO CON LO INGRESADO QUE COINCIDA CON EL INICIO DEL NOMBRE DEL USUARIO)
+    Solo los usuarios de tipo administrador pueden consultar todos los usuarios
+    existentes.
     """
     usuarios = Usuarios.objects.filter(
         Nombre_Usuario__startswith=string)

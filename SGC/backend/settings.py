@@ -32,19 +32,29 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+THIRD_PARTY_APPS = [
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+]
+
+LOCAL_APPS = [
     'usuarios',
     'materias',
     'reportes',
-    'corsheaders',
-    'rest_framework',
+    'persoAuth',
 ]
+
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -148,8 +158,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'reportesreminderitcg@gmail.com'
 
-with open('./mail.txt') as i:
-    EMAIL_HOST_PASSWORD = i.read().strip()
+# with open('./mail.txt') as i:
+#     EMAIL_HOST_PASSWORD = i.read().strip()
 
 CELERY_BEAT_SCHEDULE = {
     'enviarmail': {

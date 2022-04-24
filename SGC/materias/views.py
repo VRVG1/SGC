@@ -1,34 +1,49 @@
-
 from urllib import request
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from datetime import date, datetime
 from usuarios.models import Usuarios
 from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
 from reportes.models import Generan, Reportes
+from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission, OnlyEspectadorPermission, AdminDocentePermission, AdminEspectadorPermission
 
 # Create your views here.
 
 
 class MateriasView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
     serializer_class = MateriaSerializer
     queryset = Materias.objects.all()
 
 
 class CarrerasView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = CarreraSerializer
     queryset = Carreras.objects.all()
 
 
+# TODO: Checar donde se usa esta vista
 class AsignanView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     serializer_class = AsignanSerializer
     queryset = Asignan.objects.all()
 
 
 class CreateMateriasView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = MateriaSerializer
 
     def post(self, request, format=None):
@@ -41,6 +56,9 @@ class CreateMateriasView(APIView):
 
 
 class CreateCarreraView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = CarreraSerializer
 
     def post(self, request, format=None):
@@ -52,7 +70,11 @@ class CreateCarreraView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# TODO: Ver en donde se utiliza esta vista
 class AsignarMateriaView(APIView):
+    authentication_classes = [TokenAuthentication, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated]
+
     serializer_class = AsignanSerializer
 
     def post(self, request, format=None):
@@ -87,6 +109,8 @@ class AsignarMateriaView(APIView):
 
 
 @api_view(['GET', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarM(request, pk):
     try:
         materia = Materias.objects.get(ID_Materia=pk)
@@ -102,6 +126,8 @@ def borrarM(request, pk):
 
 
 @api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def updateM(request, pk):
     try:
         materia = Materias.objects.get(ID_Materia=pk)
@@ -120,6 +146,8 @@ def updateM(request, pk):
 
 
 @api_view(['GET', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarC(request, pk):
     try:
         carrera = Carreras.objects.get(ID_Carrera=pk)
@@ -135,6 +163,8 @@ def borrarC(request, pk):
 
 
 @api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def updateC(request, pk):
     try:
         carrera = Carreras.objects.get(ID_Carrera=pk)
@@ -153,6 +183,8 @@ def updateC(request, pk):
 
 
 @api_view(['GET', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarAs(request, pkM):
     try:
         asign = Asignan.objects.get(ID_Materia=pkM)

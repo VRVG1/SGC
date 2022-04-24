@@ -5,23 +5,37 @@ from .serializers import ReportesSerializer, GeneranSerializer, UpdateGeneranSer
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
+from persoAuth.permissions import OnlyAdminPermission, AdminEspectadorPermission
+
 # Create your views here.
 
 
 class ReportesView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
+
     serializer_class = ReportesSerializer
     queryset = Reportes.objects.all()
 
 
+# NOTE: ESte para que es?
 class GeneranView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
+
     serializer_class = GeneranSerializer
     queryset = Generan.objects.all()
 
 
 class CreateReportesView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
+
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
