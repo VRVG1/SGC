@@ -12,16 +12,28 @@ from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 
 
 class ReportesView(generics.ListAPIView):
+    '''
+    Vista que permite ver todos los reportes registrados en la BD
+    (ADMIN)
+    '''
     serializer_class = ReportesSerializer
     queryset = Reportes.objects.all()
 
 
 class GeneranView(generics.ListAPIView):
+    '''
+    Vista que permite ver todos los generan registrados en la BD
+    (ADMIN)
+    '''
     serializer_class = GeneranSerializer
     queryset = Generan.objects.all()
 
 
 class CreateReportesView(APIView):
+    '''
+    Vista que permite registrar un reporte en la BD
+    (ADMIN)
+    '''
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
@@ -29,7 +41,6 @@ class CreateReportesView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            print('ES VALIDO')
             name = serializer.validated_data.get('Nombre_Reporte')
             serializer.save()
             ID_Reporte = Reportes.objects.get(Nombre_Reporte=name)
@@ -46,7 +57,6 @@ class CreateReportesView(APIView):
             for i in asignan:
                 generate = Generan(Estatus=None, Path_PDF=None, Sememestre=semestre, ID_Materia=i.ID_Materia,
                                    ID_Usuario=i.ID_Usuario, ID_Reporte=ID_Reporte)
-                print(generate)
                 generate.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -54,6 +64,10 @@ class CreateReportesView(APIView):
 
 @api_view(['GET', 'DELETE'])
 def borrarReporte(request, pk):
+    '''
+    Vista que permite borrar un reporte de la BD
+    (ADMIN)
+    '''
     try:
         reporte = Reportes.objects.get(ID_Reporte=pk)
     except Reportes.DoesNotExist:
@@ -69,6 +83,10 @@ def borrarReporte(request, pk):
 
 @api_view(['GET', 'PUT'])
 def updateReporte(request, pk):
+    '''
+    Vista que permite actualizar (modificar) un reporte de la BD
+    (ADMIN)
+    '''
     try:
         reporte = Reportes.objects.get(ID_Reporte=pk)
     except Reportes.DoesNotExist:
@@ -94,6 +112,10 @@ def updateReporte(request, pk):
 @api_view(['GET', 'PUT'])
 @parser_classes([MultiPartParser, FormParser])
 def CrearGeneran(request, pk):
+    '''
+    Vista que permite crear un generan (en si no crea nada ya que el espacio ya fue creado, solo se modifica con los datos de estatus y el pdf)
+    (DOCENTE)
+    '''
     try:
         generan = Generan.objects.get(ID_Generacion=pk)
         reporte = Reportes.objects.get(

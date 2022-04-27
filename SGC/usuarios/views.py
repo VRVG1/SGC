@@ -13,17 +13,19 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class UsuarioView(generics.ListAPIView):
-    """
-    VISTA GENERAL DE USUARIOS
-    """
+    '''
+    Vista que permite ver todos los usuarios registrados en la BD
+    (ADMIN)
+    '''
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
 
 
 class CreateUsuarioView(APIView):
-    """
-    VISTA PARA CREAR UN USUARIO DEL SISTEMA
-    """
+    '''
+    Vista que permite registrar un usuario en la BD
+    (ADMIN)
+    '''
     serializer_class = UsuarioSerializer
 
     def post(self, request, format=None):
@@ -36,9 +38,10 @@ class CreateUsuarioView(APIView):
 
 
 class CambiarPass(generics.UpdateAPIView):
-    """
-    VISTA PARA HACER CAMBIO DE CONTRASEÑA
-    """
+    '''
+    Vista que permite cambiar la contraseña de un usuario
+    (DOCENTE) **Por concretar el como hacer el cambio de contraseña**
+    '''
     serializer_class = CambioPassSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -65,9 +68,10 @@ class CambiarPass(generics.UpdateAPIView):
 
 @api_view(['GET', 'DELETE'])
 def borrar(request, pk=None):
-    """
-    BORRAR UN USUARIO DEL SISTEMA (HAY QUE VER SI BORRANDO USUARIO SE BORRA USER NO CREO PERO XD)
-    """
+    '''
+    Vista que permite borrar un usuario de la BD
+    (ADMIN)
+    '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
     except Usuarios.DoesNotExist:
@@ -83,6 +87,10 @@ def borrar(request, pk=None):
 
 @api_view(['GET', 'PUT'])
 def actualizar(request, pk=None):
+    '''
+    Vista que permite modificar los datos de un usuario
+    (ADMIN) **La vista que le permita al usuario cambiar sus propios datos falta aùn**
+    '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
     except Usuarios.DoesNotExist:
@@ -102,9 +110,10 @@ def actualizar(request, pk=None):
 
 @api_view(['GET'])
 def get(request, string):
-    """
-    OBTENER USUARIOS DEPENDIENDO DE LO BUSCADO (SOLO CON LO INGRESADO QUE COINCIDA CON EL INICIO DEL NOMBRE DEL USUARIO)
-    """
+    '''
+    Vista que permite obtener usuario dependiendo de lo buscado (solo con lo ingresado que coincida con el inicio del nombre de usuario)
+    (ADMIN)
+    '''
     usuarios = Usuarios.objects.filter(
         Nombre_Usuario__startswith=string)
     if usuarios.exists():
