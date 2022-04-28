@@ -5,3 +5,7 @@ EnvPython/*
 my.cnf
 secret_key.txt
 *.sqlite3
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+mail.txt

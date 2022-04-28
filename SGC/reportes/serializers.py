@@ -11,6 +11,12 @@ class GeneranSerializer(serializers.ModelSerializer):
                   'Sememestre', 'ID_Materia', 'ID_Usuario', 'ID_Reporte')
 
 
+class UpdateGeneranSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Generan
+        fields = ('Estatus', 'Path_PDF')
+
+
 class ReportesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reportes
