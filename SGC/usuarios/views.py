@@ -7,8 +7,7 @@ from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSeriali
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission, AdminDocentePermission
-from rest_framework.permissions import IsAuthenticated
+from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission
 from rest_framework.authentication import TokenAuthentication
 
 
@@ -16,35 +15,25 @@ from rest_framework.authentication import TokenAuthentication
 
 
 class UsuarioView(generics.ListAPIView):
-    """
-    VISTA GENERAL DE USUARIOS
-    Unicamente los administradores pueden visualizar todos los usuarios.
-    Supongo...
-    """
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     '''
     Vista que permite ver todos los usuarios registrados en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
 
 
 class CreateUsuarioView(APIView):
-    """
-    VISTA PARA CREAR UN USUARIO DEL SISTEMA
-    Unicamente los administradores pueden crear un usuario.
-    Supongo...
-    """
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     '''
     Vista que permite registrar un usuario en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = UsuarioSerializer
 
     def post(self, request, format=None):
@@ -56,21 +45,15 @@ class CreateUsuarioView(APIView):
 
 
 class CambiarPass(generics.UpdateAPIView):
-    """
-    VISTA PARA HACER CAMBIO DE CONTRASEÑA
-    Solo los usuarios de tipo administrador y docente pueden cambiar la
-    contraseña del usuario.
-    """
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, AdminDocentePermission]
-
     '''
     Vista que permite cambiar la contraseña de un usuario
     (DOCENTE) **Por concretar el como hacer el cambio de contraseña**
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyDocentePermission]
+
     serializer_class = CambioPassSerializer
     model = User
-    permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
         obj = self.request.user
@@ -96,11 +79,6 @@ class CambiarPass(generics.UpdateAPIView):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrar(request, pk=None):
-    """
-    BORRAR UN USUARIO DEL SISTEMA
-    (HAY QUE VER SI BORRANDO USUARIO SE BORRA USER NO CREO PERO XD)
-    Unicamente los usuarios de tipo administrador pueden borrar el usuario.
-    """
     '''
     Vista que permite borrar un usuario de la BD
     (ADMIN)
@@ -122,14 +100,10 @@ def borrar(request, pk=None):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def actualizar(request, pk=None):
-    """
-    ACTUALIZA UN USUARIO DEL SISTEMA
-    Solo los usuarios de tipo administrador pueden realizar modificaciones
-    en los usuarios.
-    """
     '''
     Vista que permite modificar los datos de un usuario
-    (ADMIN) **La vista que le permita al usuario cambiar sus propios datos falta aùn**
+    (ADMIN) **La vista que le permita al usuario cambiar sus propios datos
+    falta aùn**
     '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
@@ -152,13 +126,9 @@ def actualizar(request, pk=None):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def get(request, string):
-    """
-    OBTENER USUARIOS DEPENDIENDO DE LO BUSCADO (SOLO CON LO INGRESADO QUE COINCIDA CON EL INICIO DEL NOMBRE DEL USUARIO)
-    Solo los usuarios de tipo administrador pueden consultar todos los usuarios
-    existentes.
-    """
     '''
-    Vista que permite obtener usuario dependiendo de lo buscado (solo con lo ingresado que coincida con el inicio del nombre de usuario)
+    Vista que permite obtener usuario dependiendo de lo buscado (solo con lo
+    ingresado que coincida con el inicio del nombre de usuario)
     (ADMIN)
     '''
     usuarios = Usuarios.objects.filter(

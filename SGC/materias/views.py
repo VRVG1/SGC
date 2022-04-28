@@ -10,56 +10,56 @@ from usuarios.models import Usuarios
 from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
 from reportes.models import Generan, Reportes
-from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission, OnlyEspectadorPermission, AdminDocentePermission, AdminEspectadorPermission
+from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
 
 # Create your views here.
 
 
 class MateriasView(generics.ListAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, AdminDocentePermission]
-
     '''
     Vista que muestra todas las materias registradas
     (ADMIN Y DOCENTE)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
     serializer_class = MateriaSerializer
     queryset = Materias.objects.all()
 
 
 class CarrerasView(generics.ListAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     '''
     Vista que muestra todas las carreras registradas
     (ADMIN Y DOCENTE)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
     serializer_class = CarreraSerializer
     queryset = Carreras.objects.all()
 
 
 # TODO: Checar donde se usa esta vista
 class AsignanView(generics.ListAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
     '''
     Vista que muestra todos los asignan registradas
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = AsignanSerializer
     queryset = Asignan.objects.all()
 
 
 class CreateMateriasView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     '''
     Vista que permite crear (registrar) materias en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = MateriaSerializer
 
     def post(self, request, format=None):
@@ -72,13 +72,13 @@ class CreateMateriasView(APIView):
 
 
 class CreateCarreraView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     '''
     Vista que permite crear (registrar) carreras en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = CarreraSerializer
 
     def post(self, request, format=None):
@@ -92,15 +92,15 @@ class CreateCarreraView(APIView):
 
 # TODO: Ver en donde se utiliza esta vista
 class AsignarMateriaView(APIView):
-    authentication_classes = [TokenAuthentication, OnlyAdminPermission]
-    permission_classes = [IsAuthenticated]
-
     '''
     Vista que permite crear (registrar) la asignacion de materia a un usuario en la BD
     Verifica si hay reportes registrados antes de la asignacion actual para registrarle al maestro
     los reportes pasados.
-    (ADMIN y USUARIO)
+    (ADMIN y DOCENTE)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
     serializer_class = AsignanSerializer
 
     def post(self, request, format=None):
