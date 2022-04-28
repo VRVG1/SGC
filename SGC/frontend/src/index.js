@@ -216,25 +216,29 @@ function Application() {
             }>
             /** Poner aquí las rutas para el usuario de tipo espectador **/
           </Route>
-	  //Pasar las nuevas rutas al arbol de arriba
-        //<Route path='/' element={<Navigate to={'login'} />} >
-        //</Route>
-        //<Route path='login' element={<Login />} />
-        //<Route path="recuperar" element={<OlvideContra />} />
-        //<Route path="admin" element={<BarrNav />}>
-        //  <Route path="home" element={<Home />} />
-        //  <Route path="usuarios" element={<Usuarios />} />
-        //  <Route path="materias" element={<Materias />} />
-        //  <Route path="carreras" element={<Carreras />} />
-        //  <Route path="reportes/admin" element={<ReportesAdmin />} />
-        //  <Route path="reportes/check" element={<ReportesCheck />} />
-        //  <Route path="exportardatos" element={<ExportData />} />
-        //  <Route path="Respadoyrestauraciones" element={<BackUpRestore />} />
-        //  <Route path='ajustes' element={<SysSettings />} />
-        //</Route>
-        //<Route path='usuario' element={<BarNav />}>
-        //  <Route path=':usuario/home' element={<Home2 />}/>
-        //  <Route path=':usuario/reportes' element={<Reportes />}/>
+        {/**
+
+        Pasar las nuevas rutas al arbol de arriba
+
+        <Route path='/' element={<Navigate to={'login'} />} >
+        </Route>
+        <Route path='login' element={<Login />} />
+        <Route path="recuperar" element={<OlvideContra />} />
+        <Route path="admin" element={<BarrNav />}>
+          <Route path="home" element={<Home />} />
+          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="materias" element={<Materias />} />
+          <Route path="carreras" element={<Carreras />} />
+          <Route path="reportes/admin" element={<ReportesAdmin />} />
+          <Route path="reportes/check" element={<ReportesCheck />} />
+          <Route path="exportardatos" element={<ExportData />} />
+          <Route path="Respadoyrestauraciones" element={<BackUpRestore />} />
+          <Route path='ajustes' element={<SysSettings />} />
+        </Route>
+        <Route path='usuario' element={<BarNav />}>
+          <Route path=':usuario/home' element={<Home2 />}/>
+          <Route path=':usuario/reportes' element={<Reportes />}/> 
+        **/}
         </Route>
         <Route path="*" element={<NotMatch />} />
       </Routes>
