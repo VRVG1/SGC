@@ -103,3 +103,22 @@
 input[type="submit"].btn-eliminar-reportes-admin {
     background-color: #b8000f;
 }
+
+.separado {
+    margin-top: 2%;
+}
+
+.Modal-Reportes-Admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+
+}
+Modal-Reportes-Admin-grid-item1 {
+    grid-column: 1 / span 1;
+}
+.Modal-Reportes-Admin-grid-item2{
+    grid-column: 2 / span 1;
+        
+}

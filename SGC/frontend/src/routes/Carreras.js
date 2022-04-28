@@ -138,6 +138,12 @@ const Materias = props => {
         setID_Carrera(carrera.ID_Carrera);
         setShowModalDetails(true);
         setBorrado('');
+        setDataInput({
+            ...datainput,
+            carrera_nombre: carrera.Nombre_Carrera,
+            id_carrera: carrera.ID_Carrera,
+        });
+        setPutCarreras('');
     }
     /**
      * Metodo para desplegar el modal de agregar
@@ -166,7 +172,9 @@ const Materias = props => {
         setLoading(true);
         setResultado(await postCarrera(datainput.carrera_nombre));
     }
-
+    /**
+     * Metodo para realizar una actualizacion de los datos
+     */
     const put = async () => {
         setLoading(true);
         setPutCarreras(await putCarrera(datainput.carrera_nombre, carrera.ID_Carrera))
@@ -243,31 +251,43 @@ const Materias = props => {
                     ></input>
                     {/* Detalles */}
                     <Modal show={showModalDetails} setShow={setShowModalDetails} title={nombre_Carrera}>
-                        <div className="Materias-Detalles grid">
-                            <div className="Materias-Detalles one">
-                                <label className="Materias-Detalles">ID:</label>
-                                <p className="Materias-Detalles">{ID_Carrera}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
+                        <form>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
+                                    name="id_carrera"
+                                    className="inputMaterias"
+                                    onChange={handleInputOnChange}
+                                    value={datainput.id_carrera}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">ID de la carrera</label>
                             </div>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
+                                    name="carrera_nombre"
+                                    className="inputMaterias"
+                                    onChange={handleInputOnChange}
+                                    value={datainput.carrera_nombre}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">Nombre de la Carrera</label>
+                            </div>
+                        </form>
 
-                            <div className="Materias-Detalles two">
-                                <label className="Materias-Detalles">Carrera:</label>
-                                <p className="Materias-Detalles">{nombre_Carrera}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
-                            </div>
-                        </div>
                         <div className="Materias-Detalles buttons">
                             <input
                                 type="submit"
                                 className="button Materias"
-                                value="Cerrar"
-                                onClick={() => setShowModalDetails(false)}
-                            />
-                            <input
-                                type="submit"
-                                className="button Materias"
                                 value="Modificar"
-                                onClick={updateCarrera}
+                                onClick={() => setShowModalConfirm(true)}
                             />
                             <input
                                 type="submit"
@@ -337,52 +357,6 @@ const Materias = props => {
                             />
                         </div>
                     </Modal>
-                    {/* Modificar */}
-                    <Modal show={showModalModify} setShow={setShowModalModify} title={"Modificar Carrera"}>
-                        <form>
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-name"
-                                    name="id_carrera"
-                                    className="inputMaterias"
-                                    onChange={handleInputOnChange}
-                                    value={datainput.id_carrera}
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">ID de la carrera</label>
-                            </div>
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-name"
-                                    name="carrera_nombre"
-                                    className="inputMaterias"
-                                    onChange={handleInputOnChange}
-                                    value={datainput.carrera_nombre}
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Nombre de la Carrera</label>
-                            </div>
-                        </form>
-
-                        <input
-                            type="submit"
-                            className="button Materias"
-                            value="Cerrar"
-                            onClick={() => setShowModalModify(false)} />
-
-                        <input
-                            type="submit"
-                            className="button Materias"
-                            value="Guardar"
-                            onClick={put}
-                        />
-                    </Modal>
 
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
                         <div className="modal group">
@@ -398,7 +372,7 @@ const Materias = props => {
                             type="submit"
                             className="button Materias delete"
                             value="Confirmar"
-                            onClick={() => updateCarrera()}
+                            onClick={put}
                         />
                     </Modal>
 

@@ -49,12 +49,9 @@ export default class Nav extends Component {
         return (
             <div>
                 {afterResponse}
-                {/* <img id='bg' className='bg' src='https://cdguzman.tecnm.mx/pag/img/galeria/itcg/IMG_4756.JPG' alt='' /> */}
                 <div className="sidebar close">
                     <div className="logo-details">
                         <Link className='link' to="/usuario/home">
-                            {/* <i className='bx bx-store' ></i> */}
-                            {/* <img src='/home/vrvg/Documents/SGCFRONT/fron/src/itcg.jpg'></img> */}
                             <i className='bx bxs-school'></i>
                         </Link>
                         <span className="logo_name">SGC</span>
@@ -64,7 +61,7 @@ export default class Nav extends Component {
                             <Link className='link' to="/usuario/reportes">
                                 <div className="iocn-link">
                                     <span className='a'>
-                                        <i className='bx bx-user-circle' ></i>
+                                        <i className='bx bx-file' ></i>
                                         <span className="link_name">Reportes</span>
                                     </span>
                                     <i
@@ -79,17 +76,17 @@ export default class Nav extends Component {
                             </ul>
                         </li>
 
+                        
+
 
                         <li>
                             <div className="profile-details">
                                 <Link className='link' to="/">
                                     <div className="profile-content">
-                                        <img src={"/static/images.jpg"} alt="profileImg" />
+                                        <i className='bx bx-log-out'></i>
                                     </div>
-
                                 </Link>
 
-                                <i className='bx bx-log-out'></i>
                             </div>
                         </li>
                     </ul>

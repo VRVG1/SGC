@@ -129,6 +129,15 @@ const Materias = props => {
         setNombre_Carrera(carrera.Nombre_Carrera);
         setAddMaterias('');
         setShowModalDetails(true);
+        setAddData({
+            ...addData,
+            Materia_name: materia.Nombre_Materia,
+            materia_carrera: carrera.ID_Carrera,
+            Materia_semestre: materia.Grado,
+            Materia_grupo: materia.Grupo,
+            Materia_ID: id
+        });
+        setShowModalConfirm(false);
     }
 
     /**
@@ -256,43 +265,84 @@ const Materias = props => {
                     ></input>
                     {/* Detalles */}
                     <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Materia}>
-                        <div className="Materias-Detalles grid">
-                            <div className="Materias-Detalles one">
-                                <label className="Materias-Detalles">ID:</label>
-                                <p className="Materias-Detalles">{ID_Materia}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
+                    <form>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
+                                    name="Materia_ID"
+                                    className="inputMaterias"
+                                    value={addData.Materia_ID}
+                                    onChange={handleSelectOnChange}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">ID de Materia</label>
                             </div>
 
-                            <div className="Materias-Detalles two">
-                                <label className="Materias-Detalles">Grupo:</label>
-                                <p className="Materias-Detalles">{Grupo}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-name"
+                                    name="Materia_name"
+                                    className="inputMaterias"
+                                    value={addData.Materia_name}
+                                    onChange={handleSelectOnChange}
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">Nombre de Materia</label>
                             </div>
 
-                            <div className="Materias-Detalles three">
-                                <label className="Materias-Detalles">Semestre:</label>
-                                <p className="Materias-Detalles">{Grado}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
+                            <div className="form group modal Materia">
+                                <select name="materia_carrera" value={addData.materia_carrera} onChange={handleSelectOnChange} >
+                                    {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
+                                        <option key={carrera.ID_Carrera} value={carrera.ID_Carrera}>{carrera.Nombre_Carrera}</option>
+                                    )) : (<></>)}
+                                </select>
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">Carrera de la Materia</label>
                             </div>
 
-                            <div className="Materias-Detalles four">
-                                <label className="Materias-Detalles">Carrera:</label>
-                                <p className="Materias-Detalles">{Nombre_Carrera}</p>
-                                <span className="bottomBar Materias-Detalles"></span>
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-semestre"
+                                    name="Materia_semestre"
+                                    value={addData.Materia_semestre}
+                                    onChange={handleSelectOnChange}
+                                    className="inputMaterias"
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">Semestre de la Materia</label>
                             </div>
-                        </div>
+
+                            <div className="form group modal Materia">
+                                <input
+                                    type="text"
+                                    id="Materia-semestre"
+                                    name="Materia_grupo"
+                                    value={addData.Materia_grupo}
+                                    onChange={handleSelectOnChange}
+                                    className="inputMaterias"
+                                    required
+                                />
+                                <span className="highlight Materias"></span>
+                                <span className="bottomBar Materias"></span>
+                                <label className="Materias">Grupo de la Materia</label>
+                            </div>
+                        </form>
                         <div className="Materias-Detalles buttons">
                             <input
                                 type="submit"
                                 className="button Materias"
-                                value="Cerrar"
-                                onClick={() => setShowModalDetails(false)}
-                            />
-                            <input
-                                type="submit"
-                                className="button Materias"
                                 value="Modificar"
-                                onClick={modifircar}
+                                onClick={() => setShowModalConfirm(true)}
                             />
                             <input
                                 type="submit"
@@ -402,95 +452,7 @@ const Materias = props => {
                             />
                         </div>
                     </Modal>
-                    {/* Modificar */}
-                    <Modal show={showModalModify} setShow={setShowModalModify} title={Nombre_Materia}>
-                        <form>
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-name"
-                                    name="Materia_ID"
-                                    className="inputMaterias"
-                                    value={addData.Materia_ID}
-                                    onChange={handleSelectOnChange}
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">ID de Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-name"
-                                    name="Materia_name"
-                                    className="inputMaterias"
-                                    value={addData.Materia_name}
-                                    onChange={handleSelectOnChange}
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Nombre de Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <select name="materia_carrera" value={addData.materia_carrera} onChange={handleSelectOnChange} >
-                                    {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
-                                        <option key={carrera.ID_Carrera} value={carrera.ID_Carrera}>{carrera.Nombre_Carrera}</option>
-                                    )) : (<></>)}
-                                </select>
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Carrera de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_semestre"
-                                    value={addData.Materia_semestre}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Semestre de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_grupo"
-                                    value={addData.Materia_grupo}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Grupo de la Materia</label>
-                            </div>
-                        </form>
-
-                        <input
-                            type="submit"
-                            className="button Materias"
-                            value="Cerrar"
-                            onClick={() => setShowModalModify(false)} />
-
-                        <input
-                            type="submit"
-                            className="button Materias"
-                            value="Guardar"
-                            onClick={() => setShowModalConfirm(true)}
-                        />
-                    </Modal>
-
+                    {/* Confirmar */}
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={Nombre_Materia}>
                         <div className="modal group">
                             <p>Realmente esta seguro que quiere actualizar los datos de la Materia:<strong className="Resaltado">{Nombre_Materia}</strong></p>

@@ -438,9 +438,9 @@ label.Usuarios-Detalles {
   font-size: 1rem;
   font-weight: bold;
   position: relative;
-  left: -12%;
+  left: 0%;
   top: 0%;
-  width: 20vh;
+  width: 30vh;
   text-align: left;
 }
 
@@ -448,6 +448,17 @@ label.Usuarios-Detalles {
   display: inline31;
 }
 
+.Usuarios-Detalles.checkbox {
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  margin: unset;
+  top: 0.3em;
+  left: 0.3em;
+}
 h2.Resaltado {
   font-style: oblique;
+}
+th{
+  color: #fff;
 }
