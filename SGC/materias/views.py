@@ -19,6 +19,10 @@ class MateriasView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
+    '''
+    Vista que muestra todas las materias registradas
+    (ADMIN Y DOCENTE)
+    '''
     serializer_class = MateriaSerializer
     queryset = Materias.objects.all()
 
@@ -27,6 +31,10 @@ class CarrerasView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
+    '''
+    Vista que muestra todas las carreras registradas
+    (ADMIN Y DOCENTE)
+    '''
     serializer_class = CarreraSerializer
     queryset = Carreras.objects.all()
 
@@ -36,6 +44,10 @@ class AsignanView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    '''
+    Vista que muestra todos los asignan registradas
+    (ADMIN)
+    '''
     serializer_class = AsignanSerializer
     queryset = Asignan.objects.all()
 
@@ -44,6 +56,10 @@ class CreateMateriasView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
+    '''
+    Vista que permite crear (registrar) materias en la BD
+    (ADMIN)
+    '''
     serializer_class = MateriaSerializer
 
     def post(self, request, format=None):
@@ -59,6 +75,10 @@ class CreateCarreraView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
+    '''
+    Vista que permite crear (registrar) carreras en la BD
+    (ADMIN)
+    '''
     serializer_class = CarreraSerializer
 
     def post(self, request, format=None):
@@ -75,6 +95,12 @@ class AsignarMateriaView(APIView):
     authentication_classes = [TokenAuthentication, OnlyAdminPermission]
     permission_classes = [IsAuthenticated]
 
+    '''
+    Vista que permite crear (registrar) la asignacion de materia a un usuario en la BD
+    Verifica si hay reportes registrados antes de la asignacion actual para registrarle al maestro
+    los reportes pasados.
+    (ADMIN y USUARIO)
+    '''
     serializer_class = AsignanSerializer
 
     def post(self, request, format=None):
@@ -112,6 +138,10 @@ class AsignarMateriaView(APIView):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarM(request, pk):
+    '''
+    Vista que permite borrar una materia de la BD
+    (ADMIN)
+    '''
     try:
         materia = Materias.objects.get(ID_Materia=pk)
     except Materias.DoesNotExist:
@@ -129,6 +159,10 @@ def borrarM(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def updateM(request, pk):
+    '''
+    Vista que permite actualizar (modificar) una materia de la BD
+    (ADMIN)
+    '''
     try:
         materia = Materias.objects.get(ID_Materia=pk)
     except Materias.DoesNotExist:
@@ -149,6 +183,10 @@ def updateM(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarC(request, pk):
+    '''
+    Vista que permite borrar una carrera de la BD
+    (ADMIN)
+    '''
     try:
         carrera = Carreras.objects.get(ID_Carrera=pk)
     except Carreras.DoesNotExist:
@@ -166,6 +204,10 @@ def borrarC(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def updateC(request, pk):
+    '''
+    Vista que permite actualizar (modificar) una carrera de la BD
+    (ADMIN)
+    '''
     try:
         carrera = Carreras.objects.get(ID_Carrera=pk)
     except Carreras.DoesNotExist:
@@ -186,6 +228,10 @@ def updateC(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarAs(request, pkM):
+    '''
+    Vista que permite borrar una asignacion de la BD
+    (ADMIN)
+    '''
     try:
         asign = Asignan.objects.get(ID_Materia=pkM)
     except Carreras.DoesNotExist:

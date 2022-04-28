@@ -24,6 +24,10 @@ class UsuarioView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
+    '''
+    Vista que permite ver todos los usuarios registrados en la BD
+    (ADMIN)
+    '''
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
 
@@ -37,6 +41,10 @@ class CreateUsuarioView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
+    '''
+    Vista que permite registrar un usuario en la BD
+    (ADMIN)
+    '''
     serializer_class = UsuarioSerializer
 
     def post(self, request, format=None):
@@ -56,6 +64,10 @@ class CambiarPass(generics.UpdateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
+    '''
+    Vista que permite cambiar la contraseña de un usuario
+    (DOCENTE) **Por concretar el como hacer el cambio de contraseña**
+    '''
     serializer_class = CambioPassSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -89,6 +101,10 @@ def borrar(request, pk=None):
     (HAY QUE VER SI BORRANDO USUARIO SE BORRA USER NO CREO PERO XD)
     Unicamente los usuarios de tipo administrador pueden borrar el usuario.
     """
+    '''
+    Vista que permite borrar un usuario de la BD
+    (ADMIN)
+    '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
     except Usuarios.DoesNotExist:
@@ -111,6 +127,10 @@ def actualizar(request, pk=None):
     Solo los usuarios de tipo administrador pueden realizar modificaciones
     en los usuarios.
     """
+    '''
+    Vista que permite modificar los datos de un usuario
+    (ADMIN) **La vista que le permita al usuario cambiar sus propios datos falta aùn**
+    '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
     except Usuarios.DoesNotExist:
@@ -137,6 +157,10 @@ def get(request, string):
     Solo los usuarios de tipo administrador pueden consultar todos los usuarios
     existentes.
     """
+    '''
+    Vista que permite obtener usuario dependiendo de lo buscado (solo con lo ingresado que coincida con el inicio del nombre de usuario)
+    (ADMIN)
+    '''
     usuarios = Usuarios.objects.filter(
         Nombre_Usuario__startswith=string)
     if usuarios.exists():
