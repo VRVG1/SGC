@@ -462,3 +462,12 @@ h2.Resaltado {
 th{
   color: #fff;
 }
+
+// En caso de que no encuentre coincidencias en las busquedas
+.kana{
+  margin-top: 4%;
+  width: 14rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

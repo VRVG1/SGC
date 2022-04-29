@@ -198,13 +198,14 @@ function Application() {
             element={
               <RequireAuth>
                 <RequirePermission userType={ "Docente" }>
-                  <BarrNav />
+                  <BarNav />
                 </RequirePermission>
               </RequireAuth>
             }>
-          </Route>
             /** Poner aquí las rutas para el usuario de tipo docente **/
             <Route path=':usuario/home' element={<Home2 />}/>
+            <Route path=':usuario/reportes' element={<Reportes />}/>
+          </Route>
           <Route
             path="/supervisor"
             element={
