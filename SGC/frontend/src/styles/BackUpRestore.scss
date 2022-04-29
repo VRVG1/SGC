@@ -58,12 +58,15 @@ h1 {
 // }
 
 .archivo {
-    background-color: #111111;
+    background-color: #005b8e;
     border-radius: 15px 15px 15px 15px;
-    width: 100%;
+    width: 80%;
+    height: 4vh;
+    margin: auto;
+    padding: 1%;
     text-align: center;
-    margin-top: 1%;
-    margin-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .archivoP {
@@ -105,4 +108,14 @@ h1 {
     z-index: 1;
     position: relative;
     background-color: #b15252;
+}
+
+
+.fileNames-container {
+    background-color: #c5c5c5;
+    width: auto;
+    height: auto;
+    max-height: 15vh;
+    margin-bottom: 2%;
+    overflow: auto;
 }

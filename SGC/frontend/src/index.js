@@ -19,6 +19,7 @@ import Home2 from './routes/usuario/home';
 import BarNav from './routes/usuario/BarNav'
 import SysSettings from './routes/SysSettings';
 import OlvideContra from './routes/OlivdeContra';
+import { Reportes } from './routes/usuario/Reportes';
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -31,6 +32,7 @@ import "./styles/ExportData.scss"
 import "./styles/BackUpRestore.scss"
 import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
+import "./styles/usuario/reportesU.scss"
 
 
 ReactDOM.render(
@@ -54,6 +56,7 @@ ReactDOM.render(
         </Route>
         <Route path='usuario' element={<BarNav />}>
           <Route path=':usuario/home' element={<Home2 />}/>
+          <Route path=':usuario/reportes' element={<Reportes />}/>
         </Route>
         <Route path="*" element={<NotMatch />} />
       </Routes>

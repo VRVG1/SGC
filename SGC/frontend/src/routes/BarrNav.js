@@ -17,6 +17,8 @@ export default class Nav extends Component {
     toggleMenu = (event) => {
         let sidebar = document.querySelector(".sidebar");
         sidebar.classList.toggle("close");
+        let icon = document.querySelector(".bx-menu");
+        icon.classList.toggle("close");
         //this.setState({
         //    collapsed: !this.state.collapsed,
         //})
@@ -75,7 +77,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Usuarios</span></span></li>
-                                <Link className='link' to="/admin/usuarios"><li className='li'>Usuarios</li></Link>
+                                <Link className='link' to="/admin/usuarios"><li className='li'></li></Link>
                             </ul>
                         </li>
 
@@ -112,7 +114,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Materias</span></span></li>
-                                <Link className='link' to="/admin/materias"><li className='li'>Materias</li></Link>
+                                <Link className='link' to="/admin/materias"><li className='li'></li></Link>
                             </ul>
                         </li>
 
@@ -131,7 +133,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Carreras</span></span></li>
-                                <Link className='link' to="/admin/carreras"><li className='li'>Carreras</li></Link>
+                                <Link className='link' to="/admin/carreras"><li className='li'></li></Link>
                             </ul>
                         </li>
 
@@ -150,7 +152,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Exportar Datos</span></span></li>
-                                <Link className='link' to="/admin/exportardatos"><li className='li'>Exporta Datos</li></Link>
+                                <Link className='link' to="/admin/exportardatos"><li className='li'></li></Link>
                             </ul>
                         </li>
 
@@ -169,7 +171,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Respaldos y Restauraciones</span></span></li>
-                                <Link className='link' to="/admin/Respadoyrestauraciones"><li className='li'>Respaldos y Restauraciones</li></Link>
+                                <Link className='link' to="/admin/Respadoyrestauraciones"><li className='li'></li></Link>
                             </ul>
                         </li>
 
@@ -189,7 +191,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Ajustes del Sistema</span></span></li>
-                                <Link className='link' to="/admin/ajustes"><li className='li'>Ajustes del Sistema</li></Link>
+                                <Link className='link' to="/admin/ajustes"><li className='li'></li></Link>
                             </ul>
                         </li>
                         

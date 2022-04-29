@@ -23,13 +23,15 @@ main{
   top: 0;
   left: 0;
   height: 100%;
-  width: 15%;
+  width: 14.5em;
   background: #005B8E;
   z-index: 100;
   transition: all 0.5s ease;
+  max-width: 14.5em;
 }
 .sidebar.close{
-  width: 78px;
+  width: 4em;
+  min-width: 3em;
 }
 .sidebar .logo-details{
   height: 60px;
@@ -91,7 +93,8 @@ main{
   text-align: center;
   line-height: 50px;
   color: #fff;
-  font-size: 30px;
+  font-size: 1.5rem;
+  max-width: 80px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -214,14 +217,14 @@ main{
 .home-section{
   position: relative;
   background: #003a5b;
-  height: 6vh;
-  left: 260px;
-  width: calc(100% - 260px);
+  height: 10%;
+  left: 14.3em;
+  width: calc(100% - 14.3em);
   transition: all 0.5s ease;
 }
 .sidebar.close ~ .home-section{
-  left: 78px;
-  width: calc(100% - 78px);
+  left: 4em;
+  width: calc(100% - 4em);
 }
 .home-section .home-content{
   height: 60px;
@@ -234,12 +237,16 @@ main{
   font-size: 35px;
 }
 .home-section .home-content .bx-menu{
-  margin: 0px 0px 0px 2%;
+  margin: 0px 0px 0px 0.5em;
+  cursor: pointer;
+}
+.home-section .home-content .bx-menu.close{
+  margin: 0px 0px 0px 0.5em;
   cursor: pointer;
 }
 .home-section .home-content .text{
   font-size: 26px;
-  font-weight: 600;
+  font-weight: 600px;
 }
 @media (max-width: 420px) {
   .sidebar.close .nav-links li .sub-menu{

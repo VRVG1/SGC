@@ -132,6 +132,7 @@ const Usuarios = props => {
    */
   const modifyUserGuardar = async () => {
     setloading(true);
+    console.log(dataInput, pk)
     setUserActualizar(await putUsuario(dataInput, pk));
   };
   /**
@@ -154,6 +155,15 @@ const Usuarios = props => {
     setPassword(user.ID_Usuario.password);
     setPk(user.PK);
     setShowModalDetails(true);
+    setdataInput({
+      ...dataInput,
+      CorreoE: user.CorreoE,
+      Nombre_Usuario: user.Nombre_Usuario,
+      Tipo_Usuario: user.Tipo_Usuario,
+      username: user.ID_Usuario.username,
+      password: "password" //No se si poner la contra xd
+    });
+    setUserActualizar('');
 
   }
   /**
@@ -226,51 +236,99 @@ const Usuarios = props => {
           ></input>
           {/* Modal detalles */}
           <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Usuario}>
-            <div className="Usuarios-Detalles grid">
-              <div className="Usuarios-Detalles one">
-                <label className="Usuarios-Detalles">Apodo de Usuario:</label>
-                <p className="Usuarios-Detalles">{username}</p>
-                <span className="bottomBar Usuarios-Detalles"></span>
+            <form>
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-name"
+                  name="Nombre_Usuario"
+                  className="inputUsuarios"
+                  value={dataInput.Nombre_Usuario}
+                  onChange={handleInputOnChange}
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Nombre de Usuario</label>
               </div>
 
-              <div className="Usuarios-Detalles two">
-                <label className="Usuarios-Detalles">Tipo de Usuario:</label>
-                <p className="Usuarios-Detalles">{Tipo_Usuario}</p>
-                <span className="bottomBar Usuarios-Detalles"></span>
+              <div className="form group modal Usuario">
+                <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Docente" >Docente</option>
+                  <option value="Espectador">Espectador</option>
+                </select>
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Tipo de Usuario</label>
+                {/* <span className="highlight Usuario"></span>
+            <span className="bottomBar Usuario"></span>
+            <label>Tipo de Usuario</label>  */}
               </div>
 
-              <div className="Usuarios-Detalles three">
-                <label className="Usuarios-Detalles">Correo del Usuario:</label>
-                <p className="Usuarios-Detalles">{CorreoE}</p>
-                <span className="bottomBar Usuarios-Detalles"></span>
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-nickname"
+                  name="username"
+                  value={dataInput.username}
+                  onChange={handleInputOnChange}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Apodo de Usuario</label>
               </div>
 
-              <div className="Usuarios-Detalles four">
+              <div className="form group modal Usuario">
+                <input
+                  type="text"
+                  id="usuario-email"
+                  name="CorreoE"
+                  title="Correo electronico Institucional del ITCG"
+                  className="inputUsuarios"
+                  value={dataInput.CorreoE}
+                  onChange={handleInputOnChange}
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Correo de Usuario</label>
+              </div>
+
+              <div className="form group modal Usuario">
+                <input
+                  type="password"
+                  id="usuario-password"
+                  name="password"
+                  onChange={handleInputOnChange}
+                  value={dataInput.password}
+                  className="inputUsuarios"
+                  required
+                />
+                <span className="highlight Usuarios"></span>
+                <span className="bottomBar Usuarios"></span>
+                <label className="Usuarios">Contrasena de Usuario</label>
+              </div>
+              <div className="form group modal Usuario">
                 <label className="Usuarios-Detalles">Seleccion de Materias</label>
                 <input type={"checkbox"} className="Usuarios-Detalles checkbox" />
               </div>
-            </div>
+            </form>
             <div className="tabla">
               <table>
                 <thead>
                   <tr>
                     <th>Materias</th>
-                  </tr>
-                  <tr>
                     <th>Semestre</th>
-                  </tr>
-                  <tr>
                     <th>Grupo</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Matematicas</td>
-                  </tr>
-                  <tr>
                     <td>1</td>
-                  </tr>
-                  <tr>
                     <td>A</td>
                   </tr>
                 </tbody>
@@ -281,7 +339,7 @@ const Usuarios = props => {
                 type="submit"
                 className="button Usuarios"
                 value="Modificar"
-                onClick={modifyUser}
+                onClick={() => setShowModalConfirm(true)}
               />
               <input
                 type="submit"
@@ -393,101 +451,7 @@ const Usuarios = props => {
               />
             </div>
           </Modal>
-          {/**Modal Modify */}
-          <Modal show={showModalModify} setShow={setShowModalModify} title={Nombre_Usuario}>
-            <form>
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-name"
-                  name="Nombre_Usuario"
-                  className="inputUsuarios"
-                  value={dataInput.Nombre_Usuario}
-                  onChange={handleInputOnChange}
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Nombre de Usuario</label>
-              </div>
-
-              <div className="form group modal Usuario">
-                <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Docente" >Docente</option>
-                  <option value="Espectador">Espectador</option>
-                </select>
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Tipo de Usuario</label>
-                {/* <span className="highlight Usuario"></span>
-            <span className="bottomBar Usuario"></span>
-            <label>Tipo de Usuario</label>  */}
-              </div>
-
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-nickname"
-                  name="username"
-                  value={dataInput.username}
-                  onChange={handleInputOnChange}
-                  className="inputUsuarios"
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Apodo de Usuario</label>
-              </div>
-
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-email"
-                  name="CorreoE"
-                  title="Correo electronico Institucional del ITCG"
-                  className="inputUsuarios"
-                  value={dataInput.CorreoE}
-                  onChange={handleInputOnChange}
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Correo de Usuario</label>
-              </div>
-
-              <div className="form group modal Usuario">
-                <input
-                  type="password"
-                  id="usuario-password"
-                  name="password"
-                  onChange={handleInputOnChange}
-                  value={dataInput.password}
-                  className="inputUsuarios"
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Contrasena de Usuario</label>
-              </div>
-            </form>
-
-            <input
-              type="submit"
-              className="button Usuarios"
-              value="Cerrar"
-              onClick={() => setShowModalModify(false)}
-            />
-
-            <input
-              type="submit"
-              className="button Usuarios"
-              value="Guardar"
-              onClick={() => setShowModalConfirm(true)}
-            />
-
-          </Modal>
-
+          {/**Modal Confirm */}
           <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
             <div className="modal group">
               <p>Realmente esta seguro que quiere actualizar los datos del usuario:<strong className="Resaltado">{Nombre_Usuario}</strong></p>
