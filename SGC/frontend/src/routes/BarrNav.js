@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Outlet, Link } from "react-router-dom";
+import { AuthContext } from './helpers/Auth/auth-context';
 
 export default class Nav extends Component {
     constructor(props) {
@@ -17,6 +18,8 @@ export default class Nav extends Component {
     toggleMenu = (event) => {
         let sidebar = document.querySelector(".sidebar");
         sidebar.classList.toggle("close");
+        let icon = document.querySelector(".bx-menu");
+        icon.classList.toggle("close");
         //this.setState({
         //    collapsed: !this.state.collapsed,
         //})
@@ -36,7 +39,7 @@ export default class Nav extends Component {
     responseHandler() {
         let msg = this.state.msg;
         if (msg === 'Salir') {
-            return <Link to="/" />
+            return <Link className='link' to="/" />
         } else if (msg) {
             return <p>Issa porra</p>
         }
@@ -46,13 +49,14 @@ export default class Nav extends Component {
 
     render() {
         let afterResponse = this.responseHandler();
+        let auth = this.context;
         return (
             <div>
                 {afterResponse}
-                <img id='bg' className='bg' src='https://cdguzman.tecnm.mx/pag/img/galeria/itcg/IMG_4756.JPG' alt='' />
+                {/* <img id='bg' className='bg' src='https://cdguzman.tecnm.mx/pag/img/galeria/itcg/IMG_4756.JPG' alt='' /> */}
                 <div className="sidebar close">
                     <div className="logo-details">
-                        <Link to="/admin/home">
+                        <Link className='link' to="/admin/home">
                             {/* <i className='bx bx-store' ></i> */}
                             {/* <img src='/home/vrvg/Documents/SGCFRONT/fron/src/itcg.jpg'></img> */}
                             <i className='bx bxs-school'></i>
@@ -61,12 +65,12 @@ export default class Nav extends Component {
                     </div>
                     <ul className="nav-links">
                         <li>
-                            <Link to="/admin/usuarios">
+                            <Link className='link' to="/admin/usuarios">
                                 <div className="iocn-link">
-                                    <a>
+                                    <span className='a'>
                                         <i className='bx bx-user-circle' ></i>
                                         <span className="link_name">Usuarios</span>
-                                    </a>
+                                    </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
                                         onClick={e => this.showingMenu(e)} >
@@ -74,36 +78,36 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Usuarios</a></li>
-                                <Link to="/admin/usuarios"><li>Usuarios</li></Link>
+                                <li><span className='a'><span className="link_name">Usuarios</span></span></li>
+                                <Link className='link' to="/admin/usuarios"><li className='li'></li></Link>
                             </ul>
                         </li>
-                        
+
                         <li>
                             <div className="iocn-link">
-                                <a>
+                                <span className='a'>
                                     <i className='bx bx-line-chart' ></i>
                                     <span className="link_name">Reportes</span>
-                                </a>
+                                </span>
                                 <i
                                     className='bx bxs-chevron-down arrow'
                                     onClick={e => this.showingMenu(e)} >
                                 </i>
                             </div>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Reportes</a></li>
-                                <Link to="/admin/reportes/admin"><li>Admin</li></Link>
-                                <Link to="/admin/reportes/check"><li>Check</li></Link>
+                                <li><span className='a'><span className="link_name">Reportes</span></span></li>
+                                <Link className='link' to="/admin/reportes/admin"><li className='li'>Admin</li></Link>
+                                <Link className='link' to="/admin/reportes/check"><li className='li'>Check</li></Link>
                             </ul>
                         </li>
 
                         <li>
-                            <Link to="/admin/materias" className="iocn-link">
+                            <Link className='link' to="/admin/materias" >
                                 <div className="iocn-link">
-                                    <a>
+                                    <span className='a'>
                                         <i className='bx bx-book' ></i>
                                         <span className="link_name">Materias</span>
-                                    </a>
+                                    </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
                                         onClick={e => this.showingMenu(e)} >
@@ -111,18 +115,18 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Materias</a></li>
-                                <Link to="/admin/materias"><li>Materias</li></Link>
+                                <li><span className='a'><span className="link_name">Materias</span></span></li>
+                                <Link className='link' to="/admin/materias"><li className='li'></li></Link>
                             </ul>
                         </li>
 
                         <li>
-                            <Link to="/admin/carreras" className="iocn-link">
+                            <Link className='link' to="/admin/carreras" >
                                 <div className="iocn-link">
-                                    <a>
+                                    <span className='a'>
                                         <i className='bx bxs-file-blank'></i>
                                         <span className="link_name">Carreras</span>
-                                    </a>
+                                    </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
                                         onClick={e => this.showingMenu(e)} >
@@ -130,18 +134,18 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Carreras</a></li>
-                                <Link to="/admin/carreras"><li>Carreras</li></Link>
+                                <li><span className='a'><span className="link_name">Carreras</span></span></li>
+                                <Link className='link' to="/admin/carreras"><li className='li'></li></Link>
                             </ul>
                         </li>
 
                         <li>
-                            <Link to="/admin/exportardatos" className="iocn-link">
+                            <Link className='link' to="/admin/exportardatos" >
                                 <div className="iocn-link">
-                                    <a>
+                                    <span className='a'>
                                         <i className='bx bxs-file-export' ></i>
                                         <span className="link_name">Exporta Datos</span>
-                                    </a>
+                                    </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
                                         onClick={e => this.showingMenu(e)} >
@@ -149,18 +153,18 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Exporta Datos</a></li>
-                                <Link to="/admin/exportardatos"><li>Exporta Datos</li></Link>
+                                <li><span className='a'><span className="link_name">Exportar Datos</span></span></li>
+                                <Link className='link' to="/admin/exportardatos"><li className='li'></li></Link>
                             </ul>
                         </li>
 
                         <li>
-                            <Link to="/admin/Respadoyrestauraciones" className="iocn-link">
+                            <Link className='link' to="/admin/Respadoyrestauraciones" >
                                 <div className="iocn-link">
-                                    <a>
+                                    <span className='a'>
                                         <i className='bx bx-save' ></i>
                                         <span className="link_name">Respaldos y Restauraciones</span>
-                                    </a>
+                                    </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
                                         onClick={e => this.showingMenu(e)} >
@@ -168,26 +172,40 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><a className="link_name">Respaldos y Restauraciones</a></li>
-                                <Link to="/admin/Respadoyrestauraciones"><li>Respaldos y Restauraciones</li></Link>
+                                <li><span className='a'><span className="link_name">Respaldos y Restauraciones</span></span></li>
+                                <Link className='link' to="/admin/Respadoyrestauraciones"><li className='li'></li></Link>
                             </ul>
                         </li>
+
+                        <li>
+                            <Link className='link' to="/admin/ajustes" >
+                                <div className="iocn-link">
+                                    <span className='a'>
+                                        
+                                        <i className='bx bx-cog' ></i>
+                                        <span className="link_name">Ajustes del Sistema</span>
+                                    </span>
+                                    <i
+                                        className='bx bxs-chevron-down arrow'
+                                        onClick={e => this.showingMenu(e)} >
+                                    </i>
+                                </div>
+                            </Link>
+                            <ul className="sub-menu">
+                                <li><span className='a'><span className="link_name">Ajustes del Sistema</span></span></li>
+                                <Link className='link' to="/admin/ajustes"><li className='li'></li></Link>
+                            </ul>
+                        </li>
+                        
 
                         <li>
                             <div className="profile-details">
-                                <Link to="#">
+                                <Link className='link' to="/">
                                     <div className="profile-content">
-                                        <img src={"/static/images.jpg"} alt="profileImg" />
+                                        <i className='bx bx-log-out' onClick={ auth.signout }></i>
                                     </div>
                                 </Link>
-                                {/* <div className="name-job">
-                                    <div className="profile_name">{this.state.username}</div>
-                                    <div className="job">{this.state.email}</div>
-                                </div> */}
-                                <i
-                                    className='bx bx-log-out'
-                                >
-                                </i>
+
                             </div>
                         </li>
                     </ul>
@@ -204,3 +222,4 @@ export default class Nav extends Component {
         );
     }
 }
+Nav.contextType = AuthContext;

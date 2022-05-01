@@ -5,9 +5,13 @@ from .serializers import ReportesSerializer, GeneranSerializer, UpdateGeneranSer
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
+from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission
+
 # Create your views here.
 
 
@@ -16,15 +20,22 @@ class ReportesView(generics.ListAPIView):
     Vista que permite ver todos los reportes registrados en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = ReportesSerializer
     queryset = Reportes.objects.all()
 
 
+# NOTE: ESte para que es?
 class GeneranView(generics.ListAPIView):
     '''
     Vista que permite ver todos los generan registrados en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = GeneranSerializer
     queryset = Generan.objects.all()
 
@@ -34,6 +45,9 @@ class CreateReportesView(APIView):
     Vista que permite registrar un reporte en la BD
     (ADMIN)
     '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
@@ -63,6 +77,8 @@ class CreateReportesView(APIView):
 
 
 @api_view(['GET', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def borrarReporte(request, pk):
     '''
     Vista que permite borrar un reporte de la BD
@@ -82,6 +98,8 @@ def borrarReporte(request, pk):
 
 
 @api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
 def updateReporte(request, pk):
     '''
     Vista que permite actualizar (modificar) un reporte de la BD
@@ -111,9 +129,12 @@ def updateReporte(request, pk):
 
 @api_view(['GET', 'PUT'])
 @parser_classes([MultiPartParser, FormParser])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyDocentePermission])
 def CrearGeneran(request, pk):
     '''
-    Vista que permite crear un generan (en si no crea nada ya que el espacio ya fue creado, solo se modifica con los datos de estatus y el pdf)
+    Vista que permite crear un generan (en si no crea nada ya que el espacio ya
+    fue creado, solo se modifica con los datos de estatus y el pdf)
     (DOCENTE)
     '''
     try:

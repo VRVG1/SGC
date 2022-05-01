@@ -38,8 +38,8 @@ $select-color: #a7a7a7;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    width: 95.3%;
-    margin-left: 4.7%;
+    width: 96%;
+    margin-left: 4%;
     margin-top: 0; 
     margin-bottom: 0;
     border-radius: 0;
@@ -88,6 +88,21 @@ input[type="email"].input-report-check-search {
   color: $color-text;
 }
 
+input[type="text"].input-report-check-search.hidden,
+input[type="password"].input-report-check-search.hidden,
+input[type="email"].input-report-check-search.hidden {
+  font-size: 1rem;
+  background-color: #3797ce00;
+  padding: 10px 0px 10px 0px;
+  display: inline-block;    
+  width: 30vw;
+  border: none;
+  border-bottom: 1px solid $blanco;
+  text-decoration: none;
+  color: $color-text;
+  visibility: hidden;
+}
+
 .bottomBar.reportes-check 	{ 
     background: $color-text;
     position:absolute; 
@@ -124,10 +139,18 @@ transition:0.2s ease all;
     margin-bottom: 1%;
 }
 
+.form.group.reportes-check.hidden{
+    margin-bottom: 1%;
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+}
+
 .search-button-dialog {
     display: flex;
     justify-content: center;
-    
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 fieldset.reportes-check{
@@ -137,4 +160,15 @@ fieldset.reportes-check{
     grid-template-rows: repeat(2, 1fr);
     height: 5em;
     margin-bottom: 1%;
+}
+
+.search-button-dialog__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 40%;
+}
+
+.hidden{
+    visibility: hidden;
 }
