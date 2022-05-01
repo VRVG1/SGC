@@ -223,7 +223,7 @@ const Usuarios = props => {
 
           <div className="tabla">
             {Object.keys(filtrados).length !== 0 ? (
-              <table className="table table-striped">
+              <table>
                 <tbody>
                   {filtrados.map((user) => {
                     return (

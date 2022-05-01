@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllCarrera from "./helpers/Carreras/getAllCarrera.js";
 import postCarrera from "./helpers/Carreras/postCarrera.js";
 import deleteCarrera from "./helpers/Carreras/deleteCarrera.js";
 import putCarrera from "./helpers/Carreras/putCarrera.js";
 import Loader from "./Loader.js";
+import kanaBuscar from "../img/kana-buscar.png";
+import { AuthContext } from "./helpers/Auth/auth-context.js";
 
 const Materias = props => {
     /**
      * A continuacion se muestran los useState utilizados en este compoennte de react
      */
+    let auth = useContext(AuthContext);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalDetails, setShowModalDetails] = useState(false);
     const [showModalModify, setShowModalModify] = useState(false);
@@ -42,7 +45,7 @@ const Materias = props => {
      * carrera desde la base de datos
      */
     const obtenerCarrera = () => {
-        getAllCarrera().then((data) => {
+        getAllCarrera(auth.user.token).then((data) => {
             setCareraData(data);
             setFiltrados(data)
         })
@@ -162,7 +165,7 @@ const Materias = props => {
      */
     const borrarCarrera = async () => {
         setLoading(true);
-        setBorrado(await deleteCarrera(carrera.ID_Carrera));
+        setBorrado(await deleteCarrera(carrera.ID_Carrera, auth.user.token));
     };
 
     /**
@@ -170,14 +173,14 @@ const Materias = props => {
      */
     const save = async () => {
         setLoading(true);
-        setResultado(await postCarrera(datainput.carrera_nombre));
+        setResultado(await postCarrera(datainput.carrera_nombre, auth.user.token));
     }
     /**
      * Metodo para realizar una actualizacion de los datos
      */
     const put = async () => {
         setLoading(true);
-        setPutCarreras(await putCarrera(datainput.carrera_nombre, carrera.ID_Carrera))
+        setPutCarreras(await putCarrera(datainput.carrera_nombre, carrera.ID_Carrera, auth.user.token));
     }
 
     /**
@@ -229,18 +232,31 @@ const Materias = props => {
                         </div>
                     </form>
                     <div className="tabla">
-                        <table>
-                            <tbody>
-                                {Object.keys(filtrados).length !== 0 ? (filtrados.map((carrera) =>
-                                    <tr key={carrera.ID_Carrera}>
-                                        <td onClick={() => detalles(carrera)}>
-                                            {carrera.Nombre_Carrera}
-                                        </td>
-                                    </tr>
-                                )) : (<></>)}
-                            </tbody>
-                        </table>
-
+                        {Object.keys(filtrados).length !== 0 ? (
+                            <table>
+                                <tbody>
+                                    {filtrados.map((carrera) => {
+                                        return (
+                                            <tr key={carrera.ID_Carrera}>
+                                                <td onClick={() => detalles(carrera)}>
+                                                    {carrera.Nombre_Carrera}
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                    )}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <>
+                                <div className="Sin_Resultados">
+                                    <p>No se encontraron resultados</p>
+                                </div>
+                                <div className="Sin_Resultados img">
+                                    <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                                </div>
+                            </>
+                        )}
                     </div>
 
                     <input
@@ -357,10 +373,13 @@ const Materias = props => {
                             />
                         </div>
                     </Modal>
-
+                    {/* Confirmar */}
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
                         <div className="modal group">
-                            <p>Realmente esta seguro que quiere actualizar los datos de la Carrera:<strong className="Resaltado">{"Carrera actualizar"}</strong></p>
+                            <p>Realmente esta seguro que quiere actualizar los datos de la Carrera:</p>
+                            <br/>
+                            {ID_Carrera === datainput.id_carrera ? null : <p>ID de la carrera pasara de: <strong className="Resaltado">{ID_Carrera}</strong> a <strong className="Resaltado">{datainput.id_carrera}</strong></p>}
+                            {nombre_Carrera === datainput.carrera_nombre ? null : <p>Nombre de la carrera pasara de: <strong className="Resaltado">{nombre_Carrera}</strong> a <strong className="Resaltado">{datainput.carrera_nombre}</strong></p>}
                         </div>
                         <input
                             type="submit"

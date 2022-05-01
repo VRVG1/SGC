@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllCarrera from "./helpers/Carreras/getAllCarrera.js";
 import getAllMaterias from "./helpers/Materias/getAllMaterias.js";
@@ -7,12 +7,17 @@ import Loader from "./Loader.js";
 import postMateria from "./helpers/Materias/postMateria.js";
 import putMateria from "./helpers/Materias/putMateria.js";
 
+import kanaBuscar from "../img/kana-buscar.png";
+
+import { AuthContext } from "./helpers/Auth/auth-context.js";
 /**
  * Componente para la vista de materias
  * @param {*} props 
  * @returns componente
  */
 const Materias = props => {
+    let auth = useContext(AuthContext);
+
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalDetails, setShowModalDetails] = useState(false);
     const [showModalResultado, setShowModalResultado] = useState(false);
@@ -52,7 +57,7 @@ const Materias = props => {
      * Metodo para obtener todas las materiass
      */
     const obtenerMaterias = () => {
-        getAllMaterias().then((data) => {
+        getAllMaterias(auth.user.token).then((data) => {
             setMateriaData(data)
             setFiltrados(data)
         });
@@ -63,7 +68,7 @@ const Materias = props => {
      * carrera desde la base de datos
      */
     const obtenerCarrera = async () => {
-        await getAllCarrera().then((data) => {
+        await getAllCarrera(auth.user.token).then((data) => {
             setCareraData(data);
         });
     }
@@ -86,7 +91,7 @@ const Materias = props => {
      */
     const deleteMaterias = async () => {
         setLoading(true);
-        setAddMaterias(await deleteMateria(ID_Materia));
+        setAddMaterias(await deleteMateria(ID_Materia, auth.user.token));
     }
 
     /**
@@ -111,7 +116,7 @@ const Materias = props => {
      */
     const confirmModificar = async () => {
         setLoading(true);
-        setAddMaterias(await putMateria(addData, ID_Materia));
+        setAddMaterias(await putMateria(addData, ID_Materia, auth.user.token));
     };
 
     /**
@@ -243,17 +248,28 @@ const Materias = props => {
                     </form>
 
                     <div className="tabla">
-                        <table>
-                            <tbody>
-                                {Object.keys(filtrados).length !== 0 ? (filtrados.map((materia) =>
-                                    <tr key={materia.ID_Materia}>
-                                        <td onClick={() => details(materia.ID_Materia)}>
-                                            {materia.Nombre_Materia}
-                                        </td>
-                                    </tr>
-                                )) : (<></>)}
-                            </tbody>
-                        </table>
+                        {Object.keys(filtrados).length !== 0 ? (
+                            <table>
+                                <tbody>
+                                    {filtrados.map((materia) => {
+                                        <tr key={materia.ID_Materia}>
+                                            <td onClick={() => details(materia.ID_Materia)}>
+                                                {materia.Nombre_Materia}
+                                            </td>
+                                        </tr>
+                                    })}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <>
+                                <div className="Sin_Resultados">
+                                    <p>No se encontraron resultados</p>
+                                </div>
+                                <div className="Sin_Resultados img">
+                                    <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                                </div>
+                            </>
+                        )}
 
                     </div>
 
@@ -265,7 +281,7 @@ const Materias = props => {
                     ></input>
                     {/* Detalles */}
                     <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Materia}>
-                    <form>
+                        <form>
                             <div className="form group modal Materia">
                                 <input
                                     type="text"
