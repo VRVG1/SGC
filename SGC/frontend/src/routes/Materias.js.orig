@@ -168,6 +168,10 @@ const Materias = props => {
      * @param {*} event 
      */
     const handleSelectOnChange = (event) => {
+<<<<<<< HEAD
+=======
+        console.log(event.target.value.match(regex[event.target.name]))
+>>>>>>> 23ea646136b0d3dd6870ab2843ee09820438e83a
         if (event.target.value.match(regex[event.target.name]) != null) {
             setAddData({
                 ...addData,
@@ -251,6 +255,7 @@ const Materias = props => {
                             <table>
                                 <tbody>
                                     {filtrados.map((materia) => {
+<<<<<<< HEAD
                                         return (
                                             <tr key={materia.ID_Materia}>
                                                 <td onClick={() => details(materia.ID_Materia)}>
@@ -258,6 +263,13 @@ const Materias = props => {
                                                 </td>
                                             </tr>
                                         );
+=======
+                                        <tr key={materia.ID_Materia}>
+                                            <td onClick={() => details(materia.ID_Materia)}>
+                                                {materia.Nombre_Materia}
+                                            </td>
+                                        </tr>
+>>>>>>> 23ea646136b0d3dd6870ab2843ee09820438e83a
                                     })}
                                 </tbody>
                             </table>

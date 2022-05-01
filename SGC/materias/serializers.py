@@ -6,7 +6,7 @@ from .models import Materias, Carreras, Asignan
 class CarreraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carreras
-        fields = ('ID_Carrera', 'Nombre_Carrera')
+        fields = '__all__'
 
     def create(self, validated_data):
         carrera = Carreras.objects.create(**validated_data)
@@ -16,7 +16,7 @@ class CarreraSerializer(serializers.ModelSerializer):
 class MateriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Materias
-        fields = ('ID_Materia', 'Nombre_Materia', 'Grado', 'Carrera')
+        fields = '__all__'
 
     def create(self, validated_data):
         materia = Materias.objects.create(**validated_data)
@@ -26,7 +26,7 @@ class MateriaSerializer(serializers.ModelSerializer):
 class AsignanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asignan
-        fields = ('ID_Materia', 'ID_Usuario')
+        fields = '__all__'
 
     def create(self, validated_data):
         asign = Asignan.objects.create(**validated_data)

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 choices_users = (
     ("Administrador", "Administrador"),
     ("Docente", "Docente"),
-    ("Espectador", "Espectador"),
+    ("Supervisor", "Supervisor"),
 )
 
 
@@ -19,6 +19,7 @@ class Usuarios(models.Model):
     Tipo_Usuario = models.CharField(
         max_length=13, choices=choices_users, null=False)  # NECESITA MAX LENGTH
     CorreoE = models.EmailField(max_length=254, null=False)
+    Permiso = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.Nombre_Usuario}"
