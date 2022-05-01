@@ -168,7 +168,6 @@ const Materias = props => {
      * @param {*} event 
      */
     const handleSelectOnChange = (event) => {
-        console.log(event.target.value.match(regex[event.target.name]))
         if (event.target.value.match(regex[event.target.name]) != null) {
             setAddData({
                 ...addData,
@@ -179,7 +178,7 @@ const Materias = props => {
 
     const postermateria = async () => {
         setLoading(true);
-        setAddMaterias(await postMateria(addData));
+        setAddMaterias(await postMateria(addData, auth.user.token));
     }
 
     /**
@@ -252,11 +251,13 @@ const Materias = props => {
                             <table>
                                 <tbody>
                                     {filtrados.map((materia) => {
-                                        <tr key={materia.ID_Materia}>
-                                            <td onClick={() => details(materia.ID_Materia)}>
-                                                {materia.Nombre_Materia}
-                                            </td>
-                                        </tr>
+                                        return (
+                                            <tr key={materia.ID_Materia}>
+                                                <td onClick={() => details(materia.ID_Materia)}>
+                                                    {materia.Nombre_Materia}
+                                                </td>
+                                            </tr>
+                                        );
                                     })}
                                 </tbody>
                             </table>

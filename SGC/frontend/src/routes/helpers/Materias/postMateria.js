@@ -16,7 +16,7 @@ const postMateria = async (dataPost, token) => {
         })
     };
     post = AuthPostBasics(token, post);
-    const res = await fetch('http://localhost:8000/materia/create-materia', post);
+    const res = await fetch('http://127.0.0.1:8000/materia/create_materia', post);
     const result = res.statusText;
     return result;
 }
