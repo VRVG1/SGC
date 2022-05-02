@@ -233,20 +233,19 @@ def borrarAs(request, pkM):
     (ADMIN)
     '''
     try:
-        asign = Asignan.objects.get(ID_Materia=pkM)
+        asign = Asignan.objects.get(ID_Asignan=pkM)
     except Carreras.DoesNotExist:
-        return Response({'Error': 'Carrera no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Error': 'Esta asignacion no existe'}, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'GET':
-        obj = request.user
         try:
-            usuario = Usuarios.objects.get(ID_Usuario=obj)
-        except Usuarios.DoesNotExist:
-            return Response({'Error': 'Usuario no existe pa'}, status=status.HTTP_400_BAD_REQUEST)
+            asign = Asignan.objects.get(ID_Asignan=pkM)
+        except Asignan.DoesNotExist:
+            return Response({'Error': 'Esta asignacion no existe'}, status=status.HTTP_400_BAD_REQUEST)
 
         asig_serializer = AsignanSerializer(asign)
         return Response(asig_serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
         asign.delete()
-        return Response({'Mensaje': 'Carrera borrada'}, status=status.HTTP_200_OK)
+        return Response({'Mensaje': 'Asignacion borrada'}, status=status.HTTP_200_OK)

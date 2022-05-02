@@ -8,7 +8,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Carreras(models.Model):
     class Meta:
         db_table = 'Carreras'
-    ID_Carrera = models.CharField(max_length=8, null=False)
+    ID_Carrera = models.CharField(max_length=8, null=False, primary_key=True)
     Nombre_Carrera = models.CharField(max_length=80, null=False)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Carreras(models.Model):
 class Materias(models.Model):
     class Meta:
         db_table = 'Materias'
-    ID_Materia = models.CharField(max_length=8, null=False)
+    ID_Materia = models.CharField(max_length=8, null=False, primary_key=True)
     Nombre_Materia = models.CharField(max_length=200, null=False)
     Carrera = models.ForeignKey(Carreras, on_delete=models.CASCADE)
 
