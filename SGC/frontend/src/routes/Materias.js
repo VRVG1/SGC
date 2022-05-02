@@ -179,7 +179,6 @@ const Materias = props => {
         //Puto react
         if (event.target.value.match(regex[event.target.name]) != null) {
             if (event.target.name === "Nombre_Carrera") {
-                //console.log(carreraData.find(element => element.Nombre_Carrera === event.target.value).ID_Carrera)
                 setPtio({
                     ...ptio,
                     [event.target.name]: event.target.value,
@@ -194,7 +193,6 @@ const Materias = props => {
                 ...addData,
                 [event.target.name]: event.target.value
             });
-            console.log(addData);
         }
     }
     /**
@@ -215,15 +213,7 @@ const Materias = props => {
             Nombre_Carrera: ptio.Nombre_Carrera
         });
         return () => {
-            setAddData({
-                ...addData,
-                Materia_name: '',
-                materia_carrera: carreraData[0].ID_Carrera,
-                Materia_semestre: '',
-                Materia_grupo: '',
-                Materia_ID: '',
-                Nombre_Carrera: carreraData[0].Nombre_Carrera
-            });
+            setAddData({});
         }
     }, [ptio])
 

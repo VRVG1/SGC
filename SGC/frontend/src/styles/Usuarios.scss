@@ -466,8 +466,12 @@ th{
 // En caso de que no encuentre coincidencias en las busquedas
 .kana{
   margin-top: 4%;
-  width: 14rem;
+  width: 10em;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow: none;
+}
+.Sin_Resultados {
+  overflow: none;
 }
