@@ -18,7 +18,8 @@ const putUsuarios = async (dataUser, id, token) => {
                 },
                 Nombre_Usuario: dataUser.Nombre_Usuario,
                 Tipo_Usuario: dataUser.Tipo_Usuario,
-                CorreoE: dataUser.CorreoE
+                CorreoE: dataUser.CorreoE,
+                User: dataUser.username
             })
         };
     } else {

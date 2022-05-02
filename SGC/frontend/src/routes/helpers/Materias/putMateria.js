@@ -11,8 +11,8 @@ const putMateria = async (dataPost, id, token) => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({
+            ID_Materia: dataPost.Materia_ID,
             Nombre_Materia: dataPost.Materia_name,
-            Grado: parseInt(dataPost.Materia_semestre, 10),
             Carrera: dataPost.materia_carrera
         })
     };

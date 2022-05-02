@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 export const Home2 = () => {
-  const [disponible, setDisponible] = useState(false)
+  const [disponible, setDisponible] = useState(true)
 
   return (
     <div className='usuario-container-parent'>

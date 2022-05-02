@@ -1,3 +1,5 @@
+//TODO: agarrar el Permisos de los usuarios para poner check en el frontend
+
 import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
@@ -139,7 +141,6 @@ const Usuarios = props => {
    */
   const modifyUserGuardar = async () => {
     setloading(true);
-    //console.log(dataInput, pk)
     setUserActualizar(await putUsuario(dataInput, pk));
   };
   /**

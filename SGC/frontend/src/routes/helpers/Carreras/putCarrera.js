@@ -11,7 +11,8 @@ const putCarrera = async (dataPost, id, token) => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({
-            Nombre_Carrera: dataPost
+            ID_Carrera: dataPost.id_carrera,
+            Nombre_Carrera: dataPost.carrera_nombre
         })
     };
     post = AuthPostBasics(token, post);
