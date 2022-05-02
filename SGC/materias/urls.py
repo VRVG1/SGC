@@ -9,10 +9,10 @@ urlpatterns = [
     path('asign_materia', AsignarMateriaView.as_view()),
     path('carreras', CarrerasView.as_view()),
     path('asignan', AsignanView.as_view()),
-    path('delete-materia/<int:pk>', borrarM),
-    path('delete-carrera/<int:pk>', borrarC),
+    path('delete-materia/pk', borrarM),
+    path('delete-carrera/pk', borrarC),
     path('delete-asign/<int:pkM>', borrarAs),
-    path('update-materia/<int:pk>', updateM),
-    path('update-carrera/<int:pk>', updateC),
+    path('update-materia/pk', updateM),
+    path('update-carrera/pk', updateC),
 
 ]
