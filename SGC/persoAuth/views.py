@@ -20,4 +20,5 @@ class SGCAuthToken(ObtainAuthToken):
         return Response({
             'token': token.key,
             'permission': usuario.Tipo_Usuario,
+            'nombre_usuario': usuario.Nombre_Usuario,
         })
