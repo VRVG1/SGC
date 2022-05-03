@@ -3,16 +3,20 @@ import getAllCarrera from '../helpers/Carreras/getAllCarrera'
 import getAllMaterias from '../helpers/Materias/getAllMaterias'
 
 import { AuthContext } from '../helpers/Auth/auth-context'
+import Modal from '../modal/Modal'
 export const Home2 = () => {
   let auth = useContext(AuthContext);
   const [disponible, setDisponible] = useState(true);
   const [carreras, setCarreras] = useState([]);
   const [materias, setMaterias] = useState([]);
+  const [showModalAlert, setShowModalAlert] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState('');
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [selectedData, setSelectedData] = useState({
     carrera_ID: '',
     materia_ID: '',
-    grupo: 'A',
-    semestre: '1',
+    grupo: '',
+    semestre: '',
   });
   const [dataTable, setDataTable] = useState([]);
 
@@ -24,12 +28,19 @@ export const Home2 = () => {
   useEffect(() => {
     const obtenerMateria = () => {
       getAllMaterias(auth.user.token).then((data) => {
-        setMaterias(data);
+        setMaterias([{
+          Carrera: "",
+          ID_Materia: "",
+          Nombre_Materia: ""
+        }, ...data]);
       });
     };
     const obtenerCarrera = () => {
       getAllCarrera(auth.user.token).then((data) => {
-        setCarreras(data);
+        setCarreras([{
+          ID_Carrera: "",
+          Nombre_Carrera: ""
+        }, ...data]);
       });
     }
     obtenerCarrera();
@@ -49,18 +60,42 @@ export const Home2 = () => {
       ...selectedData,
       [e.target.name]: e.target.value,
     });
-    console.log(selectedData);
   };
 
+  /**
+   * Metodo para obtener los datos que se selecciones de los inputs
+   * y agregarlos a la tabla
+   * @returns null
+   */
   const agregarTabla = () => {
-    if (selectedData.carrera_ID === '' || selectedData.materia_ID === '') {
-      alert('Seleccione una carrera y una materia');
+    let yaEsta = false;
+    if (selectedData.carrera_ID === '' || selectedData.materia_ID === '' || selectedData.grupo === '' || selectedData.semestre === '') {
+      setShowModalAlert(true);
+      setMensajeAlerta('Todos los campos son obligatorios');
       return;
     }
-    setDataTable([...dataTable, selectedData]);
-    console.log(dataTable);
+    dataTable.map((data) => {
+      if (data.carrera_ID === selectedData.carrera_ID && data.materia_ID === selectedData.materia_ID && data.grupo === selectedData.grupo && data.semestre === selectedData.semestre) {
+        yaEsta = true;
+        setShowModalAlert(true);
+        setMensajeAlerta('Ya se a realizado esa seleccion de materias');
+        return;
+      }
+    });
+    if (!yaEsta) {
+      setDataTable([...dataTable, selectedData]);
+    }
   };
 
+  const sendData = () => {
+    if (dataTable.length > 0) {
+      setShowModalConfirm(true);
+    }
+    else {
+      setShowModalAlert(true);
+      setMensajeAlerta('No hay datos para enviar');
+    }
+  }
 
 
   return (
@@ -68,7 +103,7 @@ export const Home2 = () => {
       <div className='usuario-container'>
 
         <h1>Bienvenido al Sistemas Gestor del Curso</h1>
-        <p>Buenas {"Insertar aqui usuario"}</p>
+        <p>Buenas las tenga {auth.user.nombre_usuario}</p>
         <p>Todo que puede no se cumplan</p>
         <ul>
           <li>
@@ -87,36 +122,36 @@ export const Home2 = () => {
               <div className='usuario-grid'>
                 <div className='usuario-grid__1'>
                   <div className='tabla-usr'>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Carrera</th>
-                        <th>Materia</th>
-                        <th>Grupo</th>
-                        <th>Semestre</th>
-                        <th>Eliminar</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dataTable.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.carrera_ID}</td>
-                          <td>{data.materia_ID}</td>
-                          <td>{data.grupo}</td>
-                          <td>{data.semestre}</td>
-                          <td> <button onClick={() => {
-                            setDataTable(dataTable.filter((data, index) => index !== index))
-                          }}>Eliminar</button></td>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Carrera</th>
+                          <th>Materia</th>
+                          <th>Grupo</th>
+                          <th>Semestre</th>
+                          <th>Eliminar</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {dataTable.map((data, index) => (
+                          <tr key={index}>
+                            <td>{data.carrera_ID}</td>
+                            <td>{data.materia_ID}</td>
+                            <td>{data.grupo}</td>
+                            <td>{data.semestre}</td>
+                            <td> <button onClick={() => {
+                              setDataTable(dataTable.filter(data => dataTable[index] !== data))
+                            }}>Eliminar</button></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <button>Confirmar</button>
+                  <button onClick={sendData}>Confirmar</button>
                 </div>
                 <div className='usuario-grid__2'>
                   <div className="form group modal Usuario usr">
-                    <select name="carrera_ID" value={selectedData.carrera_ID || ''} onChange={handleChange} className='usuarios-grid-Carrera'>
+                    <select name="carrera_ID" value={selectedData.carrera_ID} onChange={handleChange} className='usuarios-grid-Carrera'>
                       {Object.keys(carreras).length !== 0 ? (
                         carreras.map((carrera) => {
                           return (
@@ -153,6 +188,7 @@ export const Home2 = () => {
 
                   <div className="form group modal Usuario usr">
                     <select name='grupo' value={selectedData.grupo} onChange={handleChange} className='usuarios-grid-Grupo'>
+                      <option value={""}></option>
                       <option value={"A"}>A</option>
                       <option value={"B"}>B</option>
                       <option value={"C"}>C</option>
@@ -165,8 +201,9 @@ export const Home2 = () => {
                   </div>
 
                   <div className="form group modal Usuario usr">
-                    <select name='semestre'  value={selectedData.semestre} onChange={handleChange} className='usuarios-grid-Opcion'>
-                      <option value={"1"} selected>1</option>
+                    <select name='semestre' value={selectedData.semestre} onChange={handleChange} className='usuarios-grid-Opcion'>
+                      <option value={""}></option>
+                      <option value={"1"}>1</option>
                       <option value={"2"}>2</option>
                       <option value={"3"}>3</option>
                       <option value={"4"}>4</option>
@@ -186,6 +223,41 @@ export const Home2 = () => {
                   <button onClick={agregarTabla}>Agregar</button>
                 </div>
               </div>
+              <Modal show={showModalAlert} setShow={setShowModalAlert} title={"Advertencia"}>
+                <p className='alertMSM'>{mensajeAlerta}</p>
+                <button onClick={() => setShowModalAlert(false)}>Aceptar</button>
+              </Modal>
+              <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Confirmación"}>
+                <p className='alertMSM'>Estas seguro que quieres seleccionar estas materias</p>
+                <div className='tabla-usr'>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Carrera</th>
+                          <th>Materia</th>
+                          <th>Grupo</th>
+                          <th>Semestre</th>
+                          <th>Eliminar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dataTable.map((data, index) => (
+                          <tr key={index}>
+                            <td>{data.carrera_ID}</td>
+                            <td>{data.materia_ID}</td>
+                            <td>{data.grupo}</td>
+                            <td>{data.semestre}</td>
+                            <td> <button onClick={() => {
+                              setDataTable(dataTable.filter(data => dataTable[index] !== data))
+                            }}>Eliminar</button></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <button >Confirmar</button>
+              </Modal>
+                
             </div>
           </>) : (<></>)
       }
