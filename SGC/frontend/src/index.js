@@ -149,7 +149,7 @@ function UserRedirector() {
     if  (auth.user.permission == "Administrador") {
       to = "/admin";
     } else if (auth.user.permission == "Docente") {
-      to = "/usuario";
+      to = "/usuario/" + auth.user.nombre_usuario + "/home";
     } else {
       to = "/supervisor";
     }
