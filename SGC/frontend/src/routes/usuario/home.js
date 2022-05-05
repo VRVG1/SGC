@@ -1,7 +1,9 @@
+//TODO, si el mai se equivoca y tiene que modificar las materias
+//Pedirle a la base de datos que me mande los datos que el selecciono y agregarlo a la tabla
 import React, { useState, useEffect, useContext } from 'react'
 import getAllCarrera from '../helpers/Carreras/getAllCarrera'
 import getAllMaterias from '../helpers/Materias/getAllMaterias'
-
+import postAsigna from '../helpers/Asignan/postAsignan.js'
 import { AuthContext } from '../helpers/Auth/auth-context'
 import Modal from '../modal/Modal'
 export const Home2 = () => {
@@ -12,6 +14,7 @@ export const Home2 = () => {
   const [showModalAlert, setShowModalAlert] = useState(false);
   const [mensajeAlerta, setMensajeAlerta] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalDatosEnviados, setShowModalDatosEnviados] = useState(false);
   const [selectedData, setSelectedData] = useState({
     carrera_ID: '',
     materia_ID: '',
@@ -86,7 +89,10 @@ export const Home2 = () => {
       setDataTable([...dataTable, selectedData]);
     }
   };
-
+  /**
+   * Metodo para hacer la confirmacion de los datos
+   * No envia nada aunque se llame sendData
+   */
   const sendData = () => {
     if (dataTable.length > 0) {
       setShowModalConfirm(true);
@@ -95,6 +101,20 @@ export const Home2 = () => {
       setShowModalAlert(true);
       setMensajeAlerta('No hay datos para enviar');
     }
+  }
+  /**
+   * Metodo para enviar los datos a la base de datos
+   */
+  const mandarDatos = async () => {
+    dataTable.map(async (data) => {
+      await postAsigna(data, auth.user.token, auth.user.user_id);
+    });
+    setShowModalDatosEnviados(true);
+  }
+
+  const todoListo = () => {
+    setShowModalDatosEnviados(false);
+    setDisponible(false);
   }
 
 
@@ -237,7 +257,6 @@ export const Home2 = () => {
                           <th>Materia</th>
                           <th>Grupo</th>
                           <th>Semestre</th>
-                          <th>Eliminar</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -247,17 +266,18 @@ export const Home2 = () => {
                             <td>{data.materia_ID}</td>
                             <td>{data.grupo}</td>
                             <td>{data.semestre}</td>
-                            <td> <button onClick={() => {
-                              setDataTable(dataTable.filter(data => dataTable[index] !== data))
-                            }}>Eliminar</button></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                  <button >Confirmar</button>
+                  <button onClick={mandarDatos}>Confirmar</button>
               </Modal>
-                
+
+              <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={"Datos Enviados"}>
+              <p className='alertMSM'>Materias resgistradas</p>
+              <button onClick={todoListo}>Confirmar</button>
+              </Modal>
             </div>
           </>) : (<></>)
       }
