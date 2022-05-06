@@ -1,7 +1,6 @@
 from datetime import date, datetime
-from django.shortcuts import render
-from .models import Reportes, Generan
-from .serializers import ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
+from .models import Reportes, Generan, Alojan
+from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -10,7 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
 
 # Create your views here.
 
@@ -40,6 +39,18 @@ class GeneranView(generics.ListAPIView):
     queryset = Generan.objects.all()
 
 
+class AlojanView(generics.ListAPIView):
+    '''
+    Vista que permite ver todos los alojan registrados en la BD
+    (ADMIN)
+    '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
+    serializer_class = AlojanSerializer
+    queryset = Alojan.objects.all()
+
+
 class CreateReportesView(APIView):
     '''
     Vista que permite registrar un reporte en la BD
@@ -51,7 +62,6 @@ class CreateReportesView(APIView):
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
-        date01 = 'Jun 20'
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -59,21 +69,64 @@ class CreateReportesView(APIView):
             serializer.save()
             ID_Reporte = Reportes.objects.get(Nombre_Reporte=name)
             asignan = Asignan.objects.all()
-            fecha = date.today()
-            parse01 = datetime.strptime(
-                date01, '%b %d').date().replace(year=fecha.year)
-
-            if fecha < parse01:
-                semestre = '01-' + str(fecha.year)
+            if not asignan:
+                pass
             else:
-                semestre = '02-' + str(fecha.year)
+                date01 = 'Jun 20'
+                fecha = date.today()
+                parse01 = datetime.strptime(
+                    date01, '%b %d').date().replace(year=fecha.year)
 
-            for i in asignan:
-                generate = Generan(Estatus=None, Path_PDF=None, Sememestre=semestre, ID_Materia=i.ID_Materia,
-                                   ID_Usuario=i.ID_Usuario, ID_Reporte=ID_Reporte)
-                generate.save()
+                if fecha < parse01:
+                    semestre = 'Enero - Junio ' + str(fecha.year)
+                else:
+                    semestre = 'Agosto - Diciembre ' + str(fecha.year)
+
+                for i in asignan:
+                    ID_Asignan = Asignan.objects.get(ID_Asignan=i.ID_Asignan)
+                    generate = Generan(
+                        Estatus=None, Sememestre=semestre, ID_Asignan=i, ID_Reporte=ID_Reporte)
+                    generate.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreateAlojanView(APIView):
+    '''
+    Vista que permite guardar los archivos PDF que se necesiten subir para el reporte
+    (DOCENTE)
+    '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AdminDocentePermission]
+
+    serializer_class = AlojanSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def alojanFromView(request, fk):
+    '''
+    Vista que permite ver todos los alojan de una cierta generacion
+    (DOCENTE)
+    '''
+    if request.method == 'GET':
+        try:
+            ID_Generacion = Generan.objects.get(ID_Generacion=fk)
+        except Generan.DoesNotExist:
+            return Response({'Error': ' Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+        AlojanX = Alojan.objects.filter(ID_Generacion=ID_Generacion)
+        serializer_class = AlojanSerializer(AlojanX, many=True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'DELETE'])
@@ -128,7 +181,6 @@ def updateReporte(request, pk):
 
 
 @api_view(['GET', 'PUT'])
-@parser_classes([MultiPartParser, FormParser])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyDocentePermission])
 def CrearGeneran(request, pk):
@@ -143,9 +195,6 @@ def CrearGeneran(request, pk):
             ID_Reporte=generan.ID_Reporte.ID_Reporte)
     except Generan.DoesNotExist:
         return Response({'Error': 'Generado no existe'}, status=status.HTTP_400_BAD_REQUEST)
-
-    if request.user != generan.ID_Usuario.ID_Usuario:
-        return Response({'Error': 'A este usuario no le corresponde este asignan'}, status=status.HTTP_401_UNAUTHORIZED)
 
     fechaE = reporte.Fecha_Entrega
     fechaH = date.today()
@@ -162,9 +211,6 @@ def CrearGeneran(request, pk):
         serializer_class = GeneranSerializer(generan, data=request.data)
         if serializer_class.is_valid():
             serializer_class.validated_data['Estatus'] = estatus
-            serializer_class.validated_data['ID_Materia'] = generan.ID_Materia
-            serializer_class.validated_data['ID_Usuario'] = generan.ID_Usuario
-            serializer_class.validated_data['ID_Reporte'] = generan.ID_Reporte
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)

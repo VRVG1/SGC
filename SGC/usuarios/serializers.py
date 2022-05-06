@@ -14,7 +14,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuarios
-        fields = '__all__'
+        fields = ('PK', 'ID_Usuario', 'Nombre_Usuario',
+                  'Tipo_Usuario', 'CorreoE')
 
     def create(self, validated_data):
         UserData = validated_data.pop('ID_Usuario')
