@@ -389,8 +389,6 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
 }
 
 /* Simple CSS3 Fade-in Animation */
-.fondo {
-}
 .underlineHover {
   color:#005b8e;
   text-decoration: none;
