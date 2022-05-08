@@ -124,6 +124,7 @@ export const Home2 = () => {
 
         <h1>Bienvenido al Sistemas Gestor del Curso</h1>
         <p>Buenas las tenga {auth.user.nombre_usuario}</p>
+        {console.log(auth.user)}
         <p>Todo que puede no se cumplan</p>
         <ul>
           <li>
@@ -136,7 +137,7 @@ export const Home2 = () => {
       </div>
       {
         /* Div para la seleccion de materias */
-        disponible === true ? (
+        disponible === auth.user.permiso ? (
           <>
             <div className='usuario-container'>
               <div className='usuario-grid'>
