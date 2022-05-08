@@ -16,7 +16,8 @@ const postUsuario = async (dataPost, token) => {
             },            
             Nombre_Usuario: dataPost.Nombre_Usuario,
             Tipo_Usuario: dataPost.Tipo_Usuario,
-            CorreoE: dataPost.CorreoE
+            CorreoE: dataPost.CorreoE,
+            User: dataPost.username
         })
     };
     post = AuthPostBasics(token, post);

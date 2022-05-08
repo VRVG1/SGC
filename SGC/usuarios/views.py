@@ -1,13 +1,14 @@
 from urllib.request import Request
+from html5lib import serialize
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSerializer, CambioPassSerializer
+from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSerializer, CambioPassSerializer, UsuarioInfoSerializer
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-from persoAuth.permissions import OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
 from rest_framework.authentication import TokenAuthentication
 
 
@@ -41,6 +42,7 @@ class CreateUsuarioView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -141,4 +143,23 @@ def get(request, string):
     if request.method == 'GET':
         # PARA CUANDO SE OCUPA JALAR VARIOS RESULTADOS DEL QUERY EN SERIALIZER
         usuario_serializer = UsuarioSerializer(usuarios, many=True)
+        return Response(usuario_serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def getInfoUser(request):
+    '''
+    Vista que recibe al user y devuelve sus datos para frontend
+    (DOCENTE)
+    '''
+
+    try:
+        usuario = Usuarios.objects.get(ID_Usuario=request.user)
+    except Usuarios.DoesNotExist:
+        return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        usuario_serializer = UsuarioInfoSerializer(usuario)
         return Response(usuario_serializer.data, status=status.HTTP_200_OK)

@@ -1,16 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 
 export const Login = (props) => {
 
+  const [errorM, setErrorM] = useState('fadeIn primero-error-hidden')
+  const [animation, setAnimation] = useState({
+    wrapper: 'wrapper fadeInDown',
+    primero: 'fadeIn primero',
+    segundo: 'group fadeIn segundo',
+    tercero: 'group fadeIn tercero',
+    cuarto: 'fadeIn cuarto',
+  })
   return (
     <div id="bg" className="bg">
-      <div className="wrapper fadeInDown">
+      <div className={animation.wrapper}>
         <div id="content">
-          <p className="titleLogin"> Sistema Gestor del Curso SGC </p>
-          <h2 className="fadeIn primero"> Login </h2>
-          <form onSubmit={ props.submitHandler }>
-            <div className="group fadeIn segundo">
+          <p className="titleLogin"> Sistema Gestion del Curso SGC </p>
+          <h2 className={animation.primero}> Login </h2>
+          <div className={errorM}>
+            <p>Usuario o Contrasena incorrectos</p>
+          </div>
+          <form onSubmit={props.submitHandler}>
+            <div className={animation.segundo}>
               <input
                 type="text"
                 id="Login"
@@ -22,7 +33,7 @@ export const Login = (props) => {
               <label>Usuario</label>
             </div>
 
-            <div className="group fadeIn tercero">
+            <div className={animation.tercero}>
               <input
                 type="password"
                 id="password"
@@ -33,17 +44,19 @@ export const Login = (props) => {
               <span className="bottomBar"></span>
               <label>Contrasena</label>
             </div>
-              <button
-                type="submit"
-                className="fadeIn cuarto"
-              >
-                Log In
-              </button>
+            <button
+              type="submit"
+              className={animation.cuarto}
+            >
+              Log In
+            </button>
+
+            <button onClick={() => setErrorM('fadeIn primero-error')}>Error</button>
           </form>
 
         </div>
         <div id="footer">
-          <Link className="underlineHover" to="/recuperar">
+          <Link className="underlineHover" to="/recuperacion">
             Olvidaste la Contrasena
           </Link>
         </div>

@@ -142,48 +142,6 @@ select {
     color:#111111;
   }
   
-/* Invalid email style */
-//   input[type="email"].inputUsuarios:invalid {
-//     color: #E00005;
-//   }
-
-//   input[type="email"].inputUsuarios:invalid ~ label.Usuarios		{
-//     top:-25%;
-//     font-size:0.85rem;
-//     color: #E00005;
-//   }
-
-// input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, .bottomBar.Usuarios:after 	{
-//   content:'';
-//   height:2px; 
-//   width:0;
-//   bottom: 0%; 
-//   position:absolute;
-//   background:#E00005; 
-//   transition:0.2s ease all; 
-//   -moz-transition:0.2s ease all; 
-//   -webkit-transition:0.2s ease all;
-//   }
-//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before {
-//     left:50%;
-//   }
-//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:after {
-//     right:50%; 
-//   }
-
-//   input[type="email"].inputUsuarios:invalid ~ .bottomBar.Usuarios:before, input[type="email"]:invalid ~  .bottomBar:after {
-//     width:50%;
-//   }
-
-//   input[type="email"].inputUsuarios:invalid ~ .highlight.Usuarios {
-//     position:relative;
-//     height:60%; 
-//     width:100px; 
-//     top:25%; 
-//     left:10%;
-//     pointer-events:none;
-//     opacity:0.5;
-//   }
 /* end of Invalid email style */
 
 
@@ -466,8 +424,12 @@ th{
 // En caso de que no encuentre coincidencias en las busquedas
 .kana{
   margin-top: 4%;
-  width: 14rem;
+  width: 10em;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow: none;
+}
+.Sin_Resultados {
+  overflow: none;
 }

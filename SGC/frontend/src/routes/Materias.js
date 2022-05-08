@@ -1,3 +1,4 @@
+//TODO: Agregar el ID para la borracion de materias
 import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllCarrera from "./helpers/Carreras/getAllCarrera.js";
@@ -32,7 +33,8 @@ const Materias = props => {
         materia_carrera: '',
         Materia_semestre: '',
         Materia_grupo: '',
-        Materia_ID: ''
+        Materia_ID: '',
+        Nombre_Carrera: ''
     });
     const [regex, setRegex] = useState({
         Materia_name: /^[A-Za-z\sÀ-ÿ]{0,200}$/,
@@ -53,6 +55,8 @@ const Materias = props => {
     const [Nombre_Materia, setNombre_Materia] = useState("");
     const [ID_Carrera, setID_Carrera] = useState('');
     const [Nombre_Carrera, setNombre_Carrera] = useState('')
+
+    const [ptio, setPtio] = useState({})
     /**
      * Metodo para obtener todas las materiass
      */
@@ -105,7 +109,8 @@ const Materias = props => {
             materia_carrera: ID_Carrera,
             Materia_semestre: Grado,
             Materia_grupo: Grupo,
-            Materia_ID: ID_Materia
+            Materia_ID: ID_Materia,
+            Nombre_Carrera: Nombre_Carrera
         });
         setShowModalConfirm(false);
         setShowModalModify(true);
@@ -140,7 +145,8 @@ const Materias = props => {
             materia_carrera: carrera.ID_Carrera,
             Materia_semestre: materia.Grado,
             Materia_grupo: materia.Grupo,
-            Materia_ID: id
+            Materia_ID: id,
+            Nombre_Carrera: carrera.Nombre_Carrera
         });
         setShowModalConfirm(false);
     }
@@ -156,7 +162,8 @@ const Materias = props => {
             materia_carrera: carreraData[0].ID_Carrera,
             Materia_semestre: '',
             Materia_grupo: '',
-            Materia_ID: ''
+            Materia_ID: '',
+            Nombre_Carrera: carreraData[0].Nombre_Carrera
         });
         setAddMaterias('');
         setActualizarCarrera(Math.random())
@@ -168,15 +175,51 @@ const Materias = props => {
      * @param {*} event 
      */
     const handleSelectOnChange = (event) => {
-        console.log(event.target.value.match(regex[event.target.name]))
+        //No tiene ni puto sentido que no se cambie el id pese a que claramente si se cambia ahi esta
+        //Puto react
         if (event.target.value.match(regex[event.target.name]) != null) {
+            if (event.target.name === "Nombre_Carrera") {
+                setPtio({
+                    ...ptio,
+                    [event.target.name]: event.target.value,
+                    materia_carrera: carreraData.find(element => element.Nombre_Carrera === event.target.value).ID_Carrera
+                })
+                // setAddData({
+                //     ...addData,
+                //     materia_carrera: carreraData.find(element => element.Nombre_Carrera === event.target.value).ID_Carrera
+                // });
+            }
             setAddData({
                 ...addData,
                 [event.target.name]: event.target.value
             });
         }
     }
+    /**
+     * UseEffect para actualizar los formularios
+     * Igual es buena idea guardar los datos en una variable
+     * y luego actualizar el state con el setAddData y asi
+     * no tener que actualizar el state cada que se cambie
+     * el input
+     * Eso lo puso github copilot
+     * Realmente lo que quiero decir, es usar useEffect para actualizar los datos del input para que sea mejor
+     * , pero no se la verdad creo que con solo poner [event.target.name] : event.target.value o algo asi, con eso
+     * pero no creo
+     */
+    useEffect(() => {
+        setAddData({
+            ...addData,
+            materia_carrera: ptio.materia_carrera,
+            Nombre_Carrera: ptio.Nombre_Carrera
+        });
+        return () => {
+            setAddData({});
+        }
+    }, [ptio])
 
+    /**
+     * Metodo para crear un post de materia
+     */
     const postermateria = async () => {
         setLoading(true);
         setAddMaterias(await postMateria(addData, auth.user.token));
@@ -252,11 +295,13 @@ const Materias = props => {
                             <table>
                                 <tbody>
                                     {filtrados.map((materia) => {
-                                        <tr key={materia.ID_Materia}>
-                                            <td onClick={() => details(materia.ID_Materia)}>
-                                                {materia.Nombre_Materia}
-                                            </td>
-                                        </tr>
+                                        return (
+                                            <tr key={materia.ID_Materia}>
+                                                <td onClick={() => details(materia.ID_Materia)}>
+                                                    {materia.Nombre_Materia}
+                                                </td>
+                                            </tr>
+                                        );
                                     })}
                                 </tbody>
                             </table>
@@ -313,44 +358,14 @@ const Materias = props => {
                             </div>
 
                             <div className="form group modal Materia">
-                                <select name="materia_carrera" value={addData.materia_carrera} onChange={handleSelectOnChange} >
+                                <select name="Nombre_Carrera" value={addData.Nombre_Carrera} onChange={handleSelectOnChange} >
                                     {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
-                                        <option key={carrera.ID_Carrera} value={carrera.ID_Carrera}>{carrera.Nombre_Carrera}</option>
+                                        <option key={carrera.ID_Carrera} value={carrera.Nombre_Carrera}>{carrera.Nombre_Carrera}</option>
                                     )) : (<></>)}
                                 </select>
                                 <span className="highlight Materias"></span>
                                 <span className="bottomBar Materias"></span>
                                 <label className="Materias">Carrera de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_semestre"
-                                    value={addData.Materia_semestre}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Semestre de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_grupo"
-                                    value={addData.Materia_grupo}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Grupo de la Materia</label>
                             </div>
                         </form>
                         <div className="Materias-Detalles buttons">
@@ -402,44 +417,14 @@ const Materias = props => {
                             </div>
 
                             <div className="form group modal Materia">
-                                <select name="materia_carrera" value={addData.materia_carrera} onChange={handleSelectOnChange} >
+                                <select name="Nombre_Carrera" value={addData.Nombre_Carrera} onChange={handleSelectOnChange} >
                                     {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
-                                        <option key={carrera.ID_Carrera} value={carrera.ID_Carrera}>{carrera.Nombre_Carrera}</option>
+                                        <option key={carrera.ID_Carrera} value={carrera.Nombre_Carrera}>{carrera.Nombre_Carrera}</option>
                                     )) : (<></>)}
                                 </select>
                                 <span className="highlight Materias"></span>
                                 <span className="bottomBar Materias"></span>
                                 <label className="Materias">Carrera de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_semestre"
-                                    value={addData.Materia_semestre}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Semestre de la Materia</label>
-                            </div>
-
-                            <div className="form group modal Materia">
-                                <input
-                                    type="text"
-                                    id="Materia-semestre"
-                                    name="Materia_grupo"
-                                    value={addData.Materia_grupo}
-                                    onChange={handleSelectOnChange}
-                                    className="inputMaterias"
-                                    required
-                                />
-                                <span className="highlight Materias"></span>
-                                <span className="bottomBar Materias"></span>
-                                <label className="Materias">Grupo de la Materia</label>
                             </div>
                         </form>
 
@@ -471,7 +456,13 @@ const Materias = props => {
                     {/* Confirmar */}
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={Nombre_Materia}>
                         <div className="modal group">
-                            <p>Realmente esta seguro que quiere actualizar los datos de la Materia:<strong className="Resaltado">{Nombre_Materia}</strong></p>
+                            <p>Realmente esta seguro que quiere actualizar los datos de la Materia:</p>
+                            <br />
+                            <div className="Usuarios-Detalles summary">
+                                {ID_Materia === addData.Materia_ID ? null : <p>ID de la materia pasara de: <strong className="Resaltado">{ID_Materia}</strong> a <strong className="Resaltado">{addData.Materia_ID}</strong></p>}
+                                {Nombre_Materia === addData.Materia_name ? null : <p>Nombre de la materia pasara de: <strong className="Resaltado">{Nombre_Materia}</strong> a <strong className="Resaltado">{addData.Materia_name}</strong></p>}
+                                {ID_Carrera === addData.materia_carrera ? null : <p>Carrera de la materia pasara de: <strong className="Resaltado">{Nombre_Carrera}</strong> a <strong className="Resaltado">{addData.Nombre_Carrera}</strong></p>}
+                            </div>
                         </div>
                         <input
                             type="submit"

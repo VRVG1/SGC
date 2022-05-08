@@ -1,3 +1,4 @@
+//TODO: Agregar el id en la boracion de carreras
 import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllCarrera from "./helpers/Carreras/getAllCarrera.js";
@@ -173,14 +174,15 @@ const Materias = props => {
      */
     const save = async () => {
         setLoading(true);
-        setResultado(await postCarrera(datainput.carrera_nombre, auth.user.token));
+        console.log(datainput);
+        setResultado(await postCarrera(datainput, auth.user.token));
     }
     /**
      * Metodo para realizar una actualizacion de los datos
      */
     const put = async () => {
         setLoading(true);
-        setPutCarreras(await putCarrera(datainput.carrera_nombre, carrera.ID_Carrera, auth.user.token));
+        setPutCarreras(await putCarrera(datainput, auth.user.token));
     }
 
     /**

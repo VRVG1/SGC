@@ -68,6 +68,7 @@ class CreateMateriasView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -87,6 +88,7 @@ class CreateCarreraView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -105,7 +107,7 @@ class AsignarMateriaView(APIView):
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
+        
         if serializer.is_valid():
             usuario = serializer.validated_data.get('ID_Usuario')
             materia = serializer.validated_data.get('ID_Materia')
