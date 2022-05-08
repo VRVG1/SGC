@@ -122,16 +122,21 @@ class AsignarMateriaView(APIView):
                     date01, '%b %d').date().replace(year=fecha.year)
 
                 if fecha < parse01:
-                    semestre = '01-' + str(fecha.year)
+                    semestre = 'Enero - Junio ' + str(fecha.year)
                 else:
-                    semestre = '02-' + str(fecha.year)
+                    semestre = 'Agosto - Diciembre ' + str(fecha.year)
 
                 asignan = Asignan.objects.get(
                     ID_Usuario=usuario, ID_Materia=materia)
                 for x in reportes:
-                    generate = Generan(Estatus=None, Path_PDF=None, Sememestre=semestre,
-                                       ID_Materia=asignan.ID_Materia, ID_Usuario=asignan.ID_Usuario, ID_Reporte=x)
+                    generate = Generan(
+                        Estatus=None, Sememestre=semestre, ID_Asignan=asignan, ID_Reporte=x)
                     generate.save()
+
+            user = Usuarios.objects.get(Nombre_Usuario=usuario)
+            user.Permiso = False
+            user.save()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
