@@ -87,6 +87,7 @@ def borrar(request, pk=None):
     '''
     try:
         usuario = Usuarios.objects.get(PK=pk)
+        user = User.objects.get(username=usuario.ID_Usuario)
     except Usuarios.DoesNotExist:
         return Response({'ERROR': 'El usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -95,6 +96,7 @@ def borrar(request, pk=None):
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
         usuario.delete()
+        user.delete()
         return Response({'Mensaje': 'Usuario eliminado correctamente'}, status=status.HTTP_200_OK)
 
 
