@@ -26,6 +26,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return usuario
 
 
+class UsuarioInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuarios
+        fields = ('PK', 'Nombre_Usuario', 'Tipo_Usuario', 'CorreoE', 'Permiso')
+
+
 class CambioPassSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

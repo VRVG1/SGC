@@ -104,6 +104,13 @@ const ReportesAdmin = props => {
         setPredictionData(filtro);
     }
 
+    const guardarReporteAdd = () => {
+    }
+
+    const guardarYEnviarAdd = () => {
+
+    }
+
 
     return (
         <>
@@ -269,8 +276,8 @@ const ReportesAdmin = props => {
                         </div>
                     </form>
                     <div className="sinIdeas">
-                        <button >Guardar</button>
-                        <button >Guardar y Enviar</button>
+                        <button onClick={guardarReporteAdd}>Guardar</button>
+                        <button onClick={guardarYEnviarAdd}>Guardar y Enviar</button>
                     </div>
                 </div>
             </Modal>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UsuarioView, CreateUsuarioView, borrar, actualizar, get, CambiarPass
+from .views import UsuarioView, CreateUsuarioView, borrar, actualizar, get, CambiarPass, getInfoUser
 
 urlpatterns = [
     path('users', UsuarioView.as_view()),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('delete-user/<pk>', borrar),
     path('update-user/<pk>', actualizar),
     path('user/<string>', get),
+    path('getInfo', getInfoUser),
 ]

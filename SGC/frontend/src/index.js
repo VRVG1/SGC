@@ -172,6 +172,7 @@ function Application() {
         <Route>
           <Route path="/" element={ <UserRedirector /> } />
           <Route path="/login" element={ <LoginPage /> } />
+          <Route path='/recuperacion' element={ <OlvideContra /> } />S
           <Route
             path="/admin"
             element={

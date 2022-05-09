@@ -254,9 +254,9 @@ const Materias = props => {
                                 <div className="Sin_Resultados">
                                     <p>No se encontraron resultados</p>
                                 </div>
-                                <div className="Sin_Resultados img">
+                                {/* <div className="Sin_Resultados img">
                                     <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                                </div>
+                                </div> */}
                             </>
                         )}
                     </div>
