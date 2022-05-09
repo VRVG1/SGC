@@ -1,6 +1,20 @@
 import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 
+const ErrorMessage = (props) => {
+  const loginStatus = props.loginStatus;
+  let errorContainer;
+  if(loginStatus.failureStatus) {
+    errorContainer = (
+      <div>
+        <p>{ loginStatus.error }</p>
+      </div>
+    );
+  } else {
+    errorContainer = (<div></div>);
+  }
+  return errorContainer;
+}
 export const Login = (props) => {
 
   const [errorM, setErrorM] = useState('fadeIn primero-error-hidden')
@@ -17,6 +31,7 @@ export const Login = (props) => {
         <div id="content">
           <p className="titleLogin"> Sistema Gestion del Curso SGC </p>
           <h2 className={animation.primero}> Login </h2>
+          <ErrorMessage loginStatus={ props.loginStatus }/>
           <div className={errorM}>
             <p>Usuario o Contrasena incorrectos</p>
           </div>

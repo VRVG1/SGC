@@ -22,14 +22,14 @@ export default function AuthProvider(props) {
     * Referencia a una función cuya ejecución se realizará si los datos en el
     * parametro 'formData' coinciden con los de un usuario existente.
     */
-  let signin = (formData, callback) => {
+  let signin = (formData, callback, failureCallback) => {
     // NOTE: Lo ideal seria agregar un errorCallback, para que en caso de
     // existir una falla dentro del loggeo se retorne un mensaje para que el
     // componente Login lo muestre.
     return BackendAuthProvider.signin(formData, (returnedUserData) => {
       setUser(returnedUserData);
       callback();
-    });
+    }, failureCallback);
   }
 
   /**

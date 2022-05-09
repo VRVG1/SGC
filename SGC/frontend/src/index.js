@@ -112,6 +112,10 @@ function LoginPage() {
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
+  let loginStatus = {
+    FailureStatus: false,
+    error: undefined,
+  }
 
   let from = location.state?.from?.pathname || "/";
 
@@ -121,6 +125,12 @@ function LoginPage() {
     let formData = new FormData(event.currentTarget);
     auth.signin(formData, () => {
       navigate(from, { replace: true });
+    }, (error) => {
+      console.log("Error...");
+      if (!loginStatus.FailureStatus) {
+        loginStatus.FailureStatus = true;
+        loginStatus.error = error;
+      }
     });
   }
 
@@ -128,7 +138,7 @@ function LoginPage() {
     return <UserRedirector />;
   }
 
-  return (<Login submitHandler={ handleSubmit } />);
+  return (<Login loginStatus={ loginStatus } submitHandler={ handleSubmit } />);
 
 }
 
