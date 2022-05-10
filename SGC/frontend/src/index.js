@@ -197,7 +197,7 @@ function Application() {
                 <LoginPage />
               </LoginContextProvider>
             } />
-          <Route path='/recuperacion' element={ <OlvideContra /> } />S
+          <Route path='/recuperacion' element={ <OlvideContra /> } />
           <Route
             path="/admin"
             element={
