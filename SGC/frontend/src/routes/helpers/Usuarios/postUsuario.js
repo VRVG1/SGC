@@ -25,7 +25,6 @@ const postUsuario = async (dataPost, token) => {
     const url = "http://localhost:8000/usuario/create_user"
     const res = await fetch(url, post);
     const result = res.statusText;
-    console.log("result", result.message);
     return result
 }
 
