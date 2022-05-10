@@ -91,6 +91,25 @@ class CreateReportesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class OnlySaveReportesView(APIView):
+    '''
+    Vista que permite guardar pero no "enviar" un reporte
+    (ADMIN)
+    '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
+    serializer_class = ReportesSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 class CreateAlojanView(APIView):
     '''
     Vista que permite guardar los archivos PDF que se necesiten subir para el reporte
@@ -178,6 +197,47 @@ def updateReporte(request, pk):
 # HACER QUE CADA QUE SE BORRE UN ASIGNA, SE BORRE EL ARCHIVO DE ESTE
 
 # TAMBIEN FUNCIONA COMO ACTUALIZAR GENERA
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def EnviarGeneran(request, pk):
+    '''
+    Vista que permite crear o "enviar" un generan de un reporte que solo fue guardado
+    (ADMIN)
+    '''
+
+    try:
+        reporte = Reportes.objects.get(ID_Reporte=pk)
+    except Reportes.DoesNotExist:
+        return Response({'Error': 'Reporte no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        try:
+            asignan = Asignan.objects.all()
+        except Asignan.DoesNotExist:
+            return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            date01 = 'Jun 20'
+            fecha = date.today()
+            parse01 = datetime.strptime(
+                date01, '%b %d').date().replace(year=fecha.year)
+
+            if fecha < parse01:
+                semestre = 'Enero - Junio ' + str(fecha.year)
+            else:
+                semestre = 'Agosto - Diciembre ' + str(fecha.year)
+
+            for x in asignan:
+                generate = Generan(
+                    Estatus=None, Sememestre=semestre, ID_Asignan=x, ID_Reporte=reporte)
+                generate.save()
+
+            return Response({'Success': 'Generan creado'}, status=status.HTTP_201_CREATED)
+        except:
+            return Response({'Error': 'Error al crear un generan'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT'])

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ReportesView, CreateReportesView, GeneranView, CrearGeneran, borrarReporte, updateReporte, CreateAlojanView, alojanFromView
+from .views import ReportesView, CreateReportesView, GeneranView, CrearGeneran, borrarReporte, updateReporte, CreateAlojanView, alojanFromView, OnlySaveReportesView, EnviarGeneran
 
 urlpatterns = [
     path('reportes', ReportesView.as_view()),
@@ -10,4 +10,6 @@ urlpatterns = [
     path('delete-reporte/<int:pk>', borrarReporte),
     path('update-reporte/<int:pk>', updateReporte),
     path('get-alojanFrom/<fk>', alojanFromView),
+    path('save-reporte', OnlySaveReportesView.as_view()),
+    path('send-genera/<pk>', EnviarGeneran),
 ]

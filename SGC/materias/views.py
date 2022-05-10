@@ -141,6 +141,26 @@ class AsignarMateriaView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def getAsignan(request):
+    '''
+    Vista que permite obtener todos los asignan de un docente
+    (ADMIN Y DOCENTE)
+    '''
+
+    try:
+        usuario = Usuarios.objects.get(ID_Usuario=request.user)
+        asign = Asignan.objects.filter(ID_Usuario=usuario)
+    except Asignan.DoesNotExist:
+        return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AsignanSerializer(asign, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'DELETE'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyAdminPermission])
