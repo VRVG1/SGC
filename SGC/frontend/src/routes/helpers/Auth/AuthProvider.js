@@ -21,6 +21,10 @@ export default function AuthProvider(props) {
     * @param {function:obj} callback \n
     * Referencia a una función cuya ejecución se realizará si los datos en el
     * parametro 'formData' coinciden con los de un usuario existente.
+    * @param {funcion:obj} failureCallback \n
+    * Referencia a una función cuya ejecución se realizará si los datos
+    * no coinciden con un usuario existente o surge algun error en el envío de
+    * los datos.
     */
   let signin = (formData, callback, failureCallback) => {
     // NOTE: Lo ideal seria agregar un errorCallback, para que en caso de

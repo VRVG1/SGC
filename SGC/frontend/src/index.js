@@ -30,7 +30,9 @@ import Home2 from './routes/usuario/home';
 import BarNav from './routes/usuario/BarNav'
 import SysSettings from './routes/SysSettings';
 import AuthProvider from './routes/helpers/Auth/AuthProvider';
+import LoginContextProvider from './routes/helpers/Auth/LoginContextProvider';
 import { AuthContext } from './routes/helpers/Auth/auth-context';
+import { LoginContext } from './routes/helpers/Auth/login-context';
 import OlvideContra from './routes/OlivdeContra';
 import { Reportes } from './routes/usuario/Reportes';
 
@@ -54,6 +56,15 @@ import "./styles/usuario/reportesU.scss"
   */
 export function useAuth() {
   return React.useContext(AuthContext);
+}
+
+/**
+  * Función que facilita el acceso al context 'LoginContext'.
+  *
+  * @returns Componente React.Context
+  */
+function useLoginContext() {
+  return React.useContext(LoginContext);
 }
 
 /**
@@ -108,14 +119,11 @@ function RequirePermission(props) {
   *
   * @returns Componente <Login />
   */
-function LoginPage() {
+function LoginPage(props) {
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
-  let loginStatus = {
-    FailureStatus: false,
-    error: undefined,
-  }
+  let loginContext = useLoginContext();
 
   let from = location.state?.from?.pathname || "/";
 
@@ -126,10 +134,11 @@ function LoginPage() {
     auth.signin(formData, () => {
       navigate(from, { replace: true });
     }, (error) => {
-      console.log("Error...");
-      if (!loginStatus.FailureStatus) {
-        loginStatus.FailureStatus = true;
-        loginStatus.error = error;
+      if (!(loginContext.status?.failureStatus)) {
+        loginContext.setStatus({
+          failureStatus: true,
+          error,
+        });
       }
     });
   }
@@ -138,7 +147,7 @@ function LoginPage() {
     return <UserRedirector />;
   }
 
-  return (<Login loginStatus={ loginStatus } submitHandler={ handleSubmit } />);
+  return (<Login submitHandler={ handleSubmit } />);
 
 }
 
@@ -181,7 +190,13 @@ function Application() {
       <Routes>
         <Route>
           <Route path="/" element={ <UserRedirector /> } />
-          <Route path="/login" element={ <LoginPage /> } />
+          <Route
+            path="/login"
+            element={
+              <LoginContextProvider>
+                <LoginPage />
+              </LoginContextProvider>
+            } />
           <Route path='/recuperacion' element={ <OlvideContra /> } />S
           <Route
             path="/admin"

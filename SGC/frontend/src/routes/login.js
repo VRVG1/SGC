@@ -1,13 +1,21 @@
-import React, { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import { LoginContext } from './helpers/Auth/login-context';
 
+/**
+  * El componente <ErrorMessage /> se encarga de renderizar el contenedor
+  * del mensaje de error en caso de que el inicio de sesión no se haya
+  * consumado en su totalidad.
+  *
+  * @returns Componente <ErrorMessage />
+  */
 const ErrorMessage = (props) => {
-  const loginStatus = props.loginStatus;
+  const loginContext = React.useContext(LoginContext);
   let errorContainer;
-  if(loginStatus.failureStatus) {
+  if(loginContext.status?.failureStatus) {
     errorContainer = (
-      <div>
-        <p>{ loginStatus.error }</p>
+      <div className="fadeIn primero-error">
+        <p>{ loginContext.status.error.non_field_errors }</p>
       </div>
     );
   } else {
@@ -15,8 +23,11 @@ const ErrorMessage = (props) => {
   }
   return errorContainer;
 }
+
 export const Login = (props) => {
 
+  //TODO: Ya no es necesario el estado errorM, favor de quitar toda referencia
+  //      a este
   const [errorM, setErrorM] = useState('fadeIn primero-error-hidden')
   const [animation, setAnimation] = useState({
     wrapper: 'wrapper fadeInDown',
@@ -25,6 +36,7 @@ export const Login = (props) => {
     tercero: 'group fadeIn tercero',
     cuarto: 'fadeIn cuarto',
   })
+
   return (
     <div id="bg" className="bg">
       <div className={animation.wrapper}>
@@ -32,9 +44,11 @@ export const Login = (props) => {
           <p className="titleLogin"> Sistema Gestion del Curso SGC </p>
           <h2 className={animation.primero}> Login </h2>
           <ErrorMessage loginStatus={ props.loginStatus }/>
-          <div className={errorM}>
+          {/**
+            <div className={errorM}>
             <p>Usuario o Contrasena incorrectos</p>
-          </div>
+            </div>
+            **/}
           <form onSubmit={props.submitHandler}>
             <div className={animation.segundo}>
               <input
