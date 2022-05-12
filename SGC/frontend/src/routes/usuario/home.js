@@ -6,8 +6,10 @@ import getAllMaterias from '../helpers/Materias/getAllMaterias'
 import postAsigna from '../helpers/Asignan/postAsignan.js'
 import { AuthContext } from '../helpers/Auth/auth-context'
 import Modal from '../modal/Modal'
+import getInfoUser from '../helpers/Usuarios/getInfoUser'
 export const Home2 = () => {
   let auth = useContext(AuthContext);
+  const [infoUser, setInfoUser] = useState([]);
   const [disponible, setDisponible] = useState(true);
   const [carreras, setCarreras] = useState([]);
   const [materias, setMaterias] = useState([]);
@@ -29,8 +31,8 @@ export const Home2 = () => {
    * 
    */
   useEffect(() => {
-    const obtenerMateria = () => {
-      getAllMaterias(auth.user.token).then((data) => {
+    const obtenerMateria = async () => {
+      await getAllMaterias(auth.user.token).then((data) => {
         setMaterias([{
           Carrera: "",
           ID_Materia: "",
@@ -38,19 +40,30 @@ export const Home2 = () => {
         }, ...data]);
       });
     };
-    const obtenerCarrera = () => {
-      getAllCarrera(auth.user.token).then((data) => {
+    const obtenerCarrera = async () => {
+      await getAllCarrera(auth.user.token).then((data) => {
         setCarreras([{
           ID_Carrera: "",
           Nombre_Carrera: ""
         }, ...data]);
       });
     }
+    const getInforUser = async () => {
+      await getInfoUser(auth.user.token).then((data) => {
+        setInfoUser(data);
+      }
+      ).catch((err) => {
+        console.log(err);
+      }
+      );
+    }
     obtenerCarrera();
     obtenerMateria();
+    getInforUser();
     return () => {
       setCarreras([]);
       setMaterias([]);
+      setInfoUser([]);
     }
   }, []);
 
@@ -107,7 +120,7 @@ export const Home2 = () => {
    */
   const mandarDatos = async () => {
     dataTable.map(async (data) => {
-      await postAsigna(data, auth.user.token, auth.user.user_id);
+      await postAsigna(data, auth.user.token, infoUser.PK);
     });
     setShowModalDatosEnviados(true);
   }
@@ -126,6 +139,7 @@ export const Home2 = () => {
         <p>Buenas las tenga {auth.user.nombre_usuario}</p>
         {console.log(auth.user)}
         <p>Todo que puede no se cumplan</p>
+        {console.log(infoUser)}
         <ul>
           <li>
             Donde esta este txt poner por ejemplo, los reportes pendientes <br /> por subir de la semana o los que ya se retrasaron xd
@@ -137,7 +151,7 @@ export const Home2 = () => {
       </div>
       {
         /* Div para la seleccion de materias */
-        disponible === auth.user.permiso ? (
+        disponible === infoUser.Permiso ? (
           <>
             <div className='usuario-container'>
               <div className='usuario-grid'>
@@ -251,33 +265,33 @@ export const Home2 = () => {
               <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Confirmación"}>
                 <p className='alertMSM'>Estas seguro que quieres seleccionar estas materias</p>
                 <div className='tabla-usr'>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Carrera</th>
-                          <th>Materia</th>
-                          <th>Grupo</th>
-                          <th>Semestre</th>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Carrera</th>
+                        <th>Materia</th>
+                        <th>Grupo</th>
+                        <th>Semestre</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dataTable.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.carrera_ID}</td>
+                          <td>{data.materia_ID}</td>
+                          <td>{data.grupo}</td>
+                          <td>{data.semestre}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {dataTable.map((data, index) => (
-                          <tr key={index}>
-                            <td>{data.carrera_ID}</td>
-                            <td>{data.materia_ID}</td>
-                            <td>{data.grupo}</td>
-                            <td>{data.semestre}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <button onClick={mandarDatos}>Confirmar</button>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button onClick={mandarDatos}>Confirmar</button>
               </Modal>
 
               <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={"Datos Enviados"}>
-              <p className='alertMSM'>Materias resgistradas</p>
-              <button onClick={todoListo}>Confirmar</button>
+                <p className='alertMSM'>Materias resgistradas</p>
+                <button onClick={todoListo}>Confirmar</button>
               </Modal>
             </div>
           </>) : (<></>)

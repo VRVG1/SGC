@@ -10,6 +10,7 @@ const deleteUser = async (id, token) =>{
     const url = "http://localhost:8000/usuario/delete-user/" + id;
     const res = await fetch(url, post);
     const result = res.statusText;
+    console.log("res", res);
     return result;
 }
 

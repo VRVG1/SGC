@@ -535,6 +535,7 @@ div.sinIdeas {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
+        height: fit-content;
 
         .Eliminar {
             background-color: #E00005;
@@ -550,4 +551,21 @@ div.sinIdeas {
 
 button {
     border: none;
+}
+.button.ReportesAdmin-button {
+    max-width: 5em;
+    width: 5em;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
+    margin-top: 2%;
+}
+.modalReportes {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 }
