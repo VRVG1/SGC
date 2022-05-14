@@ -1,11 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 
+
+import { AuthContext } from "../helpers/Auth/auth-context.js";
 const _ = require("lodash");
 
 export const Reportes = () => {
+    let auth = useContext(AuthContext);
+
     const useForceUpdate = () => useState()[1];
     const fileInput = useRef(null);
     const forceUpdate = useForceUpdate();
+    const [reportes, setReportes] = useState([]);
+
+
+    useEffect(() => {
+        const getReportes = async () => {
+            const url = "http://localhost:8000/usuario/get-reportes/" + auth.user.id;
+            const res = await fetch(url);
+            const result = await res.json();
+            setReportes(result);
+        }
+        getReportes();
+    }, [auth.user.id]);//Creo que es mejor quitar esto y poner una variable x que se actualize de forma aleatoria
 
     useEffect(e => {
         window.addEventListener("keyup", clickFileInput);
@@ -14,7 +30,6 @@ export const Reportes = () => {
 
     function clickFileInput(e) {
         if (fileInput.current.nextSibling.contains(document.activeElement)) {
-            // Bind space to trigger clicking of the button when focused
             if (e.keyCode === 32) {
                 fileInput.current.click();
             }
@@ -45,57 +60,91 @@ export const Reportes = () => {
     }
     return (
         <>
-            <div className='reportesUser-Container'>
-                <div className='listReportes'>
-                    <ul>
-                        {_.times(20, (i) => (
-                            <li>
-                                <div className='listReportes__Reporte'>
-                                    Reporte {i + 1}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className='cabeceraReportes'>
-                    <h1 className='reportesUsuario'>Nombre del reporte</h1>
-                    <hr />
-                    <p className='reportesUsuario'>{"mensaje"}</p>
-                </div>
-                <div className='subirArchivos'>
-                    <ul>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 1</h3>
-                                <hr />
-                                <div className='fileUploadU-grid'>
-                                    <div className='fileUpload'>
-                                        <div className="file-uploadU">
-                                            <p className='subidor__pU'>Soltar archivo(s)</p>
-                                            <div className='subidorU'>
-                                                <input
-                                                    id="file"
-                                                    type="file"
-                                                    ref={fileInput}
-                                                    onChange={forceUpdate}
-                                                    className="file-uploadU__input"
-                                                    multiple
-                                                />
+            {Object.keys(reportes).length !== 0 ? reportes.map((reporte, index) => {
+                return (
+                    <div className='reportesUser-Container'>
+                        <div className='listReportes'>
+                            <ul>
+                                {Object.keys(reportes).length !== 0 ? reportes.map((reporte, index) => {
+                                    return (
+                                        <li key={index}>
+                                            <div className='reporte'>
+                                                <p className='reporteP'>{reporte.nombre}</p>
+                                                <p className='reporteP'>{reporte.fecha}</p>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className='listFile'>
-                                        <div className='fileNames-containerU'>
-                                            {fileNames()}
-                                        </div>
-                                    </div>
-                                </div>
-                                <button>Enviar</button>
-                            </div>
-                        </li>
-                    </ul>
+                                        </li>
+                                    )
+                                }) :
+                                    <>
+                                    </>}
+                            </ul>
+                        </div>
+                        <div className='cabeceraReportes'>
+                            {Object.keys(reportes).length !== 0 ? reportes.map((reporte, index) => {
+                                return (
+                                    <>
+                                        <h1 className='reportesUsuario'>Nombre del reporte</h1>
+                                        <hr />
+                                        <p className='reportesUsuario'>{"mensaje"}</p>
+                                    </>
+                                )
+                            }) :
+                                <>
+                                </>}
+                        </div>
+                        <div className='subirArchivos'>
+                            <ul>
+                                {Object.keys(reportes).length !== 0 ? reportes.map((reporte, index) => {
+                                    return (
+                                        <>
+                                            <li>
+                                                <div className='subirArchivos__module'>
+                                                    <h3>Materia 1</h3>
+                                                    <hr />
+                                                    <div className='fileUploadU-grid'>
+                                                        <div className='fileUpload'>
+                                                            <div className="file-uploadU">
+                                                                <p className='subidor__pU'>Soltar archivo(s)</p>
+                                                                <div className='subidorU'>
+                                                                    <input
+                                                                        id="file"
+                                                                        type="file"
+                                                                        ref={fileInput}
+                                                                        onChange={forceUpdate}
+                                                                        className="file-uploadU__input"
+                                                                        multiple
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='listFile'>
+                                                            <div className='fileNames-containerU'>
+                                                                {fileNames()}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button>Enviar</button>
+                                                </div>
+                                            </li>
+                                        </>
+                                    )
+                                }) :
+                                    <>
+                                        <p>No hay reporte</p>
+                                    </>}
+                            </ul>
+                        </div>
+                    </div>
+                )
+            }) :
+                <>
+                <div className='imagen'>
+                <img src={"https://i.ytimg.com/vi/yzPiayo3Dic/mqdefault.jpg"} alt="loading" />
+                <h3 className='pito'>Sin nada que hace hijodesuchingadamadre</h3>
+
                 </div>
-            </div>
+                </>}
+
         </>
     )
 }
