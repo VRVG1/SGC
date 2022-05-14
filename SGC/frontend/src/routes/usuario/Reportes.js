@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
-
+import getReportesU from '../helpers/usuarioReporte/getReportesU.js';
 
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 const _ = require("lodash");
@@ -11,15 +11,16 @@ export const Reportes = () => {
     const fileInput = useRef(null);
     const forceUpdate = useForceUpdate();
     const [reportes, setReportes] = useState([]);
+    const [selReporte, setSelReporte] = useState(null);
 
 
     useEffect(() => {
         const getReportes = async () => {
-            const url = "http://localhost:8000/usuario/get-reportes/" + auth.user.id;
-            const res = await fetch(url);
-            const result = await res.json();
-            setReportes(result);
-        }
+            await getReportesU(auth.user.token).then((data) => {
+                setReportes(data);
+                console.log(data)
+            });
+        };
         getReportes();
     }, [auth.user.id]);//Creo que es mejor quitar esto y poner una variable x que se actualize de forma aleatoria
 
@@ -68,9 +69,12 @@ export const Reportes = () => {
                                 {Object.keys(reportes).length !== 0 ? reportes.map((reporte, index) => {
                                     return (
                                         <li key={index}>
-                                            <div className='reporte'>
-                                                <p className='reporteP'>{reporte.nombre}</p>
-                                                <p className='reporteP'>{reporte.fecha}</p>
+                                            <div className='listReportes__Reporte'
+                                            onClick={() => {
+                                                setSelReporte(index)
+                                                console.log(selReporte)
+                                                }}>
+                                                {"reporte.nombre"}
                                             </div>
                                         </li>
                                     )
