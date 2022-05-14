@@ -276,3 +276,21 @@ def borrarAs(request, pkM):
     elif request.method == 'DELETE':
         asign.delete()
         return Response({'Mensaje': 'Asignacion borrada'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def getAsignanEspecific(request, pk):
+    '''
+    Vista que permite obtener la informacion de un asignan especifico
+    (DOCENTE)
+    '''
+    try:
+        asignan = Asignan.objects.get(ID_Asignan=pk)
+    except Generan.DoesNotExist:
+        return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AsignanSerializer(asignan)
+        return Response(serializer.data, status=status.HTTP_200_OK)
