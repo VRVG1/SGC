@@ -1,4 +1,7 @@
+
 from datetime import date, datetime
+
+from usuarios.models import Usuarios
 from .models import Reportes, Generan, Alojan
 from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
 from rest_framework.views import APIView
@@ -238,6 +241,25 @@ def EnviarGeneran(request, pk):
             return Response({'Success': 'Generan creado'}, status=status.HTTP_201_CREATED)
         except:
             return Response({'Error': 'Error al crear un generan'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def GetGeneranUser(request):
+    '''
+    Vista que permite obtener todos los reportes que el usuario debe entregar
+    (DOCENTE)
+    '''
+    try:
+        usuario = Usuarios.objects.get(ID_Usuario=request.user)
+        generan = Generan.objects.filter(ID_Asignan__ID_Usuario=usuario)
+    except Generan.DoesNotExist:
+        return Response({'Error': 'No hay registros'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = GeneranSerializer(generan, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'PUT'])
