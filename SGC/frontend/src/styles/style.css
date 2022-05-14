@@ -349,7 +349,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
   
 }
 
-.fadeIn.primero-error {
+.primero-error {
   -webkit-animation-delay: 0.4s;
   -moz-animation-delay: 0.4s;
   animation-delay: 0.4s;

@@ -60,82 +60,7 @@ export const Reportes = () => {
                 <div className='cabeceraReportes'>
                     <h1 className='reportesUsuario'>Nombre del reporte</h1>
                     <hr />
-                    <p className='reportesUsuario'>En medio del camino de nuestra vida
-
-                        me encontré por una selva oscura,
-
-                        porque la recta vía era perdida.
-
-
-
-                        ¡Ay, que decir lo que era es cosa dura
-
-                        esta selva salvaje, áspera y fuerte,
-
-                        cuyo recuerdo renueva la pavura!
-
-
-
-                        Tanto es amarga, que poco lo es más la muerte:
-
-                        pero por tratar del bien que allí encontré,
-
-                        diré de las otras cosas que allí he visto.
-
-
-
-                        No sé bien redecir como allí entré;
-
-                        tan somnoliento estaba en aquel punto,
-
-                        cuando el veraz camino abandoné.
-
-
-
-                        Pero así como llegué junto al pie de un monte,
-
-                        allá donde aquel valle cesaba,
-
-                        que de pavor me había acongojado el corazón,
-                        miré en alto, y vi sus espaldas
-
-                        vestidas ya de rayos del planeta,
-
-                        que a todos lleva por toda senda recta.
-
-
-
-                        Entonces se aquietó un poco el espanto,
-
-                        que en el hueco de mi corazón había durado
-
-                        la noche entera, que pasé con tanto afán.
-
-
-
-                        Y como aquel que con angustiado resuello
-
-                        salido fuera del piélago a la orilla
-
-                        se vuelve al agua peligrosa y la mira;
-
-
-
-                        así mi alma, que aún huía,
-
-                        volvióse atrás a remirar el cruce,
-
-                        que jamás dejó a nadie con vida.
-
-
-
-                        Una vez reposado el fatigado cuerpo,
-
-                        retomé el camino por la desierta playa,
-
-                        tal que el pie firme era siempre el más bajo;
-
-                    </p>
+                    <p className='reportesUsuario'>{"mensaje"}</p>
                 </div>
                 <div className='subirArchivos'>
                     <ul>
@@ -165,26 +90,7 @@ export const Reportes = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 2</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 3</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 4</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 5</h3>
+                                <button>Enviar</button>
                             </div>
                         </li>
                     </ul>
