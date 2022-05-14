@@ -262,6 +262,24 @@ def GetGeneranUser(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def GetReporte(request, pk):
+    '''
+    Vista que permite obtener la informacion de un reporte especifico
+    (DOCENTE)
+    '''
+    try:
+        reporte = Reportes.objects.get(ID_Reporte=pk)
+    except Generan.DoesNotExist:
+        return Response({'Error': 'No hay reporte'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ReportesSerializer(reporte)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'PUT'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyDocentePermission])
