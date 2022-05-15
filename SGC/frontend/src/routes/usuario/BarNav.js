@@ -51,7 +51,6 @@ export default class Nav extends Component {
             <div>
                 {afterResponse}
                 <div className="sidebar close">
-                    {console.log(auth)}
                     <div className="logo-details">
                         <Link className='link' to="/usuario/home">
                             <i className='bx bxs-school'></i>

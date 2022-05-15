@@ -10,7 +10,6 @@ const getReportesU = async (token) =>{
     const url = "http://localhost:8000/reporte/get-generan";
     const res = await fetch(url, post);
     const result = await res.json();
-    console.log("res", res);
     return result;
 }
 
