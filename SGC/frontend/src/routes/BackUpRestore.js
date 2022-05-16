@@ -1,30 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import Loader from './Loader';
+import getBackup from './helpers/RespaldoYRestauracion/getBackup'
+import { AuthContext } from './helpers/Auth/auth-context'
 /**
  *  Componente para crear respaldo y restaurar base de datos
  * @param {*} props 
  * @returns Componente 
  */
 const BackUpRestore = props => {
+    let auth = useContext(AuthContext);
     const [loading, setLodaing] = useState(false);
 
     const useForceUpdate = () => useState()[1];
     const fileInput = useRef(null);
     const forceUpdate = useForceUpdate();
 
-    useEffect(e => {
-        window.addEventListener("keyup", clickFileInput);
-        return () => window.removeEventListener("keyup", clickFileInput);
-    });
+    //
+    //No se que hacia todo esto que comente xd
+    //
+    //useEffect(e => {
+    //    window.addEventListener("keyup", clickFileInput);
+    //    return () => window.removeEventListener("keyup", clickFileInput);
+    //});
 
-    function clickFileInput(e) {
-        if (fileInput.current.nextSibling.contains(document.activeElement)) {
-            // Bind space to trigger clicking of the button when focused
-            if (e.keyCode === 32) {
-                fileInput.current.click();
-            }
-        }
-    }
+    //function clickFileInput(e) {
+    //    if (fileInput.current.nextSibling.contains(document.activeElement)) {
+    //        // Bind space to trigger clicking of the button when focused
+    //        if (e.keyCode === 32) {
+    //            fileInput.current.click();
+    //        }
+    //    }
+    //}
 
     function onSubmit(e) {
         e.preventDefault();
@@ -49,6 +55,16 @@ const BackUpRestore = props => {
         return null;
     }
 
+    /**
+    * Funcion encargada de llamar al servidor para que le envíe un archivo
+    * comprimido con todos los datos de respaldo del servidor SGC.
+    *
+    * **/
+    function getBackupFile() {
+      setLodaing(true);
+      getBackup(auth.user.token);
+    }
+
     useEffect(() => {
         var idTimeout = 0;
         idTimeout = setTimeout(() => {
@@ -71,7 +87,7 @@ const BackUpRestore = props => {
                                 type={'button'}
                                 value="BackUp"
                                 className='Espacios'
-                                onClick={() => setLodaing(true)}
+                                onClick={ getBackupFile }
                             />
                         </form>
                     </div>
@@ -79,7 +95,7 @@ const BackUpRestore = props => {
                     <div className='conteiner-BUR__R'>
                         <h1 >Restaurar</h1>
                         <form className='conteiner-BUR_R__form' onSubmit={onSubmit}>
-                            <div class="file-upload">
+                            <div className="file-upload">
                                 <p className='subidor__p'>Soltar archivo(s)</p>
                                 <div className='subidor'>
                                     <input

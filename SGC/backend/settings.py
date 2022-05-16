@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'dbbackup',
 ]
 
 LOCAL_APPS = [
@@ -52,6 +53,7 @@ LOCAL_APPS = [
     'materias',
     'reportes',
     'persoAuth',
+    'respaldo',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
@@ -167,3 +169,12 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(),
     }
 }
+
+# Settings of django-dbbackup
+DBBACKUP_CLEANUP_KEEP = 1
+DBBACKUP_CLEANUP_KEEP_MEDIA = 1
+
+DBBACKUP_DATE_FORMAT = '%H%M%S_%d-%m-%Y'
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': 'var/backups/'}

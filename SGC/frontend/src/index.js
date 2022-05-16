@@ -208,7 +208,7 @@ function Application() {
               </RequireAuth>
             }
           >
-            /** Poner aquí las rutas para el usuario de tipo administrador **/
+    {/** Poner aquí las rutas para el usuario de tipo administrador **/}
             <Route path="home" element={<Home />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="materias" element={<Materias />} />
@@ -216,7 +216,7 @@ function Application() {
             <Route path="reportes/admin" element={<ReportesAdmin />} />
             <Route path="reportes/check" element={<ReportesCheck />} />
             <Route path="exportardatos" element={<ExportData />} />
-            <Route path="Respadoyrestauraciones" element={<BackUpRestore />} />
+            <Route path="Respaldoyrestauraciones" element={<BackUpRestore />} />
             <Route path='ajustes' element={<SysSettings />} />
           </Route>
           <Route

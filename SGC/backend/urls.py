@@ -23,4 +23,5 @@ urlpatterns = [
     path('materia/', include('materias.urls')),
     path('reporte/', include('reportes.urls')),
     path('verificacion/', include('persoAuth.urls')),
+    path('respaldo/', include('respaldo.urls')),
 ]

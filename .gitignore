@@ -1,12 +1,29 @@
+# Environment
 EnvPython/*
+
+
+# Django generated folders
 **/__pycache__/*
 **/migrations/*
 **/.lh/*
+
+
+# Dev stuff
+**/media/*
+**/var/*
 my.cnf
 secret_key.txt
+mail.txt
+
+
+# database
 SGC/*.sqlite3
+*.sqlite3
+
+
+# Celery
 celerybeat-schedule.bak
 celerybeat-schedule.dat
 celerybeat-schedule.dir
-mail.txt
-*.sqlite3
+
+
