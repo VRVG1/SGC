@@ -137,9 +137,7 @@ export const Home2 = () => {
 
         <h1>Bienvenido al Sistemas Gestor del Curso</h1>
         <p>Buenas las tenga {auth.user.nombre_usuario}</p>
-        {console.log(auth.user)}
         <p>Todo que puede no se cumplan</p>
-        {console.log(infoUser)}
         <ul>
           <li>
             Donde esta este txt poner por ejemplo, los reportes pendientes <br /> por subir de la semana o los que ya se retrasaron xd

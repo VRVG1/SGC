@@ -34,6 +34,7 @@ const BackUpRestore = props => {
 
     function onSubmit(e) {
         e.preventDefault();
+        console.log(e.loaded);
         const data = new FormData(fileInput.current.files);
     }
 
@@ -41,14 +42,17 @@ const BackUpRestore = props => {
         const { current } = fileInput;
 
         if (current && current.files.length > 0) {
+            console.log(current.files);
             let messages = [];
+            let cont = 0;
             for (let file of current.files) {
+                console.log(cont)
                 messages = messages.concat(
                     <div className='archivo'>
-                        <p className='archivoP' key={file.name}>{file.name}</p>
+                        <p className='archivoP' key={cont}>{file.name}</p>
                     </div>
-
                 );
+                cont++;
             }
             return messages;
         }
