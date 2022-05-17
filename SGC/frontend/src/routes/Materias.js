@@ -25,6 +25,7 @@ const Materias = props => {
     const [showModalModify, setShowModalModify] = useState(false);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalNoCarreras, setShowModalNoCarreras] = useState(false);
     const [materiaData, setMateriaData] = useState([]);
     const [filtrados, setFiltrados] = useState({})
     const [carreraData, setCareraData] = useState({});
@@ -73,7 +74,9 @@ const Materias = props => {
      */
     const obtenerCarrera = async () => {
         await getAllCarrera(auth.user.token).then((data) => {
-            setCareraData(data);
+            if (data.length > 0) {
+                setCareraData(data)
+            }
         });
     }
 
@@ -156,18 +159,22 @@ const Materias = props => {
      * agregar y de paso muestra el formulario de agregar
      */
     const add = () => {
-        setAddData({
-            ...addData,
-            Materia_name: '',
-            materia_carrera: carreraData[0].ID_Carrera,
-            Materia_semestre: '',
-            Materia_grupo: '',
-            Materia_ID: '',
-            Nombre_Carrera: carreraData[0].Nombre_Carrera
-        });
-        setAddMaterias('');
-        setActualizarCarrera(Math.random())
-        setShowModalAdd(true);
+        if (carreraData.length > 0) {
+            setAddData({
+                ...addData,
+                Materia_name: '',
+                materia_carrera: carreraData[0].ID_Carrera,
+                Materia_semestre: '',
+                Materia_grupo: '',
+                Materia_ID: '',
+                Nombre_Carrera: carreraData[0].Nombre_Carrera
+            });
+            setAddMaterias('');
+            setActualizarCarrera(Math.random())
+            setShowModalAdd(true);
+        } else {
+            setShowModalNoCarreras(true);
+        }
     }
     /**
      * Metodo que tienen como parametro el eventeo del input usado para guardar el valor
@@ -318,12 +325,12 @@ const Materias = props => {
 
                     </div>
 
-                    <input
+                    <button
                         type="submit"
                         className="button Materias"
                         value="Agregar"
                         onClick={add}
-                    ></input>
+                    >Agregar</button>
                     {/* Detalles */}
                     <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Materia}>
                         <form>
@@ -483,13 +490,25 @@ const Materias = props => {
                         <div className="modal group">
                             <p><strong>{statusContenido}</strong></p>
                         </div>
-                        <input
+                        <button
                             type="submit"
                             className="button Materias"
                             onClick={closeAdd}
                             value="OK"
-                        />
+                        >OK</button>
                     </Modal>
+                    {/* Modal no hay carreras */}
+                    <Modal show={showModalNoCarreras} setShow={setShowModalNoCarreras} title={"No hay carreras"}>
+                        <div className="modal group">
+                            <p>No hay carreras registradas, por favor registre una carrera</p>
+                        </div>
+                        <button
+                            type="submit"
+                            className="button Materias"
+                            onClick={() => setShowModalNoCarreras(false)}
+                        >Cerrar</button>
+                    </Modal>
+
                 </div>
             ) : (
                 <Loader />

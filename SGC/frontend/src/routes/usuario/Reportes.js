@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, useContext, useCallback } from 'rea
 import getReportesU from '../helpers/usuarioReporte/getReportesU.js';
 import getOneAsignan from '../helpers/Asignan/getOneAsignan.js';
 import getOneRepirte from '../helpers/Reportes/getOneReporte.js';
+import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
-const _ = require("lodash");
 
 export const Reportes = () => {
     let auth = useContext(AuthContext);
@@ -18,10 +18,26 @@ export const Reportes = () => {
     const [reporteName, setReporteName] = useState([]);// reporte que es uno individual para los titulos
     const [loading, setLoading] = useState(true);
     const [idsReportes, setIdsReportes] = useState([]);
+    const [materias, setMaterias] = useState([]);
 
 
 
 
+    /**
+     * useEffect para obtener las materias
+     */
+
+    useEffect(() => {
+        const getMaterias = async () => {
+            await getAllMaterias(auth.user.token).then(res => {
+                setMaterias(res);
+            });
+        }
+        getMaterias();
+    }, []);
+    /**
+     *  Funcion para obtener todos los reportes que se le asgino al maestro
+     */
     const getReporte = useCallback(
         async () => {
             await getReportesU(auth.user.token).then(res => {
@@ -30,7 +46,10 @@ export const Reportes = () => {
         },
         [],
     )
-
+    
+    /**
+     * Funcion para obtener los asginan del maestro
+     */
     const getAsignan = useCallback(
         async (id) => {
             await getOneAsignan(auth.user.token, id).then(res => {
@@ -39,7 +58,10 @@ export const Reportes = () => {
         },
         [],
     )
-
+    
+    /**
+     * Funcion para obtener los reportes individuales
+     */
     const getReporteName = useCallback(
         async (id) => {
             await getOneRepirte(auth.user.token, id).then(res => {
@@ -48,17 +70,27 @@ export const Reportes = () => {
         },
         [],
     )
+    /**
+     * Funcnion para obtener los ids de los reportes
+     */
     const setIds = reportes.map(reporte => reporte.ID_Reporte);
+
+    /**
+     * Useeffect para obtener los reportes
+     */
     useEffect(() => {
         getReporte();
     }, [getReporte]);
 
+    /**
+     * Useeffect para almacenar los datos a precentar
+     */
     useEffect(() => {
         if (reportes.length > 0) {
             let array = setIds;
             let array2 = [];
             array2 = array.filter(function(item, pos) {
-                return array.indexOf(item) == pos;
+                return array.indexOf(item) === pos;
             })
             array2.map(async (id) => {
                 await getReporteName(id);
@@ -69,7 +101,7 @@ export const Reportes = () => {
             setLoading(false);
         }
     }, [reportes]);
-
+    
     useEffect(e => {
         window.addEventListener("keyup", clickFileInput);
         return () => window.removeEventListener("keyup", clickFileInput);
@@ -145,7 +177,9 @@ export const Reportes = () => {
                                             <>
                                                 <li>
                                                     <div className='subirArchivos__module'>
-                                                        <h3>{reporte.ID_Materia + "\t" + reporte.Grado + "\t" + reporte.Grupo}</h3>
+                                                        {console.log(reporte)}
+                                                        {console.log(materias)}
+                                                        <h3>{materias.filter(materia => (materia.ID_Materia === reporte.ID_Materia)) + "\t" + reporte.Grado + "\t" + reporte.Grupo}</h3>
                                                         <hr />
                                                         <div className='fileUploadU-grid'>
                                                             <div className='fileUpload'>

@@ -71,8 +71,12 @@ const Usuarios = props => {
    */
   const obtenerUsuarios = async () => {
     await getAllUsuarios(auth.user.token).then((data) => {
-      setUserData(data);
-      setFiltrados(data)
+      data.map((user) => {
+        if (user.Tipo_Usuario === "Docente") {
+          setUserData(data);
+          setFiltrados(data)
+        }
+      })
     })
   }
   /**
@@ -131,7 +135,7 @@ const Usuarios = props => {
       Nombre_Usuario: Nombre_Usuario,
       Tipo_Usuario: Tipo_Usuario,
       username: username,
-      password: "password"
+      password: ""
     });
     setUserActualizar('');
     setShowModalModify(true);
@@ -169,7 +173,7 @@ const Usuarios = props => {
       Nombre_Usuario: user.Nombre_Usuario,
       Tipo_Usuario: user.Tipo_Usuario,
       username: user.ID_Usuario.username,
-      password: "password" //No se si poner la contra xd
+      password: "" //No se si poner la contra xd
     });
     setUserActualizar('');
 

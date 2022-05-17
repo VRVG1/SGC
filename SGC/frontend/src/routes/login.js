@@ -15,7 +15,8 @@ const ErrorMessage = (props) => {
   if(loginContext.status?.failureStatus) {
     errorContainer = (
       <div className="primero-error">
-        <p>{ loginContext.status.error.non_field_errors }</p>
+        {/* <p>{ loginContext.status.error.non_field_errors }</p> */}
+        <p>Usuario o contraseña incorrectos</p>
       </div>
     );
   } else {
