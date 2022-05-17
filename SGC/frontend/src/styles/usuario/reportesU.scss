@@ -184,3 +184,11 @@ h3{
     flex-direction: column;
     text-align: center;
 }
+
+.buttons_selector {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: space-around;
+}

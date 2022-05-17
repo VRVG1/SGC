@@ -141,21 +141,21 @@ export const Home2 = () => {
     if (hour >= 6 && hour < 12) {
       saludo = (
         <>
-          <h1>Buenos días {infoUser.Nombre}</h1>
+          <h1>Buenos días {infoUser.Nombre_Usuario}</h1>
         </>
       )
     }
     else if (hour >= 12 && hour < 18) {
       saludo = (
         <>
-          <h1>Buenas tardes {infoUser.Nombre}</h1>
+          <h1>Buenas tardes {infoUser.Nombre_Usuario}</h1>
         </>
       )
     }
     else {
       saludo = (
         <>
-          <h1>Buenas noches {infoUser.Nombre}</h1>
+          <h1>Buenas noches {infoUser.Nombre_Usuario}</h1>
         </>
       )
     }
@@ -176,6 +176,7 @@ export const Home2 = () => {
         disponible === infoUser.Permiso ? (
           <>
             <div className='usuario-container'>
+              {console.log(infoUser)}
               <div className='usuario-grid'>
                 <div className='usuario-grid__1'>
                   <div className='tabla-usr'>
