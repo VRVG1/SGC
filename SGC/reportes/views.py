@@ -307,9 +307,14 @@ def CrearGeneran(request, pk):
         generan_serializer = GeneranSerializer(generan)
         return Response(generan_serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer_class = GeneranSerializer(generan, data=request.data)
+        data = {
+            'Estatus': estatus,
+            'Sememestre': generan.Sememestre,
+            'ID_Asignan': generan.ID_Asignan.ID_Asignan,
+            'ID_Reporte': generan.ID_Reporte.ID_Reporte,
+        }
+        serializer_class = GeneranSerializer(generan, data=data)
         if serializer_class.is_valid():
-            serializer_class.validated_data['Estatus'] = estatus
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
         print(serializer_class.errors)

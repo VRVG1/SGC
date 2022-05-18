@@ -1,5 +1,4 @@
 from urllib.request import Request
-from html5lib import serialize
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -124,6 +123,32 @@ def actualizar(request, pk=None):
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_200_OK)
     return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def updateLoginInfo(request, pk):
+    '''
+    Vista que permite cambiar los datos necesarios para que el docente se loguee, (usuario y contraseña)
+    (ADMIN Y DONCETE)
+    '''
+    try:
+        usuario = Usuarios.objects.get(PK=pk)
+        user = User.objects.get(username=usuario.ID_Usuario.username)
+    except Usuarios.DoesNotExist:
+        return Response({'ERROR': 'El usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        user.username = request.data['username']
+        user.set_password(request.data['password'])
+        try:
+            user.save()
+            usuario = Usuarios.objects.get(PK=pk)
+            serializer = UsuarioSerializer(usuario)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response({'ERROR', 'Hubo problemas'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 @api_view(['GET'])
