@@ -1,12 +1,107 @@
-import React, { useEffect, useRef, useState } from 'react'
-
-const _ = require("lodash");
+import React, { useEffect, useRef, useState, useContext, useCallback } from 'react'
+import getReportesU from '../helpers/usuarioReporte/getReportesU.js';
+import getOneAsignan from '../helpers/Asignan/getOneAsignan.js';
+import getOneRepirte from '../helpers/Reportes/getOneReporte.js';
+import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
+import { AuthContext } from "../helpers/Auth/auth-context.js";
+import Loader from '../Loader.js';
 
 export const Reportes = () => {
+    let auth = useContext(AuthContext);
+
     const useForceUpdate = () => useState()[1];
     const fileInput = useRef(null);
     const forceUpdate = useForceUpdate();
+    const [reportes, setReportes] = useState([]);// reportes son todos los reportes que se generaron
+    const [selReporte, setSelReporte] = useState(null);// selReporte es el reporte seleccionado para la vista
+    const [asignan, setAsignan] = useState([]);// asignan son todas las asignan que se generaron
+    const [reporteName, setReporteName] = useState([]);// reporte que es uno individual para los titulos
+    const [loading, setLoading] = useState(true);
+    const [idsReportes, setIdsReportes] = useState([]);
+    const [materias, setMaterias] = useState([]);
 
+
+
+
+    /**
+     * useEffect para obtener las materias
+     */
+
+    useEffect(() => {
+        const getMaterias = async () => {
+            await getAllMaterias(auth.user.token).then(res => {
+                setMaterias(res);
+            });
+        }
+        getMaterias();
+    }, []);
+    /**
+     *  Funcion para obtener todos los reportes que se le asgino al maestro
+     */
+    const getReporte = useCallback(
+        async () => {
+            await getReportesU(auth.user.token).then(res => {
+                setReportes(res);
+            });
+        },
+        [],
+    )
+    
+    /**
+     * Funcion para obtener los asginan del maestro
+     */
+    const getAsignan = useCallback(
+        async (id) => {
+            await getOneAsignan(auth.user.token, id).then(res => {
+                setAsignan(arrays => [...arrays, res]);
+            });
+        },
+        [],
+    )
+    
+    /**
+     * Funcion para obtener los reportes individuales
+     */
+    const getReporteName = useCallback(
+        async (id) => {
+            await getOneRepirte(auth.user.token, id).then(res => {
+                setReporteName(arrays => [...arrays, res]);
+            });
+        },
+        [],
+    )
+    /**
+     * Funcnion para obtener los ids de los reportes
+     */
+    const setIds = reportes.map(reporte => reporte.ID_Reporte);
+
+    /**
+     * Useeffect para obtener los reportes
+     */
+    useEffect(() => {
+        getReporte();
+    }, [getReporte]);
+
+    /**
+     * Useeffect para almacenar los datos a precentar
+     */
+    useEffect(() => {
+        if (reportes.length > 0) {
+            let array = setIds;
+            let array2 = [];
+            array2 = array.filter(function(item, pos) {
+                return array.indexOf(item) === pos;
+            })
+            array2.map(async (id) => {
+                await getReporteName(id);
+            })
+            reportes.map(async (reporte) => {
+                await getAsignan(reporte.ID_Asignan);
+            });
+            setLoading(false);
+        }
+    }, [reportes]);
+    
     useEffect(e => {
         window.addEventListener("keyup", clickFileInput);
         return () => window.removeEventListener("keyup", clickFileInput);
@@ -14,7 +109,6 @@ export const Reportes = () => {
 
     function clickFileInput(e) {
         if (fileInput.current.nextSibling.contains(document.activeElement)) {
-            // Bind space to trigger clicking of the button when focused
             if (e.keyCode === 32) {
                 fileInput.current.click();
             }
@@ -45,151 +139,95 @@ export const Reportes = () => {
     }
     return (
         <>
-            <div className='reportesUser-Container'>
-                <div className='listReportes'>
-                    <ul>
-                        {_.times(20, (i) => (
-                            <li>
-                                <div className='listReportes__Reporte'>
-                                    Reporte {i + 1}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className='cabeceraReportes'>
-                    <h1 className='reportesUsuario'>Nombre del reporte</h1>
-                    <hr />
-                    <p className='reportesUsuario'>En medio del camino de nuestra vida
-
-                        me encontré por una selva oscura,
-
-                        porque la recta vía era perdida.
-
-
-
-                        ¡Ay, que decir lo que era es cosa dura
-
-                        esta selva salvaje, áspera y fuerte,
-
-                        cuyo recuerdo renueva la pavura!
-
-
-
-                        Tanto es amarga, que poco lo es más la muerte:
-
-                        pero por tratar del bien que allí encontré,
-
-                        diré de las otras cosas que allí he visto.
-
-
-
-                        No sé bien redecir como allí entré;
-
-                        tan somnoliento estaba en aquel punto,
-
-                        cuando el veraz camino abandoné.
-
-
-
-                        Pero así como llegué junto al pie de un monte,
-
-                        allá donde aquel valle cesaba,
-
-                        que de pavor me había acongojado el corazón,
-                        miré en alto, y vi sus espaldas
-
-                        vestidas ya de rayos del planeta,
-
-                        que a todos lleva por toda senda recta.
-
-
-
-                        Entonces se aquietó un poco el espanto,
-
-                        que en el hueco de mi corazón había durado
-
-                        la noche entera, que pasé con tanto afán.
-
-
-
-                        Y como aquel que con angustiado resuello
-
-                        salido fuera del piélago a la orilla
-
-                        se vuelve al agua peligrosa y la mira;
-
-
-
-                        así mi alma, que aún huía,
-
-                        volvióse atrás a remirar el cruce,
-
-                        que jamás dejó a nadie con vida.
-
-
-
-                        Una vez reposado el fatigado cuerpo,
-
-                        retomé el camino por la desierta playa,
-
-                        tal que el pie firme era siempre el más bajo;
-
-                    </p>
-                </div>
-                <div className='subirArchivos'>
-                    <ul>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 1</h3>
-                                <hr />
-                                <div className='fileUploadU-grid'>
-                                    <div className='fileUpload'>
-                                        <div className="file-uploadU">
-                                            <p className='subidor__pU'>Soltar archivo(s)</p>
-                                            <div className='subidorU'>
-                                                <input
-                                                    id="file"
-                                                    type="file"
-                                                    ref={fileInput}
-                                                    onChange={forceUpdate}
-                                                    className="file-uploadU__input"
-                                                    multiple
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='listFile'>
-                                        <div className='fileNames-containerU'>
-                                            {fileNames()}
-                                        </div>
-                                    </div>
-                                </div>
+            {loading === false ?
+                (<>
+                    {Object.keys(reportes).length !== 0 ? <>
+                        <div className='reportesUser-Container'>
+                            <div className='listReportes'>
+                                <ul>
+                                    {Object.keys(reporteName).length !== 0 ? reporteName.map((reporte, index) => {
+                                        return (
+                                            <li key={index}>
+                                                <div className='listReportes__Reporte'
+                                                    onClick={() => {
+                                                        setSelReporte(reporteName[index]);
+                                                    }}>
+                                                    {reporte.Nombre_Reporte}
+                                                </div>
+                                            </li>
+                                        )
+                                    }) :
+                                        <>
+                                        </>}
+                                </ul>
                             </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 2</h3>
+                            <div className='cabeceraReportes'>
+                                {selReporte !== null ?
+                                    <>
+                                        <h1 className='reportesUsuario'>{selReporte.Nombre_Reporte}</h1>
+                                        <hr />
+                                        <p className='reportesUsuario'>{selReporte.Descripcion}</p>
+
+                                    </> : <></>}
                             </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 3</h3>
+                            <div className='subirArchivos'>
+                                <ul>
+                                    {(Object.keys(asignan).length !== 0 & selReporte !== null) ? asignan.map((reporte, index) => {
+                                        return (
+                                            <>
+                                                <li>
+                                                    <div className='subirArchivos__module'>
+                                                        {console.log(reporte)}
+                                                        {console.log(materias)}
+                                                        <h3>{materias.filter(materia => (materia.ID_Materia === reporte.ID_Materia)) + "\t" + reporte.Grado + "\t" + reporte.Grupo}</h3>
+                                                        <hr />
+                                                        <div className='fileUploadU-grid'>
+                                                            <div className='fileUpload'>
+                                                                <div className="file-uploadU">
+                                                                    <p className='subidor__pU'>Soltar archivo(s)</p>
+                                                                    <div className='subidorU'>
+                                                                        <input
+                                                                            id="file"
+                                                                            type="file"
+                                                                            ref={fileInput}
+                                                                            onChange={forceUpdate}
+                                                                            className="file-uploadU__input"
+                                                                            multiple
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className='listFile'>
+                                                                <div className='fileNames-containerU'>
+                                                                    {fileNames()}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <button>Enviar</button>
+                                                    </div>
+                                                </li>
+                                            </>
+                                        )
+                                    }) :
+                                        <>
+                                        </>}
+                                </ul>
                             </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 4</h3>
+                        </div>
+                    </> :
+                        <>
+                            <div className='imagen'>
+                                <img src={"https://i.ytimg.com/vi/yzPiayo3Dic/mqdefault.jpg"} alt="loading" />
+                                <h3 className='pito'>Sin nada que hace hijodesuchingadamadre</h3>
+
                             </div>
-                        </li>
-                        <li>
-                            <div className='subirArchivos__module'>
-                                <h3>Materia 5</h3>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                        </>}
+                </>) :
+                (<>
+                    <Loader />
+                </>)}
+
+
         </>
     )
 }

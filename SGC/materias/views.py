@@ -107,7 +107,7 @@ class AsignarMateriaView(APIView):
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
+        
         if serializer.is_valid():
             usuario = serializer.validated_data.get('ID_Usuario')
             materia = serializer.validated_data.get('ID_Materia')

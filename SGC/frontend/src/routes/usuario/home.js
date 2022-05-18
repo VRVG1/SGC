@@ -6,8 +6,10 @@ import getAllMaterias from '../helpers/Materias/getAllMaterias'
 import postAsigna from '../helpers/Asignan/postAsignan.js'
 import { AuthContext } from '../helpers/Auth/auth-context'
 import Modal from '../modal/Modal'
+import getInfoUser from '../helpers/Usuarios/getInfoUser'
 export const Home2 = () => {
   let auth = useContext(AuthContext);
+  const [infoUser, setInfoUser] = useState([]);
   const [disponible, setDisponible] = useState(true);
   const [carreras, setCarreras] = useState([]);
   const [materias, setMaterias] = useState([]);
@@ -22,15 +24,16 @@ export const Home2 = () => {
     semestre: '',
   });
   const [dataTable, setDataTable] = useState([]);
-
+  let date = new Date();
+  let hour = date.getHours();
 
   /**
    * Hacer el llamado al los helper para obtener las carreras y materias
    * 
    */
   useEffect(() => {
-    const obtenerMateria = () => {
-      getAllMaterias(auth.user.token).then((data) => {
+    const obtenerMateria = async () => {
+      await getAllMaterias(auth.user.token).then((data) => {
         setMaterias([{
           Carrera: "",
           ID_Materia: "",
@@ -38,19 +41,30 @@ export const Home2 = () => {
         }, ...data]);
       });
     };
-    const obtenerCarrera = () => {
-      getAllCarrera(auth.user.token).then((data) => {
+    const obtenerCarrera = async () => {
+      await getAllCarrera(auth.user.token).then((data) => {
         setCarreras([{
           ID_Carrera: "",
           Nombre_Carrera: ""
         }, ...data]);
       });
     }
+    const getInforUser = async () => {
+      await getInfoUser(auth.user.token).then((data) => {
+        setInfoUser(data);
+      }
+      ).catch((err) => {
+        console.log(err);
+      }
+      );
+    }
     obtenerCarrera();
     obtenerMateria();
+    getInforUser();
     return () => {
       setCarreras([]);
       setMaterias([]);
+      setInfoUser([]);
     }
   }, []);
 
@@ -107,15 +121,47 @@ export const Home2 = () => {
    */
   const mandarDatos = async () => {
     dataTable.map(async (data) => {
-      await postAsigna(data, auth.user.token, auth.user.user_id);
+      await postAsigna(data, auth.user.token, infoUser.PK);
     });
     setShowModalDatosEnviados(true);
   }
-
+  /**
+   * Metodo para finalizar el proceso de seleccion de materias
+   */
   const todoListo = () => {
     setShowModalDatosEnviados(false);
     setDisponible(false);
   }
+  /**
+   * Metodo para conseguir la fecha y mandar el saludo
+   * @returns {JSX}
+   */
+  const Saludo = () => {
+    let saludo;
+    if (hour >= 6 && hour < 12) {
+      saludo = (
+        <>
+          <h1>Buenos días {infoUser.Nombre}</h1>
+        </>
+      )
+    }
+    else if (hour >= 12 && hour < 18) {
+      saludo = (
+        <>
+          <h1>Buenas tardes {infoUser.Nombre}</h1>
+        </>
+      )
+    }
+    else {
+      saludo = (
+        <>
+          <h1>Buenas noches {infoUser.Nombre}</h1>
+        </>
+      )
+    }
+    return saludo;
+  }
+  
 
 
   return (
@@ -123,21 +169,11 @@ export const Home2 = () => {
       <div className='usuario-container'>
 
         <h1>Bienvenido al Sistemas Gestor del Curso</h1>
-        <p>Buenas las tenga {auth.user.nombre_usuario}</p>
-        {console.log(auth.user)}
-        <p>Todo que puede no se cumplan</p>
-        <ul>
-          <li>
-            Donde esta este txt poner por ejemplo, los reportes pendientes <br /> por subir de la semana o los que ya se retrasaron xd
-          </li>
-          <li>
-            El div que esta abajo que se desaparesca una ya que termine de <br />seleccionar materias o que se le pase el tiempo
-          </li>
-        </ul>
+        <Saludo/>
       </div>
       {
         /* Div para la seleccion de materias */
-        disponible === auth.user.permiso ? (
+        disponible === infoUser.Permiso ? (
           <>
             <div className='usuario-container'>
               <div className='usuario-grid'>
@@ -251,33 +287,33 @@ export const Home2 = () => {
               <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Confirmación"}>
                 <p className='alertMSM'>Estas seguro que quieres seleccionar estas materias</p>
                 <div className='tabla-usr'>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Carrera</th>
-                          <th>Materia</th>
-                          <th>Grupo</th>
-                          <th>Semestre</th>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Carrera</th>
+                        <th>Materia</th>
+                        <th>Grupo</th>
+                        <th>Semestre</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dataTable.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.carrera_ID}</td>
+                          <td>{data.materia_ID}</td>
+                          <td>{data.grupo}</td>
+                          <td>{data.semestre}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {dataTable.map((data, index) => (
-                          <tr key={index}>
-                            <td>{data.carrera_ID}</td>
-                            <td>{data.materia_ID}</td>
-                            <td>{data.grupo}</td>
-                            <td>{data.semestre}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <button onClick={mandarDatos}>Confirmar</button>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button onClick={mandarDatos}>Confirmar</button>
               </Modal>
 
               <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={"Datos Enviados"}>
-              <p className='alertMSM'>Materias resgistradas</p>
-              <button onClick={todoListo}>Confirmar</button>
+                <p className='alertMSM'>Materias resgistradas</p>
+                <button onClick={todoListo}>Confirmar</button>
               </Modal>
             </div>
           </>) : (<></>)

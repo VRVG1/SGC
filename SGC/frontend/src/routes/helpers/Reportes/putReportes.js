@@ -1,8 +1,8 @@
-import AuthPostBasics from '../Auth/AuthPostBasis.js';
+import AuthPostBasis from '../Auth/AuthPostBasis.js';
 
-const postAsigna = async (dataPost, token) => {
-    let post = {
-        method: 'POST',
+const putReportes = async (token, id, dataPost) => {
+    let put = {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             Nombre_Reporte: dataPost.Repostes_name,
@@ -11,10 +11,9 @@ const postAsigna = async (dataPost, token) => {
             Opcional: dataPost.Repostes_obligatorio,
         })
     };
-    post = AuthPostBasics(token, post);
-    const res = await fetch('http://localhost:8000/reporte/save-reporte', post);
+    put = AuthPostBasis(token, put);
+    const res = await fetch("http://localhost:8000/reporte/update-reporte/" + id, put);
     const result = res.statusText;
     return result;
 }
-
-export default postAsigna;
+export default putReportes;

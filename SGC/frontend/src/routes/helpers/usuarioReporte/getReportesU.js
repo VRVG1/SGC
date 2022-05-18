@@ -1,17 +1,16 @@
 import AuthPostBasics from '../Auth/AuthPostBasis.js'; 
-const deleteUser = async (id, token) =>{
+const getReportesU = async (token) =>{
     let post = {
-        method: 'DELETE',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         }
     };
     post = AuthPostBasics(token, post);
-    const url = "http://localhost:8000/usuario/delete-user/" + id;
+    const url = "http://localhost:8000/reporte/get-generan";
     const res = await fetch(url, post);
-    const result = res.statusText;
-    console.log("res", res);
+    const result = await res.json();
     return result;
 }
 
-export default deleteUser;
+export default getReportesU;

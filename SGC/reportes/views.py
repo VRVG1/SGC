@@ -119,6 +119,7 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
+    parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer

@@ -39,6 +39,9 @@ export const OlvideContra = () => {
           >Log In</button></Link>
 
         </div>
+        <div id="footer">
+            
+        </div>
       </div>
       <Outlet />
     </div>

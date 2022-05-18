@@ -73,7 +73,6 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Reportes</span></span></li>
-                                <Link className='link' to="/usuario/reportes"><li className='li'>Reportes</li></Link>
                             </ul>
                         </li>
 

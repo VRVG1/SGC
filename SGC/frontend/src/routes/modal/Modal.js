@@ -9,10 +9,10 @@ const Modal = props => {
                 props.setShow(false);
             }
         };
-        window.addEventListener('click', clickOutsideContent);
-        return () => {
-            window.removeEventListener('click', clickOutsideContent);
-        };
+        // window.addEventListener('click', clickOutsideContent);
+        // return () => {
+        //     window.removeEventListener('click', clickOutsideContent);
+        // };
     }, [props])
 
     return (

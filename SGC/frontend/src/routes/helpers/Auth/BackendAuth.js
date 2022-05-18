@@ -1,6 +1,7 @@
 export const BackendAuthProvider = {
   isAuthenticated: false,
-  signin:(formData, callback) => {
+  signin:(formData, callback, failureCallback) => {
+    let responseStatus = undefined;
     const post = {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
@@ -12,10 +13,18 @@ export const BackendAuthProvider = {
 
     fetch('http://localhost:8000/verificacion/token-auth/', post)
       .then(response => {
+        responseStatus = response.status;
         return response.json();
       })
       .then(data => {
-        callback(data);
+        if (responseStatus === 400) {
+          failureCallback(data);
+        } else if (responseStatus === 200){
+          callback(data);
+        }
+      })
+      .catch(error => {
+        failureCallback(error)
       });
   },
   signout: async (callback) => {
