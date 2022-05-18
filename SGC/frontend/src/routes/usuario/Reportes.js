@@ -7,6 +7,7 @@ import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
 import _ from 'lodash';
+import postReportes from '../helpers/usuarioReporte/postReportes.js';
 
 export const Reportes = () => {
     let auth = useContext(AuthContext);
@@ -18,17 +19,19 @@ export const Reportes = () => {
     const [asignan, setAsignan] = useState([]);// asignan son todas las asignan que se generaron
     const [reporteName, setReporteName] = useState([]);// reporte que es uno individual para los titulos
     const [loading, setLoading] = useState(true);
+    const [reportesFiltrados, setReportesFiltrados] = useState([]);// reportesFiltrados son los reportes filtrados
     const [idsReportes, setIdsReportes] = useState([]);
     const [materias, setMaterias] = useState([]);
     const [carreras, setCarreras] = useState([]);
     const [selMateria, setSelMateria] = useState({
         index: null,
         ID_Asignan: null,
+        ID_Reporte: null,
+        ID_Generacion: null,
     });
 
 
     const [files, setFiles] = useState('');
-    const [formData, setFormData] = useState(new FormData());
     const [filesTamano, setFilesTamano] = useState(true);
     const [fileProgeso, setFileProgeso] = useState(false);
     const [fileResponse, setFileResponse] = useState(null);
@@ -37,6 +40,15 @@ export const Reportes = () => {
         setFiles(e.target.files);
 
     }
+    const uploadFile = async (formData) => {
+        setFileProgeso(true);
+        await postReportes(auth.user.token, formData)
+            .then(res => {
+                setFileResponse(res);
+                setFileProgeso(false);
+            })
+    }
+
 
     const fileSummit = (e) => {
         e.preventDefault();
@@ -45,11 +57,14 @@ export const Reportes = () => {
         setFileResponse(null);
         const formData = new FormData();
         for (var i = 0; i < files.length; i++) {
-            formData.append(`file${i}`, files[i]);
+            formData.append("Path_PDF", files[i]);
+            formData.append("ID_Generacion", selMateria.ID_Generacion);
+            uploadFile(formData);
         }
-        for (var key of formData.entries()) {
-            console.log(key[0] + ',' + key[1]);
-        }
+        // for (var key of formData.entries()) {
+        //     uploadFile(key)
+        //     console.log(key[0] + ',' + key[1]);
+        // }
         //Aqui hacer el fech para mandar los archivos?
         //setFormData(formData);
     }
@@ -127,6 +142,8 @@ export const Reportes = () => {
      */
     const setIds = reportes.map(reporte => reporte.ID_Reporte);
 
+    const setIdsAsignan = reportes.map(reportes => reportes.ID_Asignan);
+
     /**
      * Useeffect para obtener los reportes
      */
@@ -140,20 +157,37 @@ export const Reportes = () => {
     useEffect(() => {
         if (reportes.length > 0) {
             let array = setIds;
+            let arrayAsignan = setIdsAsignan;
+            let arrayAsignan2 = [];
             let array2 = [];
             array2 = array.filter(function (item, pos) {
                 return array.indexOf(item) === pos;
             })
+            arrayAsignan2 = arrayAsignan.filter(function (item, pos) {
+                return arrayAsignan.indexOf(item) === pos;
+            })
             array2.map(async (id) => {
                 await getReporteName(id);
             })
-            reportes.map(async (reporte) => {
-                await getAsignan(reporte.ID_Asignan);
+            arrayAsignan2.map(async (id) => {
+                await getAsignan(id);
             });
             setLoading(false);
         }
     }, [reportes]);
 
+    const filtrarReportes = (index) => {
+        setSelReporte(reporteName[index]);
+        let array = reportes.filter(reporte => (reporte.ID_Reporte === reporteName[index].ID_Reporte));
+        setReportesFiltrados(array)
+        setSelMateria({
+            ...selMateria,
+            ID_Asignan: array[index].ID_Asignan,
+            ID_Generacion: array[index].ID_Generacion,
+            ID_Reporte: array[index].ID_Reporte,
+            index: index
+        });
+    }
     const TituloMateria = () => {
         let titulo;
         if (selMateria.ID_Asignan !== null) {
@@ -173,13 +207,17 @@ export const Reportes = () => {
     }
 
     const siguiente = () => {
-        if (selMateria.index < reportes.length - 1) {
+        if (selMateria.index < reportesFiltrados.length - 1) {
             setFiles("");
             setSelMateria({
                 ...selMateria,
                 index: selMateria.index + 1,
-                ID_Asignan: reportes[selMateria.index + 1].ID_Asignan,
+                ID_Asignan: reportesFiltrados[selMateria.index + 1].ID_Asignan,
+                ID_Reporte: reportesFiltrados[selMateria.index + 1].ID_Reporte,
+                ID_Generacion: reportesFiltrados[selMateria.index + 1].ID_Generacion,
             });
+        } else {
+            console.log("termino")
         }
     }
 
@@ -189,8 +227,12 @@ export const Reportes = () => {
             setSelMateria({
                 ...selMateria,
                 index: selMateria.index - 1,
-                ID_Asignan: reportes[selMateria.index - 1].ID_Asignan,
+                ID_Asignan: reportesFiltrados[selMateria.index - 1].ID_Asignan,
+                ID_Reporte: reportesFiltrados[selMateria.index - 1].ID_Reporte,
+                ID_Generacion: reportesFiltrados[selMateria.index - 1].ID_Generacion,
             });
+        } else {
+            console.log("terminoAtras")
         }
     }
     return (
@@ -205,14 +247,7 @@ export const Reportes = () => {
                                         return (
                                             <li key={index}>
                                                 <div className='listReportes__Reporte'
-                                                    onClick={() => {
-                                                        setSelReporte(reporteName[index]);
-                                                        setSelMateria({
-                                                            ...selMateria, 
-                                                            ID_Asignan : reportes[index].ID_Asignan,
-                                                            index : index
-                                                            });
-                                                    }}>
+                                                    onClick={() => { filtrarReportes(index) }}>
                                                     {reporte.Nombre_Reporte}
                                                 </div>
                                             </li>
@@ -262,52 +297,10 @@ export const Reportes = () => {
                                             >Enviar</button>
                                         </div>
                                         <div className='buttons_selector'>
-                                            <button onClick={anterior}>Anterior</button>
-                                            <button onClick={siguiente}>Siguiente</button>
+                                            <button id="anterior" onClick={anterior}>Anterior</button>
+                                            <button id="anterior" onClick={siguiente}>Siguiente</button>
                                         </div>
                                     </> : <></>}
-                                {/* <ul>
-                                    {(Object.keys(asignan).length !== 0 & selReporte !== null) ? asignan.map((reporte, index) => {
-                                        return (
-                                            <>
-                                                <li>
-                                                    <div className='subirArchivos__module'>
-                                                        <h3>
-                                                            {carreras.filter(carrera => (carrera.ID_Carrera === reporte.ID_Carrera))[0].Nombre_Carrera + "\t" +materias.filter(materia => (materia.ID_Materia === reporte.ID_Materia))[0].Nombre_Materia + "\t" + reporte.Grado + "\t" + reporte.Grupo}
-                                                        </h3>
-                                                        <hr />
-                                                        <div className='fileUploadU-grid'>
-                                                            <div className='fileUpload'>
-                                                                <div className="file-uploadU">
-                                                                    <p className='subidor__pU'>Soltar archivo(s)</p>
-                                                                    <div className='subidorU'>
-                                                                        <input
-                                                                            id={index}
-                                                                            type="file"
-                                                                            ref={refe}
-                                                                            onChange={uploadFileHandler}
-                                                                            className="file-uploadU__input"
-                                                                            multiple/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className='listFile'>
-                                                                <div className='fileNames-containerU'>
-                                                                    <FilesShow indice={index} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <button
-                                                        onClick={fileSummit}
-                                                        >Enviar</button>
-                                                    </div>
-                                                </li>
-                                            </>
-                                        )
-                                    }) :
-                                        <>
-                                        </>}
-                                </ul> */}
                             </div>
                         </div>
                     </> :

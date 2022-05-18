@@ -101,7 +101,6 @@ class OnlySaveReportesView(APIView):
     '''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
@@ -119,17 +118,19 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
-    parser_classes = [MultiPartParser, FileUploadParser]
+    parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
+        print(request)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 

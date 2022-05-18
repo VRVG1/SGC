@@ -35,6 +35,7 @@ import { AuthContext } from './routes/helpers/Auth/auth-context';
 import { LoginContext } from './routes/helpers/Auth/login-context';
 import OlvideContra from './routes/OlivdeContra';
 import { Reportes } from './routes/usuario/Reportes';
+import UserSettings from './routes/usuario/UserSetting';
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -231,6 +232,7 @@ function Application() {
             /** Poner aquí las rutas para el usuario de tipo docente **/
             <Route path='home' element={<Home2 />}/>
             <Route path='reportes' element={<Reportes />}/>
+            <Route path='ajustes' element={<UserSettings />}/>
           </Route>
           <Route
             path="/supervisor"
