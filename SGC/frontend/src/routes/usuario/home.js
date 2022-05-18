@@ -168,8 +168,8 @@ export const Home2 = () => {
     <div className='usuario-container-parent'>
       <div className='usuario-container'>
 
-        <h1>Bienvenido al Sistemas Gestor del Curso</h1>
         <Saludo/>
+        <h1>Bienvenido al Sistema Gestor del Curso</h1>
       </div>
       {
         /* Div para la seleccion de materias */
