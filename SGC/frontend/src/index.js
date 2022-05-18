@@ -49,6 +49,7 @@ import "./styles/BackUpRestore.scss"
 import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
 import "./styles/usuario/reportesU.scss"
+import "./styles/usuario/UserSetting.scss"
 
 /**
   * Funcion que facilita el acceso al contexto 'AuthContext'.

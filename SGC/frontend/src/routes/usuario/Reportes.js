@@ -53,9 +53,6 @@ export const Reportes = () => {
 
     const fileSummit = async (e) => {
         e.preventDefault();
-        // setFilesTamano(true);
-        // setFileProgeso(true);
-        // setFileResponse(null);
         setLoading(true)
         const formData = new FormData();
         for (var i = 0; i < files.length; i++) {
@@ -63,16 +60,10 @@ export const Reportes = () => {
             formData.append("ID_Generacion", selMateria.ID_Generacion);
             await uploadFile(formData);
         }
-        // for (var key of formData.entries()) {
-        //     uploadFile(key)
-        //     console.log(key[0] + ',' + key[1]);
-        // }
-        //Aqui hacer el fech para mandar los archivos?
-        //setFormData(formData);
         console.log(selMateria.ID_Generacion)
         await putGeneran(auth.user.token, selMateria.ID_Generacion);
         setLoading(false);
-        
+
     }
 
     const FilesShow = (props) => {
@@ -304,8 +295,28 @@ export const Reportes = () => {
                                             >Enviar</button>
                                         </div>
                                         <div className='buttons_selector'>
-                                            <button id="anterior" onClick={anterior}>Anterior</button>
-                                            <button id="anterior" onClick={siguiente}>Siguiente</button>
+                                            <button className='buttons' id="anterior" onClick={anterior}>Anterior</button>
+                                            <div className='dots'>
+                                                <div className='dot actual'>
+
+                                                </div>
+                                                <div className='dot tarde'>
+
+                                                </div>
+
+                                                <div className='dot'>
+
+                                                </div>
+
+                                                <div className='dot noEntregado'>
+
+                                                </div>
+                                                <div className='dot trucha'>
+
+                                                </div>
+
+                                            </div>
+                                            <button className='buttons' id="anterior" onClick={siguiente}>Siguiente</button>
                                         </div>
                                     </> : <></>}
                             </div>

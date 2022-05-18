@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserSettings = () => {
     return (
-        <div className='containerMaterias'>
+        <div className='containerUserSettings'>
             <h1>Ajustes de Usuarios</h1>
             <form>
                 <div className="form group modal Usuario">
@@ -10,14 +10,14 @@ const UserSettings = () => {
                         type="text"
                         id="usuario-name"
                         name="Nombre_Usuario"
-                        className="inputUsuarios"
+                        className="inputUsuarioSettings"
                         // value={dataInput.Nombre_Usuario}
                         // onChange={handleInputOnChange}
                         required
                     />
-                    <span className="highlight Usuarios"></span>
-                    <span className="bottomBar Usuarios"></span>
-                    <label className="Usuarios">Nombre de Usuario</label>
+                    <span className="highlight UsuarioSettings"></span>
+                    <span className="bottomBar UsuarioSettings"></span>
+                    <label className="UsuarioSettings">Nombre de Usuario</label>
                 </div>
 
                 <div className="form group modal Usuario">
@@ -25,14 +25,14 @@ const UserSettings = () => {
                         type="text"
                         id="usuario-name"
                         name="Nombre_Usuario"
-                        className="inputUsuarios"
+                        className="inputUsuarioSettings"
                         // value={dataInput.Nombre_Usuario}
                         // onChange={handleInputOnChange}
                         required
                     />
-                    <span className="highlight Usuarios"></span>
-                    <span className="bottomBar Usuarios"></span>
-                    <label className="Usuarios">Correo</label>
+                    <span className="highlight UsuarioSettings"></span>
+                    <span className="bottomBar UsuarioSettings"></span>
+                    <label className="UsuarioSettings">Correo</label>
                 </div>
 
                 <div className="form group modal Usuario">
@@ -40,14 +40,14 @@ const UserSettings = () => {
                         type="password"
                         id="usuario-name"
                         name="Nombre_Usuario"
-                        className="inputUsuarios"
+                        className="inputUsuarioSettings"
                         // value={dataInput.Nombre_Usuario}
                         // onChange={handleInputOnChange}
                         required
                     />
-                    <span className="highlight Usuarios"></span>
-                    <span className="bottomBar Usuarios"></span>
-                    <label className="Usuarios">Nueva contraseña</label>
+                    <span className="highlight UsuarioSettings"></span>
+                    <span className="bottomBar UsuarioSettings"></span>
+                    <label className="UsuarioSettings">Nueva contraseña</label>
                 </div>
 
                 <div className="form group modal Usuario">
@@ -55,14 +55,14 @@ const UserSettings = () => {
                         type="password"
                         id="usuario-name"
                         name="Nombre_Usuario"
-                        className="inputUsuarios"
+                        className="inputUsuarioSettings"
                         // value={dataInput.Nombre_Usuario}
                         // onChange={handleInputOnChange}
                         required
                     />
-                    <span className="highlight Usuarios"></span>
-                    <span className="bottomBar Usuarios"></span>
-                    <label className="Usuarios">Confirmar contraseña</label>
+                    <span className="highlight UsuarioSettings"></span>
+                    <span className="bottomBar UsuarioSettings"></span>
+                    <label className="UsuarioSettings">Confirmar contraseña</label>
                 </div>
                 <button>Guardar</button>
             </form>

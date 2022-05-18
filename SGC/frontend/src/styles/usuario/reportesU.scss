@@ -85,6 +85,134 @@ p.reportesUsuario {
     -webkit-box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
     box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
     position: relative;
+    border: $blanco 0.4em solid;
+
+    button{
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 0.5em 1em;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+    }
+}
+
+.subirArchivos__module-entregado {
+    background-color: $blanco;
+    padding: 0.5% 2% 2% 2%;
+    width: 95%;
+    margin-left: 2%;
+    margin-top: 2%;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    position: relative;
+    border: #1ec44d 0.4em solid;
+
+    button{
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 0.5em 1em;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+    }
+}
+.subirArchivos__module-tarde {
+    background-color: $blanco;
+    padding: 0.5% 2% 2% 2%;
+    width: 95%;
+    margin-left: 2%;
+    margin-top: 2%;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    position: relative;
+    border: #9a1ee1 0.4em solid;
+
+    button{
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 0.5em 1em;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+    }
+}
+
+.subirArchivos__module-noEntregado {
+    background-color: $blanco;
+    padding: 0.5% 2% 2% 2%;
+    width: 95%;
+    margin-left: 2%;
+    margin-top: 2%;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    position: relative;
+    border: #dd1818 0.4em solid;
+
+    button{
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 0.5em 1em;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+    }
+}
+
+.subirArchivos__module-trucha {
+    background-color: $blanco;
+    padding: 0.5% 2% 2% 2%;
+    width: 95%;
+    margin-left: 2%;
+    margin-top: 2%;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    box-shadow: 12px 12px 11px 3px rgba(0, 0, 0, 0.61);
+    position: relative;
+    border: #d8ce11 0.4em solid;
 
     button{
         background-color: #005b8e;
@@ -188,7 +316,60 @@ h3{
 .buttons_selector {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     text-align: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 2%;
+
+    .buttons {
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 1.5em 3em;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+    }
+    .dots{
+        background-color: #005a8e00;
+        width: 40vw;
+        height: 5vh;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .dot {
+        background-color: #09DC07;
+        width: 1em;
+        height: 1em;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+    } 
+
+    .dot.actual {
+        background-color: #005B8E;
+    }
+    .dot.tarde{
+        background-color: #C28A3D;
+    }
+    .dot.noEntregado{
+        background-color: #CD0008;
+    }
+    .dot.trucha{
+        background-color: #FFCF14;
+    }
 }
