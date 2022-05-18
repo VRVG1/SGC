@@ -8,6 +8,7 @@ import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
 import _ from 'lodash';
 import postReportes from '../helpers/usuarioReporte/postReportes.js';
+import putGeneran from '../helpers/usuarioReporte/putGeneran.js';
 
 export const Reportes = () => {
     let auth = useContext(AuthContext);
@@ -50,16 +51,17 @@ export const Reportes = () => {
     }
 
 
-    const fileSummit = (e) => {
+    const fileSummit = async (e) => {
         e.preventDefault();
-        setFilesTamano(true);
-        setFileProgeso(true);
-        setFileResponse(null);
+        // setFilesTamano(true);
+        // setFileProgeso(true);
+        // setFileResponse(null);
+        setLoading(true)
         const formData = new FormData();
         for (var i = 0; i < files.length; i++) {
             formData.append("Path_PDF", files[i]);
             formData.append("ID_Generacion", selMateria.ID_Generacion);
-            uploadFile(formData);
+            await uploadFile(formData);
         }
         // for (var key of formData.entries()) {
         //     uploadFile(key)
@@ -67,6 +69,10 @@ export const Reportes = () => {
         // }
         //Aqui hacer el fech para mandar los archivos?
         //setFormData(formData);
+        console.log(selMateria.ID_Generacion)
+        await putGeneran(auth.user.token, selMateria.ID_Generacion);
+        setLoading(false);
+        
     }
 
     const FilesShow = (props) => {
@@ -279,6 +285,7 @@ export const Reportes = () => {
                                                         <div className='subidorU'>
                                                             <input
                                                                 id={"index"}
+                                                                accept=".pdf"
                                                                 type="file"
                                                                 onChange={uploadFileHandler}
                                                                 className="file-uploadU__input"

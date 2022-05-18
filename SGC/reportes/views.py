@@ -118,19 +118,16 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
-    parser_classes = [MultiPartParser, FormParser]
+    #parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-        print(request)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
@@ -296,7 +293,7 @@ def CrearGeneran(request, pk):
         reporte = Reportes.objects.get(
             ID_Reporte=generan.ID_Reporte.ID_Reporte)
     except Generan.DoesNotExist:
-        return Response({'Error': 'Generado no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Error': 'Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     fechaE = reporte.Fecha_Entrega
     fechaH = date.today()
@@ -315,4 +312,5 @@ def CrearGeneran(request, pk):
             serializer_class.validated_data['Estatus'] = estatus
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer_class.errors)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
