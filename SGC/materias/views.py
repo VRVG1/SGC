@@ -9,6 +9,7 @@ from datetime import date, datetime
 from usuarios.models import Usuarios
 from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
+from django.contrib.auth.models import User
 from reportes.models import Generan, Reportes
 from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
 
@@ -107,7 +108,7 @@ class AsignarMateriaView(APIView):
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-        
+
         if serializer.is_valid():
             usuario = serializer.validated_data.get('ID_Usuario')
             materia = serializer.validated_data.get('ID_Materia')
@@ -293,4 +294,23 @@ def getAsignanEspecific(request, pk):
 
     if request.method == 'GET':
         serializer = AsignanSerializer(asignan)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def AdminGetAsignan(request, pk):
+    '''
+    Vista que regresa todos los asignan de un docente buscado por el admin
+    (ADMIN)
+    '''
+    try:
+        usuario = Usuarios.objects.get(PK=pk)
+        asignan = Asignan.objects.filter(ID_Usuario=usuario)
+    except Usuarios.DoesNotExist:
+        return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AsignanSerializer(asignan, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
