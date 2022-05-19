@@ -160,8 +160,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'reportesreminderitcg@gmail.com'
 
-with open('./mail.txt') as i:
-    EMAIL_HOST_PASSWORD = i.read().strip()
+# with open('./mail.txt') as i:
+#     EMAIL_HOST_PASSWORD = i.read().strip()
 
 CELERY_BEAT_SCHEDULE = {
     'enviarmail': {

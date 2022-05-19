@@ -6,25 +6,33 @@ import AuthPostBasic from '../Auth/AuthPostBasis.js';
  * @returns 
  */
 const putUsuarios = async (dataUser, id, token) => {
+    if (dataUser.seleccion === "false") {
+        dataUser.seleccion = "False";
+    } else {
+        dataUser.seleccion = "True";
+    }
     let post = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+            ID_Usuario: {
+                username: dataUser.username,
+                password: dataUser.password,
+            },
             Nombre_Usuario: dataUser.Nombre_Usuario,
             Tipo_Usuario: dataUser.Tipo_Usuario,
             CorreoE: dataUser.CorreoE,
-            usename: dataUser.usename,
-            password: dataUser.password,
-            permiso: dataUser.permiso,
+            Permiso: dataUser.seleccion,
         })
 
     }
-    post = AuthPostBasic(token);
+    post = AuthPostBasic(token, post);
     const url = "http://localhost:8000/usuario/update-user/" + id;
     const res = await fetch(url, post);
     const result = res.statusText;
+    console.log("dasd",result)
     return result;
 }
 

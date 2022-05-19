@@ -18,6 +18,7 @@ const Usuarios = props => {
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalDetails, setShowModalDetails] = useState(false);
   const [showModalModify, setShowModalModify] = useState(false);
+  const [showModalAlerta, setShowModalAlerta] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [loading, setloading] = useState(false);
@@ -94,7 +95,7 @@ const Usuarios = props => {
    * useEffect para mostrar mensaje de resultado al momento de agregar
    */
   useEffect(() => {
-    if (userActualizar === "OK" || userActualizar === "Created") {
+    if (userActualizar === "OK" || userActualizar === "Created" || userActualizar === "Accepted") {
       setShowModalResultado(true);
       setStatusContenido("Se realizo la operacion con exito");
       setActualizarUsuario(Math.random())
@@ -150,7 +151,7 @@ const Usuarios = props => {
    */
   const modifyUserGuardar = async () => {
     setloading(true);
-    setUserActualizar(await putUsuario(dataInput, pk));
+    setUserActualizar(await putUsuario(dataInput, pk, auth.user.token));
   };
   /**
    * Metodo para eliminar un usuario de la base de datos
@@ -178,7 +179,8 @@ const Usuarios = props => {
       Nombre_Usuario: user.Nombre_Usuario,
       Tipo_Usuario: user.Tipo_Usuario,
       username: user.ID_Usuario.username,
-      password: "" //No se si poner la contra xd
+      password: '', //No se si poner la contra xd
+      password2: ''
     });
     setUserActualizar('');
 
@@ -242,7 +244,7 @@ const Usuarios = props => {
                           <td onClick={() => {
                             detalles(user.PK)
                             getAsignan()
-                            }}>
+                          }}>
                             {user.Nombre_Usuario}
                           </td>
                         </tr>
@@ -363,12 +365,12 @@ const Usuarios = props => {
                   </div>
                   <div className="form group modal Usuario">
                     <label className="Usuarios-Detalles">Seleccion de Materias</label>
-                    <input 
-                    type={"checkbox"} 
-                    className="Usuarios-Detalles checkbox"
-                    onChange={handleInputOnChange}
-                    name="seleccion"
-                    value={dataInput.seleccion} 
+                    <input
+                      type={"checkbox"}
+                      className="Usuarios-Detalles checkbox"
+                      onChange={handleInputOnChange}
+                      name="seleccion"
+                      value={dataInput.seleccion}
                     />
                   </div>
                 </div>
@@ -399,7 +401,13 @@ const Usuarios = props => {
                     type="submit"
                     className="button Usuarios"
                     value="Modificar"
-                    onClick={() => setShowModalConfirm(true)}
+                    onClick={() => {
+                      if (dataInput.password === dataInput.password2) {
+                        setShowModalConfirm(true)
+                      } else {
+                        setShowModalAlerta(true)
+                      }
+                    }}
                   />
                   <input
                     type="submit"
@@ -483,7 +491,7 @@ const Usuarios = props => {
                 />
                 <span className="highlight Usuarios"></span>
                 <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Contrasena de Usuario</label>
+                <label className="Usuarios">Contraseña de Usuario</label>
               </div>
             </form>
 
@@ -523,7 +531,9 @@ const Usuarios = props => {
                 {Tipo_Usuario === dataInput.Tipo_Usuario ? null : <p>Tipo de Usuario pasara de: <strong className="Resaltado">{Tipo_Usuario}</strong> a <strong className="Resaltado">{dataInput.Tipo_Usuario}</strong></p>}
                 {username === dataInput.username ? null : <p>Apodo del Usuario pasara de: <strong className="Resaltado">{username}</strong> a <strong className="Resaltado">{dataInput.username}</strong></p>}
                 {CorreoE === dataInput.CorreoE ? null : <p>Correo del Usuario pasara de: <strong className="Resaltado">{CorreoE}</strong> a <strong className="Resaltado">{dataInput.CorreoE}</strong></p>}
-                {/* {password === dataInput.password ? null : <p>Contrasena del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>} */}
+                {/* {"" === dataInput.password ? null : <p>Contraseña del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>} */}
+                {'' === dataInput.password ? null : <p>Contraseña del Usuario sera cambiada</p>}
+
               </div>
             </div>
             <input
@@ -548,6 +558,18 @@ const Usuarios = props => {
               type="submit"
               className="button Materias"
               onClick={closeAll}
+              value="OK"
+            />
+          </Modal>
+          {/* Modal de opciones o el de contra error */}
+          <Modal show={showModalAlerta} setShow={setShowModalAlerta} title={"Alerta"}>
+            <div className="modal group">
+              <p><strong>{"Las contraseñas no coinciden"}</strong></p>
+            </div>
+            <input
+              type="submit"
+              className="button Materias"
+              onClick={() => setShowModalAlerta(false)}
               value="OK"
             />
           </Modal>
