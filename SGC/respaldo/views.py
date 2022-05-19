@@ -11,7 +11,6 @@ from zipfile import ZipFile
 from pathlib import Path
 
 
-# Create your views here.
 class MakeBackup(generics.ListAPIView):
     '''
     Vista que crea el backup tanto de la base de datos como de los archivos
@@ -49,3 +48,21 @@ class MakeBackup(generics.ListAPIView):
             response['Access-Control-Expose-Headers'] = 'Content-Disposition'
             print('Enviando archivo de respaldo...')
             return response
+
+
+class RestoreData(generics.ListAPIView):
+    '''
+    Vista que permite restaurar la base de datos junto con sus archivos de
+    media.
+    (ADMIN)
+    '''
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+
+    def post(self, request, format=None):
+        print('Si galo el envio del form')
+        print(request.FILES)
+        response = HttpResponse('Recibido', content_type="text/plain",
+                                status=200)
+        return response
