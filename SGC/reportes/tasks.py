@@ -1,14 +1,7 @@
 from datetime import date
-from email import message
-from time import sleep
 from celery import shared_task
-from celery.schedules import crontab
 from django.core.mail import send_mail
 from django.conf import settings
-import smtplib
-import ssl
-from email.message import EmailMessage
-from django.core.mail import send_mail
 from .models import Reportes
 from usuarios.models import Usuarios
 

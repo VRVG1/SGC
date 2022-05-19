@@ -101,7 +101,6 @@ class OnlySaveReportesView(APIView):
     '''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
-
     serializer_class = ReportesSerializer
 
     def post(self, request, format=None):
@@ -119,13 +118,13 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
+    #parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -294,7 +293,7 @@ def CrearGeneran(request, pk):
         reporte = Reportes.objects.get(
             ID_Reporte=generan.ID_Reporte.ID_Reporte)
     except Generan.DoesNotExist:
-        return Response({'Error': 'Generado no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Error': 'Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     fechaE = reporte.Fecha_Entrega
     fechaH = date.today()
@@ -308,9 +307,15 @@ def CrearGeneran(request, pk):
         generan_serializer = GeneranSerializer(generan)
         return Response(generan_serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer_class = GeneranSerializer(generan, data=request.data)
+        data = {
+            'Estatus': estatus,
+            'Sememestre': generan.Sememestre,
+            'ID_Asignan': generan.ID_Asignan.ID_Asignan,
+            'ID_Reporte': generan.ID_Reporte.ID_Reporte,
+        }
+        serializer_class = GeneranSerializer(generan, data=data)
         if serializer_class.is_valid():
-            serializer_class.validated_data['Estatus'] = estatus
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer_class.errors)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)

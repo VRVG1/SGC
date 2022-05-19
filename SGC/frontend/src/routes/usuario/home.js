@@ -24,7 +24,8 @@ export const Home2 = () => {
     semestre: '',
   });
   const [dataTable, setDataTable] = useState([]);
-
+  let date = new Date();
+  let hour = date.getHours();
 
   /**
    * Hacer el llamado al los helper para obtener las carreras y materias
@@ -124,34 +125,58 @@ export const Home2 = () => {
     });
     setShowModalDatosEnviados(true);
   }
-
+  /**
+   * Metodo para finalizar el proceso de seleccion de materias
+   */
   const todoListo = () => {
     setShowModalDatosEnviados(false);
     setDisponible(false);
   }
+  /**
+   * Metodo para conseguir la fecha y mandar el saludo
+   * @returns {JSX}
+   */
+  const Saludo = () => {
+    let saludo;
+    if (hour >= 6 && hour < 12) {
+      saludo = (
+        <>
+          <h1>Buenos días {infoUser.Nombre_Usuario}</h1>
+        </>
+      )
+    }
+    else if (hour >= 12 && hour < 18) {
+      saludo = (
+        <>
+          <h1>Buenas tardes {infoUser.Nombre_Usuario}</h1>
+        </>
+      )
+    }
+    else {
+      saludo = (
+        <>
+          <h1>Buenas noches {infoUser.Nombre_Usuario}</h1>
+        </>
+      )
+    }
+    return saludo;
+  }
+  
 
 
   return (
     <div className='usuario-container-parent'>
       <div className='usuario-container'>
 
-        <h1>Bienvenido al Sistemas Gestor del Curso</h1>
-        <p>Buenas las tenga {auth.user.nombre_usuario}</p>
-        <p>Todo que puede no se cumplan</p>
-        <ul>
-          <li>
-            Donde esta este txt poner por ejemplo, los reportes pendientes <br /> por subir de la semana o los que ya se retrasaron xd
-          </li>
-          <li>
-            El div que esta abajo que se desaparesca una ya que termine de <br />seleccionar materias o que se le pase el tiempo
-          </li>
-        </ul>
+        <Saludo/>
+        <h1>Bienvenido al Sistema Gestor del Curso</h1>
       </div>
       {
         /* Div para la seleccion de materias */
         disponible === infoUser.Permiso ? (
           <>
             <div className='usuario-container'>
+              {console.log(infoUser)}
               <div className='usuario-grid'>
                 <div className='usuario-grid__1'>
                   <div className='tabla-usr'>

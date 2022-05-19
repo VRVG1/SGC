@@ -15,7 +15,6 @@ class Usuarios(models.Model):
     PK = models.AutoField(primary_key=True, null=False)
     ID_Usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     Nombre_Usuario = models.CharField(max_length=70, null=False)
-    User = models.CharField(max_length=10, null=False)  # CHIKITO NO?
     Tipo_Usuario = models.CharField(
         max_length=13, choices=choices_users, null=False)  # NECESITA MAX LENGTH
     CorreoE = models.EmailField(max_length=254, null=False)
