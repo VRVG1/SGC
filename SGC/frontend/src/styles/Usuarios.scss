@@ -433,3 +433,40 @@ th{
 .Sin_Resultados {
   overflow: none;
 }
+
+.containerDetallesUser{
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: 1fr 0fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "Inputs Tablass"
+    "Buttons Buttons";
+    
+    .Inputs{
+      grid-area: Inputs;
+      width: 37vw;
+
+    }
+    .Tablass{
+      grid-area: Tablass;
+      width: 37vw;
+    }
+    .Buttons{
+      grid-area: Buttons;
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: center;
+      height: 10vh;
+      width: 100%;
+    }
+}
+
+.tablas{
+  width: 100%;
+  overflow-y: auto;
+  height: 30vh;
+  margin-bottom: 3%;
+  margin: auto;
+}

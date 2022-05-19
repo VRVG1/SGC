@@ -37,10 +37,17 @@ export const Reportes = () => {
     const [fileProgeso, setFileProgeso] = useState(false);
     const [fileResponse, setFileResponse] = useState(null);
 
+    /**
+     * Metodo que sirve para appendiar los archivos a subir
+     */
     const uploadFileHandler = (e) => {
         setFiles(e.target.files);
 
     }
+    /**
+     * Metodo que sirve como intermediario entre el helper y el metodo de abajo xd
+     * @param {*} formData 
+     */
     const uploadFile = async (formData) => {
         setFileProgeso(true);
         await postReportes(auth.user.token, formData)
@@ -50,7 +57,10 @@ export const Reportes = () => {
             })
     }
 
-
+/**
+ * Funcion para subir los archivos a la base de datos
+ * @param {*} e 
+ */
     const fileSummit = async (e) => {
         e.preventDefault();
         setLoading(true)
@@ -66,6 +76,11 @@ export const Reportes = () => {
 
     }
 
+    /**
+     * Metodo para mostrar los archivos que se van a subir o si se puede, los que ya se subieron
+     * @param {*} props 
+     * @returns 
+     */
     const FilesShow = (props) => {
         let mensaje = [];
         if (files.length > 0) {
@@ -173,6 +188,10 @@ export const Reportes = () => {
         }
     }, [reportes]);
 
+    /**
+     * Filtra los reportes que coincidan con el reporte seleccionado
+     * @param {*} index 
+     */
     const filtrarReportes = (index) => {
         setSelReporte(reporteName[index]);
         let array = reportes.filter(reporte => (reporte.ID_Reporte === reporteName[index].ID_Reporte));
@@ -185,6 +204,10 @@ export const Reportes = () => {
             index: index
         });
     }
+    /**
+     * Funcion para mostar el titulo en las cartas de reportes
+     * @returns 
+     */
     const TituloMateria = () => {
         let titulo;
         if (selMateria.ID_Asignan !== null) {
@@ -203,6 +226,9 @@ export const Reportes = () => {
         return titulo
     }
 
+    /**
+     * Metodo para ver el reporte siguiente
+     */
     const siguiente = () => {
         if (selMateria.index < reportesFiltrados.length - 1) {
             setFiles("");
@@ -218,6 +244,9 @@ export const Reportes = () => {
         }
     }
 
+    /**
+     * Funcion para ver el reporte anterior
+     */
     const anterior = () => {
         if (selMateria.index > 0) {
             setFiles("");
@@ -231,6 +260,29 @@ export const Reportes = () => {
         } else {
             console.log("terminoAtras")
         }
+    }
+
+    const SetDots = () => {
+        let date = new Date();
+        let hoy = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+        let dots = [];
+        let si = new Date(hoy).getTime()
+        console.log("si", si)
+        for (let i = 0; i < reportesFiltrados.length; i++) {
+            let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
+            if(reportesFiltrados[i].Estatus === "Entrega tarde"){
+                dots.push(<span key={i} className="dot tarde"></span>);
+            } else if (reportesFiltrados[i].Estatus === "Entrega a tiempo"){
+                dots.push(<span key={i} className="dot"></span>);
+            } else if (diff < 0){
+                dots.push(<span key={i} className="dot noEntregado"></span>);
+            } else if (diff > 0 && diff < 6){
+                dots.push(<span key={i} className="dot trucha"></span>);
+            } else {
+                dots.push(<span key={i} className="dot actual"></span>);
+            } 
+        }
+        return dots;
     }
     return (
         <>
@@ -297,24 +349,7 @@ export const Reportes = () => {
                                         <div className='buttons_selector'>
                                             <button className='buttons' id="anterior" onClick={anterior}>Anterior</button>
                                             <div className='dots'>
-                                                <div className='dot actual'>
-
-                                                </div>
-                                                <div className='dot tarde'>
-
-                                                </div>
-
-                                                <div className='dot'>
-
-                                                </div>
-
-                                                <div className='dot noEntregado'>
-
-                                                </div>
-                                                <div className='dot trucha'>
-
-                                                </div>
-
+                                                <SetDots />
                                             </div>
                                             <button className='buttons' id="anterior" onClick={siguiente}>Siguiente</button>
                                         </div>
