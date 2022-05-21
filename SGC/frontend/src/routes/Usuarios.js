@@ -7,7 +7,7 @@ import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
 import Loader from "./Loader.js";
-import getOneAsignan from "./helpers/Asignan/getOneAsignan.js";
+import getAsignanAllUser from "./helpers/Asignan/getAsignanAllUser.js";
 import kanaBuscar from "../img/kana-buscar.png"
 
 import { AuthContext } from "./helpers/Auth/auth-context.js";
@@ -22,6 +22,7 @@ const Usuarios = props => {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [loading, setloading] = useState(false);
+  const [seleccion, setSeleccion] = useState(false);
   const [showModalResultado, setShowModalResultado] = useState(false);
   const [statusContenido, setStatusContenido] = useState('');
   const [userActualizar, setUserActualizar] = useState('');
@@ -60,7 +61,7 @@ const Usuarios = props => {
 
 
   const getAsignan = async () => {
-    let data = await getOneAsignan(auth.user.token, 1);
+    let data = await getAsignanAllUser(auth.user.token);
     console.log(data)
   }
   /**
@@ -72,6 +73,12 @@ const Usuarios = props => {
       setdataInput({
         ...dataInput,
         [event.target.name]: event.target.value
+      });
+    }
+    if (event.target.name === 'seleccion') {
+      setdataInput({
+        ...dataInput,
+        [event.target.name]: event.target.checked
       });
     }
   }
@@ -141,7 +148,8 @@ const Usuarios = props => {
       Nombre_Usuario: Nombre_Usuario,
       Tipo_Usuario: Tipo_Usuario,
       username: username,
-      password: ""
+      password: "",
+      seleccion: true,
     });
     setUserActualizar('');
     setShowModalModify(true);
@@ -172,6 +180,7 @@ const Usuarios = props => {
     setUsername(user.ID_Usuario.username);
     setPassword(user.ID_Usuario.password);
     setPk(user.PK);
+    setSeleccion(user.Permiso)
     setShowModalDetails(true);
     setdataInput({
       ...dataInput,
@@ -180,7 +189,8 @@ const Usuarios = props => {
       Tipo_Usuario: user.Tipo_Usuario,
       username: user.ID_Usuario.username,
       password: '', //No se si poner la contra xd
-      password2: ''
+      password2: '',
+      seleccion: user.Permiso,
     });
     setUserActualizar('');
 
@@ -259,9 +269,9 @@ const Usuarios = props => {
                 <div className="Sin_Resultados">
                   <p>No se encontraron resultados</p>
                 </div>
-                {/* <div className="Sin_Resultados img">
+                <div className="Sin_Resultados img">
                   <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                </div> */}
+                </div>
               </>
             )}
           </div>
@@ -371,6 +381,7 @@ const Usuarios = props => {
                       onChange={handleInputOnChange}
                       name="seleccion"
                       value={dataInput.seleccion}
+                      checked={dataInput.seleccion}
                     />
                   </div>
                 </div>
@@ -533,6 +544,7 @@ const Usuarios = props => {
                 {CorreoE === dataInput.CorreoE ? null : <p>Correo del Usuario pasara de: <strong className="Resaltado">{CorreoE}</strong> a <strong className="Resaltado">{dataInput.CorreoE}</strong></p>}
                 {/* {"" === dataInput.password ? null : <p>Contraseña del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>} */}
                 {'' === dataInput.password ? null : <p>Contraseña del Usuario sera cambiada</p>}
+                {seleccion === dataInput.seleccion ? null : <p>Seleccion del Usuario pasara de: <strong className="Resaltado">{seleccion.toString()}</strong> a <strong className="Resaltado">{dataInput.seleccion.toString()}</strong></p>}
 
               </div>
             </div>
