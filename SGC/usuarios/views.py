@@ -121,16 +121,31 @@ def actualizar(request, pk):
         newUs = request.data['ID_Usuario']
         username = newUs['username']
         password = newUs['password']
-        user.username = username
-        user.set_password(password)
+
+        print(bool(password))
+        if bool(password) == False:
+            pass
+        else:
+            user.set_password(password)
+            user.save(update_fields=['password'])
+
+        if bool(username) == False:
+            pass
+        else:
+            user.username = username
+            user.save(update_fields=['username'])
+
         try:
-            user.save()
             usuario.PK = pk
             usuario.ID_Usuario = user
             usuario.Nombre_Usuario = request.data['Nombre_Usuario']
             usuario.Tipo_Usuario = request.data['Tipo_Usuario']
             usuario.CorreoE = request.data['CorreoE']
-            usuario.Permiso = request.data['Permiso']
+            print(request.data['Permiso'])
+            if request.data['Permiso'] == 1:
+                usuario.Permiso = True
+            else:
+                usuario.Permiso = False
             usuario.save()
             usuario = Usuarios.objects.get(PK=pk)
             usuario_serializer = UsuarioSerializer(usuario)
