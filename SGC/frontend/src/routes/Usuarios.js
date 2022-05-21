@@ -7,7 +7,7 @@ import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
 import Loader from "./Loader.js";
-import getAsignanAllUser from "./helpers/Asignan/getAsignanAllUser.js";
+import getAllAsignanUser from "./helpers/Asignan/getAllAsignanUser.js";
 import kanaBuscar from "../img/kana-buscar.png"
 
 import { AuthContext } from "./helpers/Auth/auth-context.js";
@@ -15,6 +15,7 @@ import { AuthContext } from "./helpers/Auth/auth-context.js";
 const Usuarios = props => {
   let auth = useContext(AuthContext);
 
+  const [userAsignan, setUserAsignan] = useState([]);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalDetails, setShowModalDetails] = useState(false);
   const [showModalModify, setShowModalModify] = useState(false);
@@ -56,13 +57,12 @@ const Usuarios = props => {
   const [password, setPassword] = useState('')
   const [pk, setPk] = useState('');
 
-  let usuarioEliminar = "Victor Rafael Valdivia Gomez"
-  let usuarioActualizar = "Pedro Nicolas Rios Vargas"
 
 
-  const getAsignan = async () => {
-    let data = await getAsignanAllUser(auth.user.token);
-    console.log(data)
+  const getAsignan = async (pk) => {
+    let data = await getAllAsignanUser(auth.user.token, pk).then(res => {
+      setUserAsignan(res);
+    });
   }
   /**
    * Recibe los datos escritos en un input
@@ -174,6 +174,7 @@ const Usuarios = props => {
    */
   function detalles(id) {
     const user = userData.find(elemento => elemento.PK === id);
+    getAsignan(id)
     setCorreoE(user.CorreoE);
     setNombre_Usuario(user.Nombre_Usuario);
     setTipo_Usuario(user.Tipo_Usuario);
@@ -181,7 +182,6 @@ const Usuarios = props => {
     setPassword(user.ID_Usuario.password);
     setPk(user.PK);
     setSeleccion(user.Permiso)
-    setShowModalDetails(true);
     setdataInput({
       ...dataInput,
       CorreoE: user.CorreoE,
@@ -193,6 +193,7 @@ const Usuarios = props => {
       seleccion: user.Permiso,
     });
     setUserActualizar('');
+    setShowModalDetails(true);
 
   }
   /**
@@ -221,6 +222,26 @@ const Usuarios = props => {
       return elemento !== undefined
     })
     setFiltrados(filtrados)
+  }
+  /**
+   * Metodo para mostrar en los detalles del usuario las materias que este tiene asignadas
+   * @param {*} asignan 
+   */
+  const DatosTablaDetalles = () => {
+    const datosTabla = [];
+    userAsignan.map((asigna, index) => {
+      datosTabla.push(
+        <tr key={index}>
+          <td>{asigna.ID_Materia}</td>
+          <td>{asigna.ID_Carrera}</td>
+          <td>{asigna.Grupo}</td>
+        </tr>
+      )
+    })
+    // if (tabla.length === 0) {
+    //   return <p>No tiene materias asignadas</p>
+    // }
+    return datosTabla;
   }
   return (
     <>
@@ -253,7 +274,6 @@ const Usuarios = props => {
                         <tr key={user.PK}>
                           <td onClick={() => {
                             detalles(user.PK)
-                            getAsignan()
                           }}>
                             {user.Nombre_Usuario}
                           </td>
@@ -388,22 +408,31 @@ const Usuarios = props => {
               </form>
               <div className="Tablass">
                 <div className="tablas">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Materias</th>
-                        <th>Semestre</th>
-                        <th>Grupo</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Matematicas</td>
-                        <td>1</td>
-                        <td>A</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {Object.keys(userAsignan).length !== 0 ?
+                    (<>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Materias</th>
+                            <th>Semestre</th>
+                            <th>Grupo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <DatosTablaDetalles />
+                        </tbody>
+                      </table>
+                    </>)
+                    :
+                    (<>
+                      <div className="Sin_Resultados">
+                        <p>El docente no tiene materias asignadas</p>
+                      </div>
+                      <div className="Sin_Resultados img">
+                        <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                      </div>
+                    </>)}
+
                 </div>
               </div>
               <div className="Buttons">

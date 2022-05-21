@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Modal from './modal/Modal.js'
+import getAllReportes from './helpers/Reportes/getAllReportes.js'
+import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
+import getAsignanAllUser from "./helpers/Asignan/getAsignanAllUser.js";
 
+import { AuthContext } from './helpers/Auth/auth-context.js';
+
+
+import kanaBuscar from "../img/kana-buscar.png"
 const _ = require("lodash");
 
-
-
 const ReportesCheck = props => {
+    let auth = useContext(AuthContext);
 
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalDetails, setShowModalDetails] = useState(false);
@@ -23,8 +29,73 @@ const ReportesCheck = props => {
         hidden3: " hidden",
         hidden4: " hidden",
         hidden5: " hidden",
-    })
+    });
 
+
+    const [reportes, setReportes] = useState([]);
+    const [maestros, setMaestros] = useState([]);
+    const [asignan, setAsignan] = useState([]);
+
+
+    /**
+     * Metodo para obtener todos los reportes de la base de datos
+     */
+    const getReportes = async () => {
+        await getAllReportes(auth.user.token).then(res => {
+            setReportes(res);
+        }
+        ).catch(err => {
+            console.log(err);
+        }
+        );
+    }
+    /**
+     * Metodo para obtener todos los usuarios
+     */
+    const getMaestros = async () => {
+        await getAllUsuarios(auth.user.token).then(res => {
+            setMaestros(res);
+        }
+        ).catch(err => {
+            console.log(err);
+        }
+        );
+    }
+    /**
+     * Metodo para obtener todos los asignan
+     */
+    const getAsignan = async () => {
+        await getAsignanAllUser(auth.user.token).then(res => {
+            setAsignan(res);
+        }
+        ).catch(err => {
+            console.log(err);
+        }
+        );
+    }
+    /**
+     * Metodo para obtener los generan de un reporte
+     */
+    const getGeneran = async () => {}
+
+    /**
+     * Hook para cargar todos los datos necesarios para la vista
+     */
+    useEffect(() => {
+        getReportes();
+        getMaestros();
+        getAsignan();
+        return () => {
+            setReportes([]);
+            setMaestros([]);
+        }
+    }, [])
+
+
+    /**
+     * Metodo para ocultar los inputs de busqueda
+     * @param {*} e 
+     */
     const changeEstado = (e) => {
         console.log(e.target.checked)
         if (e.target.checked === true) {
@@ -56,7 +127,7 @@ const ReportesCheck = props => {
 
                     <div className="search-button-dialog">
                         <div className="search-button-dialog__content">
-                            <p><input type="checkbox" id="hidden1" name="rbtn-search" value="Maestro"
+                            <p><input type="checkbox" defaultChecked="true" id="hidden1" name="rbtn-search" value="Maestro"
                                 onClick={changeEstado}
                             />Maestro</p>
 
@@ -117,40 +188,62 @@ const ReportesCheck = props => {
                 </div>
 
                 <div className="contenedorRerportes">
-
-                    {_.times(20, (i) => (
-                        <div className="contenedorMasterReporte">
-                            <h2 className="Reportes-Check">Reporte {i}</h2>
-
-                            <div className="contenedorMaterReporteTable">
-                                {_.times(5, (j) => (
-                                    <>
-                                        <h3 className="Reportes-Check">Profesor {j}</h3>
-                                        <table className="table-ReportesCheck">
-                                            <thead>
-                                                <tr>
-                                                    <th>Materia</th>
-                                                    <th>Grupo</th>
-                                                    <th>Estado</th>
-                                                    <th>Archivo</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="tbody-ReportesCheck">
-                                                {_.times(5, (c) => (
-                                                    <tr>
-                                                        <td>Materia {c}</td>
-                                                        <td>Grupo {c}</td>{/*Futuros pedo seguros */}
-                                                        <td>Estado {c}</td>
-                                                        <td>Archivos {c}</td> {/*Creo que es mejor descargar todos en un zip */}
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </>
-                                ))}
+                    {Object.keys(reportes).length !== 0 ?
+                        (<>
+                            {reportes.map((reporte, index) => {
+                                return (
+                                    <div className="contenedorMasterReporte">
+                                        <h2 className="Reportes-Check">{reporte.Nombre_Reporte}</h2>
+                                        <div className="contenedorMaterReporteTable">
+                                            {maestros.map((maestro, index2) => {
+                                                if (maestro.Tipo_Usuario === "Docente") {
+                                                    return (
+                                                        <div>
+                                                            <h3 className="Reportes-Check">{maestro.Nombre_Usuario}</h3>
+                                                            <table className="table-ReportesCheck">
+                                                                <thead>
+                                                                    <tr key={index2}>
+                                                                        <th>Materias</th>
+                                                                        <th>Grupo</th>
+                                                                        <th>Estado</th>
+                                                                        <th>Archivos</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody className="tbody-ReportesCheck">
+                                                                    {asignan.map((asignan, index) => {
+                                                                        if (asignan.ID_Usuario === maestro.PK) {
+                                                                            return (
+                                                                                <tr key={index}>
+                                                                                    <td>{asignan.ID_Materia}</td>
+                                                                                    <td>{asignan.Grupo}</td>
+                                                                                    <td>{"Estado"}</td>
+                                                                                    <td>{"Archivos.pdf"}</td>
+                                                                                </tr>
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                    )}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </>)
+                        :
+                        (<>
+                            <div className="Sin_Resultados">
+                                <p>No hay reportes creados</p>
                             </div>
-                        </div>
-                    ))}
+                            <div className="Sin_Resultados img">
+                                <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                            </div>
+                        </>)}
+
                 </div>
             </div>
 
@@ -207,17 +300,6 @@ const ReportesCheck = props => {
                                 type="date"
                                 name="fechaEntrega"
                             ></input>
-
-                            {/* <p className="Modal-Reportes-Admin-p"><input
-                                type="radio"
-                                name="opc"
-                                value={"Especifico"}
-                                onClick={() => setSelector("Modal-Reportes-Admin-Select")}></input>Especifico</p>
-                            <p><input
-                                type="radio"
-                                name="opc"
-                                value={"General"}
-                                onClick={() => setSelector("Modal-Reportes-Admin-Select-hidden")}></input>General</p> */}
                         </div>
                         <select className={selector}>
                             {_.times(8, (i) => (
