@@ -348,6 +348,28 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
   -webkit-animation-delay: 0.4s;
   -moz-animation-delay: 0.4s;
   animation-delay: 0.4s;
+  
+}
+
+.fadeIn.primero-error {
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+  border: 5px solid #E00005;
+  width: 80%;
+  margin: 0 auto 2% auto;
+  background-color: #db5d5f;
+  color: #ffffff;
+}
+
+.fadeIn.primero-error-hidden {
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+  width: 0;
+  height: 0;
+  visibility: collapse;
+  
 }
 
 .fadeIn.segundo {

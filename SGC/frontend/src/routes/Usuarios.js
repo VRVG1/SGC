@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from "react";
+//TODO: agarrar el Permisos de los usuarios para poner check en el frontend
+
+import React, { useState, useEffect, useContext } from "react";
 import Modal from './modal/Modal.js'
 import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
 import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
 import Loader from "./Loader.js";
+import kanaBuscar from "../img/kana-buscar.png"
+
+import { AuthContext } from "./helpers/Auth/auth-context.js";
 
 const Usuarios = props => {
+  let auth = useContext(AuthContext);
+
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalDetails, setShowModalDetails] = useState(false);
   const [showModalModify, setShowModalModify] = useState(false);
@@ -31,7 +38,7 @@ const Usuarios = props => {
     PK: /\d+/,
     username: /^[a-zA-Z\d@~._-]{0,20}$/,
     password: /.{0,20}/,
-    Nombre_Usuario: /^[A-Za-z\sÀ-ÿ]{0,100}$/,
+    Nombre_Usuario: /^[A-Za-z\sÀ-ÿ.]{0,100}$/,
     Tipo_Usuario: /.*/,
     CorreoE: /.*/,
   })
@@ -63,7 +70,7 @@ const Usuarios = props => {
    * Metodo para obtener los usuarios desde la base de datos
    */
   const obtenerUsuarios = async () => {
-    await getAllUsuarios().then((data) => {
+    await getAllUsuarios(auth.user.token).then((data) => {
       setUserData(data);
       setFiltrados(data)
     })
@@ -90,10 +97,12 @@ const Usuarios = props => {
     }
     setloading(false);
   }, [userActualizar]);
-
+  /**
+   * Metodo para realizar un post de un usuario nuevo
+   */
   const add = async () => {
     setloading(true);
-    setUserActualizar(await postUsuario(dataInput));
+    setUserActualizar(await postUsuario(dataInput, auth.user.token));
   }
 
   /**
@@ -132,7 +141,6 @@ const Usuarios = props => {
    */
   const modifyUserGuardar = async () => {
     setloading(true);
-    console.log(dataInput, pk)
     setUserActualizar(await putUsuario(dataInput, pk));
   };
   /**
@@ -140,7 +148,7 @@ const Usuarios = props => {
    */
   const deleteUserConfirm = async () => {
     setloading(true);
-    setUserActualizar(await deleteUser(pk));
+    setUserActualizar(await deleteUser(pk, auth.user.token));
   }
   /**
    *  Metodo para mostrar los detalles del usuario
@@ -193,7 +201,6 @@ const Usuarios = props => {
     })
     setFiltrados(filtrados)
   }
-
   return (
     <>
       {loading === false ? (
@@ -216,16 +223,31 @@ const Usuarios = props => {
           </form>
 
           <div className="tabla">
-            <table >
-              <tbody>
-                {Object.keys(filtrados).length !== 0 ? (filtrados.map((user) =>
-                  <tr key={user.PK}>
-                    <td onClick={() => detalles(user.PK)}>
-                      {user.Nombre_Usuario}
-                    </td>
-                  </tr>)) : (<></>)}
-              </tbody>
-            </table>
+            {Object.keys(filtrados).length !== 0 ? (
+              <table>
+                <tbody>
+                  {filtrados.map((user) => {
+                    return (
+                      <tr key={user.PK}>
+                        <td onClick={() => detalles(user.PK)}>
+                          {user.Nombre_Usuario}
+                        </td>
+                      </tr>
+                    );
+                  }
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <>
+                <div className="Sin_Resultados">
+                  <p>No se encontraron resultados</p>
+                </div>
+                <div className="Sin_Resultados img">
+                  <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                </div>
+              </>
+            )}
           </div>
 
           <input
@@ -435,7 +457,7 @@ const Usuarios = props => {
           </Modal>
           {/**Modal Delete */}
           <Modal show={showModalDelete} setShow={setShowModalDelete} title={"Eliminar Usuario"}>
-            <p>Realmente esta seguro que quiere eliminar al usuario:<strong className="Resaltado">{Nombre_Usuario}</strong></p>
+            <p>Realmente esta seguro que quiere eliminar al usuario: <strong className="Resaltado">{Nombre_Usuario}</strong></p>
             <div className="Usuarios-Detalles buttons">
               <input
                 type="submit"
@@ -454,7 +476,15 @@ const Usuarios = props => {
           {/**Modal Confirm */}
           <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
             <div className="modal group">
-              <p>Realmente esta seguro que quiere actualizar los datos del usuario:<strong className="Resaltado">{Nombre_Usuario}</strong></p>
+              <p>Realmente esta seguro que quiere actualizar los datos del usuario:</p>
+              <br />
+              <div className="Usuarios-Detalles summary">
+                {Nombre_Usuario === dataInput.Nombre_Usuario ? null : <p>Nombre del Usuario pasara de: <strong className="Resaltado">{Nombre_Usuario}</strong> a <strong className="Resaltado">{dataInput.Nombre_Usuario}</strong></p>}
+                {Tipo_Usuario === dataInput.Tipo_Usuario ? null : <p>Tipo de Usuario pasara de: <strong className="Resaltado">{Tipo_Usuario}</strong> a <strong className="Resaltado">{dataInput.Tipo_Usuario}</strong></p>}
+                {username === dataInput.username ? null : <p>Apodo del Usuario pasara de: <strong className="Resaltado">{username}</strong> a <strong className="Resaltado">{dataInput.username}</strong></p>}
+                {CorreoE === dataInput.CorreoE ? null : <p>Correo del Usuario pasara de: <strong className="Resaltado">{CorreoE}</strong> a <strong className="Resaltado">{dataInput.CorreoE}</strong></p>}
+                {password === dataInput.password ? null : <p>Contrasena del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>}
+              </div>
             </div>
             <input
               type="submit"
@@ -486,5 +516,4 @@ const Usuarios = props => {
     </>
   );
 }
-
 export default Usuarios;

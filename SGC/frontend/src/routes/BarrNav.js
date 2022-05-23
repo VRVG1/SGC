@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Outlet, Link } from "react-router-dom";
+import { AuthContext } from './helpers/Auth/auth-context';
 
 export default class Nav extends Component {
     constructor(props) {
@@ -48,6 +49,7 @@ export default class Nav extends Component {
 
     render() {
         let afterResponse = this.responseHandler();
+        let auth = this.context;
         return (
             <div>
                 {afterResponse}
@@ -200,7 +202,7 @@ export default class Nav extends Component {
                             <div className="profile-details">
                                 <Link className='link' to="/">
                                     <div className="profile-content">
-                                        <i className='bx bx-log-out'></i>
+                                        <i className='bx bx-log-out' onClick={ auth.signout }></i>
                                     </div>
                                 </Link>
 
@@ -220,3 +222,4 @@ export default class Nav extends Component {
         );
     }
 }
+Nav.contextType = AuthContext;
