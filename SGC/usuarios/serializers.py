@@ -14,8 +14,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuarios
-        fields = ('PK', 'ID_Usuario', 'Nombre_Usuario',
-                  'Tipo_Usuario', 'CorreoE')
+        fields = '__all__'
 
     def create(self, validated_data):
         UserData = validated_data.pop('ID_Usuario')
@@ -25,6 +24,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
         usuario = Usuarios.objects.create(ID_Usuario=user, **validated_data)
 
         return usuario
+
+
+class UsuarioInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuarios
+        fields = ('PK', 'Nombre_Usuario', 'Tipo_Usuario', 'CorreoE', 'Permiso')
 
 
 class CambioPassSerializer(serializers.ModelSerializer):

@@ -7,6 +7,7 @@ import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
 import Loader from "./Loader.js";
+import getOneAsignan from "./helpers/Asignan/getOneAsignan.js";
 import kanaBuscar from "../img/kana-buscar.png"
 
 import { AuthContext } from "./helpers/Auth/auth-context.js";
@@ -17,6 +18,7 @@ const Usuarios = props => {
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalDetails, setShowModalDetails] = useState(false);
   const [showModalModify, setShowModalModify] = useState(false);
+  const [showModalAlerta, setShowModalAlerta] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [loading, setloading] = useState(false);
@@ -30,9 +32,11 @@ const Usuarios = props => {
     PK: "",
     username: '',
     password: '',
+    password2: '',
     Nombre_Usuario: '',
     Tipo_Usuario: 'Docente',
     CorreoE: '',
+    seleccion: false,
   });
   const [regex, setRegex] = useState({
     PK: /\d+/,
@@ -54,6 +58,11 @@ const Usuarios = props => {
   let usuarioEliminar = "Victor Rafael Valdivia Gomez"
   let usuarioActualizar = "Pedro Nicolas Rios Vargas"
 
+
+  const getAsignan = async () => {
+    let data = await getOneAsignan(auth.user.token, 1);
+    console.log(data)
+  }
   /**
    * Recibe los datos escritos en un input
    * @param {*} event 
@@ -86,7 +95,7 @@ const Usuarios = props => {
    * useEffect para mostrar mensaje de resultado al momento de agregar
    */
   useEffect(() => {
-    if (userActualizar === "OK" || userActualizar === "Created") {
+    if (userActualizar === "OK" || userActualizar === "Created" || userActualizar === "Accepted") {
       setShowModalResultado(true);
       setStatusContenido("Se realizo la operacion con exito");
       setActualizarUsuario(Math.random())
@@ -116,7 +125,8 @@ const Usuarios = props => {
       PK: '',
       Tipo_Usuario: 'Docente',
       password: '',
-      username: ''
+      username: '',
+      seleccion: true,
     });
     setUserActualizar('');
     setShowModalAdd(true);
@@ -131,7 +141,7 @@ const Usuarios = props => {
       Nombre_Usuario: Nombre_Usuario,
       Tipo_Usuario: Tipo_Usuario,
       username: username,
-      password: "password"
+      password: ""
     });
     setUserActualizar('');
     setShowModalModify(true);
@@ -141,7 +151,7 @@ const Usuarios = props => {
    */
   const modifyUserGuardar = async () => {
     setloading(true);
-    setUserActualizar(await putUsuario(dataInput, pk));
+    setUserActualizar(await putUsuario(dataInput, pk, auth.user.token));
   };
   /**
    * Metodo para eliminar un usuario de la base de datos
@@ -169,7 +179,8 @@ const Usuarios = props => {
       Nombre_Usuario: user.Nombre_Usuario,
       Tipo_Usuario: user.Tipo_Usuario,
       username: user.ID_Usuario.username,
-      password: "password" //No se si poner la contra xd
+      password: '', //No se si poner la contra xd
+      password2: ''
     });
     setUserActualizar('');
 
@@ -227,13 +238,18 @@ const Usuarios = props => {
               <table>
                 <tbody>
                   {filtrados.map((user) => {
-                    return (
-                      <tr key={user.PK}>
-                        <td onClick={() => detalles(user.PK)}>
-                          {user.Nombre_Usuario}
-                        </td>
-                      </tr>
-                    );
+                    if (user.Tipo_Usuario === "Docente") {
+                      return (
+                        <tr key={user.PK}>
+                          <td onClick={() => {
+                            detalles(user.PK)
+                            getAsignan()
+                          }}>
+                            {user.Nombre_Usuario}
+                          </td>
+                        </tr>
+                      );
+                    }
                   }
                   )}
                 </tbody>
@@ -243,9 +259,9 @@ const Usuarios = props => {
                 <div className="Sin_Resultados">
                   <p>No se encontraron resultados</p>
                 </div>
-                <div className="Sin_Resultados img">
+                {/* <div className="Sin_Resultados img">
                   <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                </div>
+                </div> */}
               </>
             )}
           </div>
@@ -258,117 +274,149 @@ const Usuarios = props => {
           ></input>
           {/* Modal detalles */}
           <Modal show={showModalDetails} setShow={setShowModalDetails} title={Nombre_Usuario}>
-            <form>
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-name"
-                  name="Nombre_Usuario"
-                  className="inputUsuarios"
-                  value={dataInput.Nombre_Usuario}
-                  onChange={handleInputOnChange}
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Nombre de Usuario</label>
-              </div>
+            <div className="containerDetallesUser">
+              <form>
+                <div className="Inputs">
+                  <div className="form group modal Usuario">
+                    <input
+                      type="text"
+                      id="usuario-name"
+                      name="Nombre_Usuario"
+                      className="inputUsuarios"
+                      value={dataInput.Nombre_Usuario}
+                      onChange={handleInputOnChange}
+                      required
+                    />
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Nombre de Usuario</label>
+                  </div>
 
-              <div className="form group modal Usuario">
-                <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Docente" >Docente</option>
-                  <option value="Espectador">Espectador</option>
-                </select>
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Tipo de Usuario</label>
-                {/* <span className="highlight Usuario"></span>
-            <span className="bottomBar Usuario"></span>
-            <label>Tipo de Usuario</label>  */}
-              </div>
+                  <div className="form group modal Usuario">
+                    <select name="Tipo_Usuario" onChange={handleInputOnChange} value={dataInput.Tipo_Usuario}>
+                      <option value="Administrador">Administrador</option>
+                      <option value="Docente" >Docente</option>
+                      <option value="Espectador">Espectador</option>
+                    </select>
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Tipo de Usuario</label>
+                  </div>
 
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-nickname"
-                  name="username"
-                  value={dataInput.username}
-                  onChange={handleInputOnChange}
-                  className="inputUsuarios"
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Apodo de Usuario</label>
-              </div>
+                  <div className="form group modal Usuario">
+                    <input
+                      type="text"
+                      id="usuario-nickname"
+                      name="username"
+                      value={dataInput.username}
+                      onChange={handleInputOnChange}
+                      className="inputUsuarios"
+                      required
+                    />
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Apodo de Usuario</label>
+                  </div>
 
-              <div className="form group modal Usuario">
-                <input
-                  type="text"
-                  id="usuario-email"
-                  name="CorreoE"
-                  title="Correo electronico Institucional del ITCG"
-                  className="inputUsuarios"
-                  value={dataInput.CorreoE}
-                  onChange={handleInputOnChange}
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Correo de Usuario</label>
-              </div>
+                  <div className="form group modal Usuario">
+                    <input
+                      type="text"
+                      id="usuario-email"
+                      name="CorreoE"
+                      title="Correo electronico Institucional del ITCG"
+                      className="inputUsuarios"
+                      value={dataInput.CorreoE}
+                      onChange={handleInputOnChange}
+                      required
+                    />
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Correo de Usuario</label>
+                  </div>
 
-              <div className="form group modal Usuario">
-                <input
-                  type="password"
-                  id="usuario-password"
-                  name="password"
-                  onChange={handleInputOnChange}
-                  value={dataInput.password}
-                  className="inputUsuarios"
-                  required
-                />
-                <span className="highlight Usuarios"></span>
-                <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Contrasena de Usuario</label>
+                  <div className="form group modal Usuario">
+                    <input
+                      type="password"
+                      id="usuario-password"
+                      name="password"
+                      onChange={handleInputOnChange}
+                      value={dataInput.password}
+                      className="inputUsuarios"
+                      required
+                    />
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Nueva Contraseña de Usuario</label>
+                  </div>
+
+                  <div className="form group modal Usuario">
+                    <input
+                      type="password"
+                      id="usuario-password"
+                      name="password2"
+                      onChange={handleInputOnChange}
+                      value={dataInput.password2}
+                      className="inputUsuarios"
+                      required
+                    />
+                    <span className="highlight Usuarios"></span>
+                    <span className="bottomBar Usuarios"></span>
+                    <label className="Usuarios">Confirmar Contraseña</label>
+                  </div>
+                  <div className="form group modal Usuario">
+                    <label className="Usuarios-Detalles">Seleccion de Materias</label>
+                    <input
+                      type={"checkbox"}
+                      className="Usuarios-Detalles checkbox"
+                      onChange={handleInputOnChange}
+                      name="seleccion"
+                      value={dataInput.seleccion}
+                    />
+                  </div>
+                </div>
+              </form>
+              <div className="Tablass">
+                <div className="tablas">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Materias</th>
+                        <th>Semestre</th>
+                        <th>Grupo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Matematicas</td>
+                        <td>1</td>
+                        <td>A</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div className="form group modal Usuario">
-                <label className="Usuarios-Detalles">Seleccion de Materias</label>
-                <input type={"checkbox"} className="Usuarios-Detalles checkbox" />
+              <div className="Buttons">
+                <div className="Usuarios-Detalles buttons">
+                  <input
+                    type="submit"
+                    className="button Usuarios"
+                    value="Modificar"
+                    onClick={() => {
+                      if (dataInput.password === dataInput.password2) {
+                        setShowModalConfirm(true)
+                      } else {
+                        setShowModalAlerta(true)
+                      }
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    className="button Usuarios delete"
+                    value="Eliminar"
+                    onClick={() => setShowModalDelete(true)}
+                  />
+                </div>
               </div>
-            </form>
-            <div className="tabla">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Materias</th>
-                    <th>Semestre</th>
-                    <th>Grupo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Matematicas</td>
-                    <td>1</td>
-                    <td>A</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="Usuarios-Detalles buttons">
-              <input
-                type="submit"
-                className="button Usuarios"
-                value="Modificar"
-                onClick={() => setShowModalConfirm(true)}
-              />
-              <input
-                type="submit"
-                className="button Usuarios delete"
-                value="Eliminar"
-                onClick={() => setShowModalDelete(true)}
-              />
             </div>
           </Modal>
           {/** Modal add */}
@@ -443,7 +491,7 @@ const Usuarios = props => {
                 />
                 <span className="highlight Usuarios"></span>
                 <span className="bottomBar Usuarios"></span>
-                <label className="Usuarios">Contrasena de Usuario</label>
+                <label className="Usuarios">Contraseña de Usuario</label>
               </div>
             </form>
 
@@ -483,7 +531,9 @@ const Usuarios = props => {
                 {Tipo_Usuario === dataInput.Tipo_Usuario ? null : <p>Tipo de Usuario pasara de: <strong className="Resaltado">{Tipo_Usuario}</strong> a <strong className="Resaltado">{dataInput.Tipo_Usuario}</strong></p>}
                 {username === dataInput.username ? null : <p>Apodo del Usuario pasara de: <strong className="Resaltado">{username}</strong> a <strong className="Resaltado">{dataInput.username}</strong></p>}
                 {CorreoE === dataInput.CorreoE ? null : <p>Correo del Usuario pasara de: <strong className="Resaltado">{CorreoE}</strong> a <strong className="Resaltado">{dataInput.CorreoE}</strong></p>}
-                {password === dataInput.password ? null : <p>Contrasena del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>}
+                {/* {"" === dataInput.password ? null : <p>Contraseña del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>} */}
+                {'' === dataInput.password ? null : <p>Contraseña del Usuario sera cambiada</p>}
+
               </div>
             </div>
             <input
@@ -508,6 +558,18 @@ const Usuarios = props => {
               type="submit"
               className="button Materias"
               onClick={closeAll}
+              value="OK"
+            />
+          </Modal>
+          {/* Modal de opciones o el de contra error */}
+          <Modal show={showModalAlerta} setShow={setShowModalAlerta} title={"Alerta"}>
+            <div className="modal group">
+              <p><strong>{"Las contraseñas no coinciden"}</strong></p>
+            </div>
+            <input
+              type="submit"
+              className="button Materias"
+              onClick={() => setShowModalAlerta(false)}
               value="OK"
             />
           </Modal>

@@ -1,7 +1,6 @@
 import AuthPostBasics from '../Auth/AuthPostBasis.js';
 
-const postAsigna = async (dataPost, token, user_id) => {
-    console.log(dataPost);
+const postAsigna = async (dataPost, token) => {
     let post = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -13,7 +12,7 @@ const postAsigna = async (dataPost, token, user_id) => {
         })
     };
     post = AuthPostBasics(token, post);
-    const res = await fetch('http://localhost:8000/materia/asign_materia', post);
+    const res = await fetch('http://localhost:8000/reporte/save-reporte', post);
     const result = res.statusText;
     return result;
 }

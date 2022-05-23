@@ -1,4 +1,7 @@
+
 from datetime import date, datetime
+
+from usuarios.models import Usuarios
 from .models import Reportes, Generan, Alojan
 from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
 from rest_framework.views import APIView
@@ -91,19 +94,37 @@ class CreateReportesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class OnlySaveReportesView(APIView):
+    '''
+    Vista que permite guardar pero no "enviar" un reporte
+    (ADMIN)
+    '''
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    serializer_class = ReportesSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 class CreateAlojanView(APIView):
     '''
     Vista que permite guardar los archivos PDF que se necesiten subir para el reporte
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
+    #parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -180,6 +201,84 @@ def updateReporte(request, pk):
 # TAMBIEN FUNCIONA COMO ACTUALIZAR GENERA
 
 
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def EnviarGeneran(request, pk):
+    '''
+    Vista que permite crear o "enviar" un generan de un reporte que solo fue guardado
+    (ADMIN)
+    '''
+
+    try:
+        reporte = Reportes.objects.get(ID_Reporte=pk)
+    except Reportes.DoesNotExist:
+        return Response({'Error': 'Reporte no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        try:
+            asignan = Asignan.objects.all()
+        except Asignan.DoesNotExist:
+            return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            date01 = 'Jun 20'
+            fecha = date.today()
+            parse01 = datetime.strptime(
+                date01, '%b %d').date().replace(year=fecha.year)
+
+            if fecha < parse01:
+                semestre = 'Enero - Junio ' + str(fecha.year)
+            else:
+                semestre = 'Agosto - Diciembre ' + str(fecha.year)
+
+            for x in asignan:
+                generate = Generan(
+                    Estatus=None, Sememestre=semestre, ID_Asignan=x, ID_Reporte=reporte)
+                generate.save()
+
+            return Response({'Success': 'Generan creado'}, status=status.HTTP_201_CREATED)
+        except:
+            return Response({'Error': 'Error al crear un generan'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def GetGeneranUser(request):
+    '''
+    Vista que permite obtener todos los reportes que el usuario debe entregar
+    (DOCENTE)
+    '''
+    try:
+        usuario = Usuarios.objects.get(ID_Usuario=request.user)
+        generan = Generan.objects.filter(ID_Asignan__ID_Usuario=usuario)
+    except Generan.DoesNotExist:
+        return Response({'Error': 'No hay registros'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = GeneranSerializer(generan, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def GetReporte(request, pk):
+    '''
+    Vista que permite obtener la informacion de un reporte especifico
+    (DOCENTE)
+    '''
+    try:
+        reporte = Reportes.objects.get(ID_Reporte=pk)
+    except Generan.DoesNotExist:
+        return Response({'Error': 'No hay reporte'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ReportesSerializer(reporte)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'PUT'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated, OnlyDocentePermission])
@@ -194,7 +293,7 @@ def CrearGeneran(request, pk):
         reporte = Reportes.objects.get(
             ID_Reporte=generan.ID_Reporte.ID_Reporte)
     except Generan.DoesNotExist:
-        return Response({'Error': 'Generado no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Error': 'Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     fechaE = reporte.Fecha_Entrega
     fechaH = date.today()
@@ -208,9 +307,15 @@ def CrearGeneran(request, pk):
         generan_serializer = GeneranSerializer(generan)
         return Response(generan_serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer_class = GeneranSerializer(generan, data=request.data)
+        data = {
+            'Estatus': estatus,
+            'Sememestre': generan.Sememestre,
+            'ID_Asignan': generan.ID_Asignan.ID_Asignan,
+            'ID_Reporte': generan.ID_Reporte.ID_Reporte,
+        }
+        serializer_class = GeneranSerializer(generan, data=data)
         if serializer_class.is_valid():
-            serializer_class.validated_data['Estatus'] = estatus
             serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer_class.errors)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)

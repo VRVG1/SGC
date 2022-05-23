@@ -351,7 +351,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
   
 }
 
-.fadeIn.primero-error {
+.primero-error {
   -webkit-animation-delay: 0.4s;
   -moz-animation-delay: 0.4s;
   animation-delay: 0.4s;
@@ -391,8 +391,6 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
 }
 
 /* Simple CSS3 Fade-in Animation */
-.fondo {
-}
 .underlineHover {
   color:#005b8e;
   text-decoration: none;

@@ -159,7 +159,7 @@ export default class Nav extends Component {
                         </li>
 
                         <li>
-                            <Link className='link' to="/admin/Respadoyrestauraciones" >
+                            <Link className='link' to="/admin/Respaldoyrestauraciones" >
                                 <div className="iocn-link">
                                     <span className='a'>
                                         <i className='bx bx-save' ></i>
@@ -173,7 +173,7 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Respaldos y Restauraciones</span></span></li>
-                                <Link className='link' to="/admin/Respadoyrestauraciones"><li className='li'></li></Link>
+                                <Link className='link' to="/admin/Respaldoyrestauraciones"><li className='li'></li></Link>
                             </ul>
                         </li>
 

@@ -30,9 +30,12 @@ import Home2 from './routes/usuario/home';
 import BarNav from './routes/usuario/BarNav'
 import SysSettings from './routes/SysSettings';
 import AuthProvider from './routes/helpers/Auth/AuthProvider';
+import LoginContextProvider from './routes/helpers/Auth/LoginContextProvider';
 import { AuthContext } from './routes/helpers/Auth/auth-context';
+import { LoginContext } from './routes/helpers/Auth/login-context';
 import OlvideContra from './routes/OlivdeContra';
 import { Reportes } from './routes/usuario/Reportes';
+import UserSettings from './routes/usuario/UserSetting';
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -46,6 +49,7 @@ import "./styles/BackUpRestore.scss"
 import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
 import "./styles/usuario/reportesU.scss"
+import "./styles/usuario/UserSetting.scss"
 
 /**
   * Funcion que facilita el acceso al contexto 'AuthContext'.
@@ -54,6 +58,15 @@ import "./styles/usuario/reportesU.scss"
   */
 export function useAuth() {
   return React.useContext(AuthContext);
+}
+
+/**
+  * Función que facilita el acceso al context 'LoginContext'.
+  *
+  * @returns Componente React.Context
+  */
+function useLoginContext() {
+  return React.useContext(LoginContext);
 }
 
 /**
@@ -108,10 +121,11 @@ function RequirePermission(props) {
   *
   * @returns Componente <Login />
   */
-function LoginPage() {
+function LoginPage(props) {
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
+  let loginContext = useLoginContext();
 
   let from = location.state?.from?.pathname || "/";
 
@@ -121,6 +135,13 @@ function LoginPage() {
     let formData = new FormData(event.currentTarget);
     auth.signin(formData, () => {
       navigate(from, { replace: true });
+    }, (error) => {
+      if (!(loginContext.status?.failureStatus)) {
+        loginContext.setStatus({
+          failureStatus: true,
+          error,
+        });
+      }
     });
   }
 
@@ -149,7 +170,7 @@ function UserRedirector() {
     if  (auth.user.permission == "Administrador") {
       to = "/admin";
     } else if (auth.user.permission == "Docente") {
-      to = "/usuario/" + auth.user.nombre_usuario + "/home";
+      to = "/usuario/home";
     } else {
       to = "/supervisor";
     }
@@ -171,8 +192,14 @@ function Application() {
       <Routes>
         <Route>
           <Route path="/" element={ <UserRedirector /> } />
-          <Route path="/login" element={ <LoginPage /> } />
-          <Route path='/recuperacion' element={ <OlvideContra /> } />S
+          <Route
+            path="/login"
+            element={
+              <LoginContextProvider>
+                <LoginPage />
+              </LoginContextProvider>
+            } />
+          <Route path='/recuperacion' element={ <OlvideContra /> } />
           <Route
             path="/admin"
             element={
@@ -183,7 +210,7 @@ function Application() {
               </RequireAuth>
             }
           >
-            /** Poner aquí las rutas para el usuario de tipo administrador **/
+    {/** Poner aquí las rutas para el usuario de tipo administrador **/}
             <Route path="home" element={<Home />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="materias" element={<Materias />} />
@@ -191,7 +218,7 @@ function Application() {
             <Route path="reportes/admin" element={<ReportesAdmin />} />
             <Route path="reportes/check" element={<ReportesCheck />} />
             <Route path="exportardatos" element={<ExportData />} />
-            <Route path="Respadoyrestauraciones" element={<BackUpRestore />} />
+            <Route path="Respaldoyrestauraciones" element={<BackUpRestore />} />
             <Route path='ajustes' element={<SysSettings />} />
           </Route>
           <Route
@@ -204,8 +231,9 @@ function Application() {
               </RequireAuth>
             }>
             /** Poner aquí las rutas para el usuario de tipo docente **/
-            <Route path=':usuario/home' element={<Home2 />}/>
-            <Route path=':usuario/reportes' element={<Reportes />}/>
+            <Route path='home' element={<Home2 />}/>
+            <Route path='reportes' element={<Reportes />}/>
+            <Route path='ajustes' element={<UserSettings />}/>
           </Route>
           <Route
             path="/supervisor"
