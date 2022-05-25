@@ -198,8 +198,9 @@ const ReportesCheck = props => {
                         </div>
 
                         <div className="contenedorRerportes">
-                            {Object.keys(reportes).length !== 0 ?
+                            {Object.keys(reportes).length !== 0 && Object.keys(generan).length !== 0 ?
                                 (<>
+                                    {console.log(generan)}
                                     {reportes.map((reporte, index) => {
                                         return (
                                             <div className="contenedorMasterReporte">
@@ -222,7 +223,7 @@ const ReportesCheck = props => {
                                                                         <tbody className="tbody-ReportesCheck">
                                                                             {asignan.map((asignan, index) => {
                                                                                 let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(segundoFiltro => segundoFiltro.ID_Asignan === asignan.ID_Asignan)[0].Estatus;
-                                                                                if (estado === null){
+                                                                                if (estado === null) {
                                                                                     estado = "No entregado"
                                                                                 }
                                                                                 if (asignan.ID_Usuario === maestro.PK) {
@@ -233,7 +234,7 @@ const ReportesCheck = props => {
                                                                                             <td>{estado}</td>
                                                                                             <td>
                                                                                                 <ul>
-                                                                                                    {_.times(5,(index) => {
+                                                                                                    {_.times(5, (index) => {
                                                                                                         return (
                                                                                                             <li>
                                                                                                                 {"Archivo " + index}

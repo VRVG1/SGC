@@ -57,10 +57,10 @@ export const Reportes = () => {
             })
     }
 
-/**
- * Funcion para subir los archivos a la base de datos
- * @param {*} e 
- */
+    /**
+     * Funcion para subir los archivos a la base de datos
+     * @param {*} e 
+     */
     const fileSummit = async (e) => {
         e.preventDefault();
         setLoading(true)
@@ -185,6 +185,8 @@ export const Reportes = () => {
                 await getAsignan(id);
             });
             setLoading(false);
+        } else {
+            setLoading(false);
         }
     }, [reportes]);
 
@@ -270,17 +272,17 @@ export const Reportes = () => {
         console.log("si", si)
         for (let i = 0; i < reportesFiltrados.length; i++) {
             let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
-            if(reportesFiltrados[i].Estatus === "Entrega tarde"){
+            if (reportesFiltrados[i].Estatus === "Entrega tarde") {
                 dots.push(<span key={i} className="dot tarde"></span>);
-            } else if (reportesFiltrados[i].Estatus === "Entrega a tiempo"){
+            } else if (reportesFiltrados[i].Estatus === "Entrega a tiempo") {
                 dots.push(<span key={i} className="dot"></span>);
-            } else if (diff < 0){
+            } else if (diff < 0) {
                 dots.push(<span key={i} className="dot noEntregado"></span>);
-            } else if (diff > 0 && diff < 6){
+            } else if (diff > 0 && diff < 6) {
                 dots.push(<span key={i} className="dot trucha"></span>);
             } else {
                 dots.push(<span key={i} className="dot actual"></span>);
-            } 
+            }
         }
         return dots;
     }
