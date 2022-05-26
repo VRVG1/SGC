@@ -4,6 +4,7 @@ import getAllReportes from './helpers/Reportes/getAllReportes.js'
 import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
 import getAsignanAllUser from "./helpers/Asignan/getAsignanAllUser.js";
 import getGeneran from "./helpers/Generan/getGeneran.js";
+import getAllMaterias from "./helpers/Materias/getAllMaterias.js";
 import { AuthContext } from './helpers/Auth/auth-context.js';
 
 
@@ -37,6 +38,12 @@ const ReportesCheck = props => {
     const [maestros, setMaestros] = useState([]);
     const [asignan, setAsignan] = useState([]);
     const [generan, setGeneran] = useState([]);
+    const [materias, setMaterias] = useState([]);
+    
+    const [reportesFiltro, setReportesFiltro] = useState([]);
+    const [maestrosFiltro, setMaestrosFiltro] = useState([]);
+    const [asignanFiltro, setAsignanFiltro] = useState([]);
+    const [generanFiltro, setGeneranFiltro] = useState([]);
 
     /**
      * Metodo para obtener los generan de un reporte
@@ -82,6 +89,14 @@ const ReportesCheck = props => {
         }, []);
     });
 
+    const getMaterias = useCallback(async () => {
+        await getAllMaterias(auth.user.token).then(res => {
+            setMaterias(res);
+        }).catch(err => {
+            console.log(err);
+        }, []);
+    });
+
     /**
      * Hook para cargar todos los datos necesarios para la vista
      */
@@ -90,12 +105,14 @@ const ReportesCheck = props => {
         getMaestros();
         getAsignan();
         getGenerann();
+        getMaterias();
         setLoading(false);
         return () => {
             setReportes([]);
             setMaestros([]);
             setAsignan([]);
             setGeneran([]);
+            setMaterias([]);
         }
     }, []);
 
@@ -229,7 +246,7 @@ const ReportesCheck = props => {
                                                                                 if (asignan.ID_Usuario === maestro.PK) {
                                                                                     return (
                                                                                         <tr key={index}>
-                                                                                            <td>{asignan.ID_Materia}</td>
+                                                                                            <td>{materias.filter(materia => materia.ID_Materia === asignan.ID_Materia)[0].Nombre_Materia}</td>
                                                                                             <td>{asignan.Grupo}</td>
                                                                                             <td>{estado}</td>
                                                                                             <td>

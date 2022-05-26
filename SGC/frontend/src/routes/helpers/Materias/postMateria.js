@@ -6,14 +6,13 @@ import AuthPostBasics from '../Auth/AuthPostBasis.js';
  * @returns 
  */
 const postMateria = async (dataPost, token) => {
-    console.log(dataPost);
     let post = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             ID_Materia: dataPost.Materia_ID,
             Nombre_Materia: dataPost.Materia_name,
-            Carrera: ""
+            Carrera: "AAA-1112"
         })
     };
     post = AuthPostBasics(token, post);
