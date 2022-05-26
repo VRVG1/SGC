@@ -168,7 +168,7 @@ function UserRedirector() {
     to = "/login";
   } else {
     if  (auth.user.permission == "Administrador") {
-      to = "/admin";
+      to = "/admin/home";
     } else if (auth.user.permission == "Docente") {
       to = "/usuario/home";
     } else {
