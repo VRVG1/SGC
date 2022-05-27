@@ -122,7 +122,6 @@ def actualizar(request, pk):
         username = newUs['username']
         password = newUs['password']
 
-        print(bool(password))
         if bool(password) == False:
             pass
         else:
@@ -261,3 +260,51 @@ def OlvidoPass(request):
             return Response({'ENVIADO', 'Correo enviado con exito'}, status=status.HTTP_200_OK)
         except:
             return Response({'ERROR', 'Error al enviar el correo'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def actualizarPropiosDatos(request, pk):
+    '''
+    Vista que permite modificar los datos basicos de un usuario por si mismo
+    (DOCENTE)
+    '''
+    try:
+        usuario = Usuarios.objects.get(PK=pk)
+        user = User.objects.get(username=usuario.ID_Usuario.username)
+    except Usuarios.DoesNotExist:
+        return Response({'ERROR': 'El usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        usuario_serializer = UsuarioSerializer(usuario)
+        return Response(usuario_serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PUT':
+        newUs = request.data['ID_Usuario']
+        username = newUs['username']
+        password = newUs['password']
+
+        if bool(password) == False:
+            pass
+        else:
+            user.set_password(password)
+            user.save(update_fields=['password'])
+
+        if bool(username) == False:
+            pass
+        else:
+            user.username = username
+            user.save(update_fields=['username'])
+
+        try:
+            usuario.PK = pk
+            usuario.ID_Usuario = user
+            usuario.Nombre_Usuario = request.data['Nombre_Usuario']
+            usuario.CorreoE = request.data['CorreoE']
+            usuario.save()
+            usuario = Usuarios.objects.get(PK=pk)
+            usuario_serializer = UsuarioSerializer(usuario)
+            return Response(usuario_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(usuario_serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
