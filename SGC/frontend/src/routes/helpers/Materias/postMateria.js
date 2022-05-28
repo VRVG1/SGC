@@ -12,7 +12,6 @@ const postMateria = async (dataPost, token) => {
         body: JSON.stringify({
             ID_Materia: dataPost.Materia_ID,
             Nombre_Materia: dataPost.Materia_name,
-            Carrera: "AAA-1112"
         })
     };
     post = AuthPostBasics(token, post);

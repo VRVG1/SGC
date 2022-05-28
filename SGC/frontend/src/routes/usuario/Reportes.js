@@ -70,10 +70,9 @@ export const Reportes = () => {
             formData.append("ID_Generacion", selMateria.ID_Generacion);
             await uploadFile(formData);
         }
-        console.log(selMateria.ID_Generacion)
         await putGeneran(auth.user.token, selMateria.ID_Generacion);
         setLoading(false);
-
+        window.location.reload();
     }
 
     /**
@@ -190,6 +189,18 @@ export const Reportes = () => {
         }
     }, [reportes]);
 
+    const cargarReportesFiltrados = useCallback(
+        async (array, index) => {
+            setReportesFiltrados(array)
+            setSelMateria({
+                ...selMateria,
+                ID_Asignan: array[0].ID_Asignan,
+                ID_Generacion: array[0].ID_Generacion,
+                ID_Reporte: array[0].ID_Reporte,
+                index: 0
+            });
+        },[])
+
     /**
      * Filtra los reportes que coincidan con el reporte seleccionado
      * @param {*} index 
@@ -197,14 +208,9 @@ export const Reportes = () => {
     const filtrarReportes = (index) => {
         setSelReporte(reporteName[index]);
         let array = reportes.filter(reporte => (reporte.ID_Reporte === reporteName[index].ID_Reporte));
-        setReportesFiltrados(array)
-        setSelMateria({
-            ...selMateria,
-            ID_Asignan: array[index].ID_Asignan,
-            ID_Generacion: array[index].ID_Generacion,
-            ID_Reporte: array[index].ID_Reporte,
-            index: index
-        });
+        setLoading(true);
+        cargarReportesFiltrados(array, index);
+        setLoading(false);
     }
     /**
      * Funcion para mostar el titulo en las cartas de reportes
@@ -269,19 +275,26 @@ export const Reportes = () => {
         let hoy = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         let dots = [];
         let si = new Date(hoy).getTime()
-        console.log("si", si)
-        for (let i = 0; i < reportesFiltrados.length; i++) {
-            let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
-            if (reportesFiltrados[i].Estatus === "Entrega tarde") {
-                dots.push(<span key={i} className="dot tarde"></span>);
-            } else if (reportesFiltrados[i].Estatus === "Entrega a tiempo") {
-                dots.push(<span key={i} className="dot"></span>);
-            } else if (diff < 0) {
-                dots.push(<span key={i} className="dot noEntregado"></span>);
-            } else if (diff > 0 && diff < 6) {
-                dots.push(<span key={i} className="dot trucha"></span>);
-            } else {
-                dots.push(<span key={i} className="dot actual"></span>);
+        
+        if (reporteName.filter(reporte => (reporte.ID_Reporte === selMateria.ID_Reporte))[0].Opcional) {
+            for (let i = 0; i < reportesFiltrados.length; i++) {
+                let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
+                if (reportesFiltrados[i].Estatus === "Entrega tarde") {
+                    dots.push(<span key={i} className="dot tarde"></span>);
+                } else if (reportesFiltrados[i].Estatus === "Entrega a tiempo") {
+                    dots.push(<span key={i} className="dot"></span>);
+                } else if (diff < 0) {
+                    dots.push(<span key={i} className="dot noEntregado"></span>);
+                } else if (diff > 0 && diff < 6) {
+                    dots.push(<span key={i} className="dot trucha"></span>);
+                } else {
+                    dots.push(<span key={i} className="dot actual"></span>);
+                }
+            }
+        } else {
+            for (let i = 0; i < reportesFiltrados.length; i++) {
+                let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
+                dots.push(<span key={i} className="square"></span>);
             }
         }
         return dots;
@@ -295,6 +308,7 @@ export const Reportes = () => {
                             <div className='listReportes'>
                                 <ul>
                                     {Object.keys(reporteName).length !== 0 ? reporteName.map((reporte, index) => {
+                                        if(reporte.Opcional){
                                         return (
                                             <li key={index}>
                                                 <div className='listReportes__Reporte'
@@ -303,6 +317,16 @@ export const Reportes = () => {
                                                 </div>
                                             </li>
                                         )
+                                        } else {
+                                            return (
+                                                <li key={index}>
+                                                    <div className='listReportes__Reporte__cuadrado'
+                                                        onClick={() => { filtrarReportes(index) }}>
+                                                        {reporte.Nombre_Reporte}
+                                                    </div>
+                                                </li>
+                                            )
+                                        }
                                     }) :
                                         <>
                                         </>}

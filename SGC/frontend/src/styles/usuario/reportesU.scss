@@ -45,6 +45,26 @@ $select-color: #a7a7a7;
         transition: all 0.5s ease;
     }
 }
+
+.listReportes__Reporte__cuadrado {
+    background-color: $blanco;
+    padding: 2% 2% 2% 2%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 20%;
+    border: #005b8e solid 2px;
+    // box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    // -webkit-box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    // -moz-box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    position: relative;
+
+    &:hover {
+        background-color: #005b8e;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.5s ease;
+    }
+}
 .cabeceraReportes {
     grid-area: cabeceraReportes;
     background-color: $blanco;
@@ -371,5 +391,13 @@ h3{
     }
     .dot.trucha{
         background-color: #FFCF14;
+    }
+
+    .square{
+        background-color: #005b8e;
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        margin: 0 2px;
     }
 }
