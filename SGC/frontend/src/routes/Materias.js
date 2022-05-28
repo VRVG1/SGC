@@ -214,17 +214,6 @@ const Materias = props => {
             });
         }
     }
-    /**
-     * UseEffect para actualizar los formularios
-     * Igual es buena idea guardar los datos en una variable
-     * y luego actualizar el state con el setAddData y asi
-     * no tener que actualizar el state cada que se cambie
-     * el input
-     * Eso lo puso github copilot
-     * Realmente lo que quiero decir, es usar useEffect para actualizar los datos del input para que sea mejor
-     * , pero no se la verdad creo que con solo poner [event.target.name] : event.target.value o algo asi, con eso
-     * pero no creo
-     */
     useEffect(() => {
         setAddData({
             ...addData,
@@ -329,9 +318,9 @@ const Materias = props => {
                                 <div className="Sin_Resultados">
                                     <p>No se encontraron resultados</p>
                                 </div>
-                                {/* <div className="Sin_Resultados img">
+                                <div className="Sin_Resultados img">
                                     <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                                </div> */}
+                                </div>
                             </>
                         )}
 

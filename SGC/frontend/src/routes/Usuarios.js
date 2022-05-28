@@ -1,11 +1,13 @@
 //TODO: agarrar el Permisos de los usuarios para poner check en el frontend
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Modal from './modal/Modal.js'
 import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
 import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
+import getCarreras from "./helpers/Carreras/getAllCarrera.js";
+import getMaterias from "./helpers/Materias/getAllMaterias.js";
 import Loader from "./Loader.js";
 import getAllAsignanUser from "./helpers/Asignan/getAllAsignanUser.js";
 import kanaBuscar from "../img/kana-buscar.png"
@@ -57,8 +59,14 @@ const Usuarios = props => {
   const [password, setPassword] = useState('')
   const [pk, setPk] = useState('');
 
+  const [carrera, setCarrera] = useState('');
+  const [materia, setMateria] = useState('');
 
 
+  /**
+   * Obtener los asignan de un usuario
+   * @param {*} pk 
+   */
   const getAsignan = async (pk) => {
     let data = await getAllAsignanUser(auth.user.token, pk).then(res => {
       setUserAsignan(res);
@@ -91,11 +99,29 @@ const Usuarios = props => {
       setFiltrados(data)
     })
   }
+
+  const getAllMaterias = useCallback(async () => {
+    await getMaterias(auth.user.token).then((data) => {
+      setMateria(data);
+    })
+  }, []);
+
+  const getAllCarreras = useCallback(async () => {
+    await getCarreras(auth.user.token).then((data) => {
+      setCarrera(data);
+    })
+  }, []);
   /**
    * useEffect para actualizar los datos generales
    */
   useEffect(() => {
+    getAllMaterias();
+    getAllCarreras();
     obtenerUsuarios();
+
+    return () => {
+      setUserData([]);
+    }
   }, [actualizarUsuario]);
 
   /**
@@ -230,10 +256,11 @@ const Usuarios = props => {
   const DatosTablaDetalles = () => {
     const datosTabla = [];
     userAsignan.map((asigna, index) => {
+      
       datosTabla.push(
         <tr key={index}>
-          <td>{asigna.ID_Materia}</td>
-          <td>{asigna.ID_Carrera}</td>
+          <td>{materia.filter(materia => materia.ID_Materia === asigna.ID_Materia)[0].Nombre_Materia}</td>
+          <td>{carrera.filter(carrera => carrera.ID_Carrera === asigna.ID_Carrera)[0].Nombre_Carrera}</td>
           <td>{asigna.Grupo}</td>
         </tr>
       )
@@ -414,7 +441,7 @@ const Usuarios = props => {
                         <thead>
                           <tr>
                             <th>Materias</th>
-                            <th>Semestre</th>
+                            <th>Carrera</th>
                             <th>Grupo</th>
                           </tr>
                         </thead>
