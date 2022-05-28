@@ -222,7 +222,7 @@ def getInfoUser(request):
         return Response(dic, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def OlvidoPass(request):
     '''
     Vista para cuando se le olvide la contraseña al usuario
@@ -238,7 +238,7 @@ def OlvidoPass(request):
     except Usuarios.DoesNotExist:
         return Response({'Error', 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         newP = 'contrasena_'+usuarioP
         msg = '''
             Hola '''+str(usuario.Nombre_Usuario)+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
