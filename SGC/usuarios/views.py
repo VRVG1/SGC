@@ -216,8 +216,10 @@ def getInfoUser(request):
         return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        dic = {'username': usuario.ID_Usuario.username}
         usuario_serializer = UsuarioInfoSerializer(usuario)
-        return Response(usuario_serializer.data, status=status.HTTP_200_OK)
+        dic.update(usuario_serializer.data)
+        return Response(dic, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
