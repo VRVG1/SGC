@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import { AuthContext } from "../helpers/Auth/auth-context.js";
+import getInfoUser from '../helpers/Usuarios/getInfoUser'
 const UserSettings = () => {
     let auth = useContext(AuthContext);
     const [dataInput, setdataInput] = useState({
@@ -8,31 +9,69 @@ const UserSettings = () => {
         password2: '',
         username: '',
         CorreoE: '',
-      });
-      const [regex, setRegex] = useState({
+        Nombre_Usuario: '',
+    });
+    const [regex, setRegex] = useState({
         username: /^[a-zA-Z\d@~._-]{0,20}$/,
         password: /.{0,20}/,
         password2: /.{0,20}/,
         CorreoE: /.*/,
-      })
-
+        Nombre_Usuario: /^[A-Za-z\sÀ-ÿ]{0,100}$/,
+    })
+    const [infoUser, setInfoUser] = useState([])
 
     /**
    * Recibe los datos escritos en un input
    * @param {*} event 
    */
-  const handleInputOnChange = (event) => {
-    if (event.target.value.match(regex[event.target.name]) != null) {
-      setdataInput({
-        ...dataInput,
-        [event.target.name]: event.target.value
-      });
+    const handleInputOnChange = (event) => {
+        if (event.target.value.match(regex[event.target.name]) != null) {
+            setdataInput({
+                ...dataInput,
+                [event.target.name]: event.target.value
+            });
+        }
     }
-  }
+
+    useEffect(() => {
+        const getInforUser = async () => {
+            await getInfoUser(auth.user.token).then((data) => {
+                setdataInput({
+                    ...dataInput,
+                    username: data.username,
+                    CorreoE: data.CorreoE,
+                    Nombre_Usuario: data.Nombre_Usuario,
+                })
+                console.log(data)
+            }
+            ).catch((err) => {
+                console.log(err);
+            }
+            );
+        }
+        getInforUser();
+        return () => {
+            setInfoUser([]);
+        }
+    }, [])
     return (
         <div className='containerUserSettings'>
             <h1>Ajustes de Usuarios</h1>
             <form>
+                <div className="form group modal Usuario">
+                    <input
+                        type="text"
+                        id="usuario-name"
+                        name="Nombre_Usuario"
+                        className="inputUsuarioSettings"
+                        value={dataInput.Nombre_Usuario}
+                        onChange={handleInputOnChange}
+                        required
+                    />
+                    <span className="highlight UsuarioSettings"></span>
+                    <span className="bottomBar UsuarioSettings"></span>
+                    <label className="UsuarioSettings">Nombre de Usuario</label>
+                </div>
                 <div className="form group modal Usuario">
                     <input
                         type="text"
@@ -45,7 +84,7 @@ const UserSettings = () => {
                     />
                     <span className="highlight UsuarioSettings"></span>
                     <span className="bottomBar UsuarioSettings"></span>
-                    <label className="UsuarioSettings">Nombre de Usuario</label>
+                    <label className="UsuarioSettings">Apodo</label>
                 </div>
 
                 <div className="form group modal Usuario">
