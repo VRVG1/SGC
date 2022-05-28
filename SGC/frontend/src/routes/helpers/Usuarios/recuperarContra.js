@@ -4,7 +4,6 @@ import AuthPostBasics from '../Auth/AuthPostBasis.js';
  * @returns result
  */
 const recuperarContra = async (dataInput) => {
-    console.log(dataInput);
     let get = {
         method: 'POST',
         headers: {
@@ -19,7 +18,6 @@ const recuperarContra = async (dataInput) => {
     const url = "http://localhost:8000/usuario/forgotPass";
     const res = await fetch(url, get);
     const result =  res.statusText;
-    console.log(result);
     return result;
 }
 

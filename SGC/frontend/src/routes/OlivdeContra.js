@@ -2,17 +2,23 @@ import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import itcg from '../img/ITCG-logo2.png';
 import recuperarContra from './helpers/Usuarios/recuperarContra';
+import Modal from './modal/Modal';
 export const OlvideContra = () => {
 
   const [dataInput, setdataInput] = useState({
     username: '',
     email: '',
   });
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
   /**
    * Metodo para recuperar pedir correo con contraseña
    */
   const enviarPeticion = async () => {
-    await recuperarContra(dataInput);
+    let resupuesta;
+    resupuesta = await recuperarContra(dataInput);
+    if (resupuesta === "OK") {
+      setShowModalConfirm(true);
+    }
   }
 
   /**
@@ -20,10 +26,10 @@ export const OlvideContra = () => {
  * @param {*} event 
  */
   const handleInputOnChange = (event) => {
-      setdataInput({
-        ...dataInput,
-        [event.target.name]: event.target.value
-      });
+    setdataInput({
+      ...dataInput,
+      [event.target.name]: event.target.value
+    });
   }
 
   return (
@@ -76,6 +82,14 @@ export const OlvideContra = () => {
           </Link>
         </div>
       </div>
+      <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Correo enviado"}>
+        <div className="modalRecuperar">
+          <p><strong>Se envio una contraseña temporal a su correo</strong></p>
+        <Link to="/login" ><button onClick={() => {
+          setShowModalConfirm(false)
+        }}>Confirmar</button></Link>
+        </div>
+      </Modal>
       <Outlet />
     </div>
   )

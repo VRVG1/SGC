@@ -45,7 +45,7 @@ const UserSettings = () => {
         if (dataInput.password === dataInput.password2) {
             setLoading(true);
             let result = await putDocente(dataInput, auth.user.token);
-            if (result === "accepted") {
+            if (result === "Accepted") {
                 console.log("actualizado")
                 setLoading(false);
                 setShowModalConfirm(true);
