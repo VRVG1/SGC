@@ -241,7 +241,7 @@ def OlvidoPass(request):
     if request.method == 'GET':
         newP = 'contrasena_'+usuarioP
         msg = '''
-            Hola '''+usuarioP+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
+            Hola '''+str(usuario.Nombre_Usuario)+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
             hay que ser mas atento.
 
             Se ha generado una contraseña provisional para que pueda entrar. Se pide encarecidamente que en cuanto entre de nuevo
