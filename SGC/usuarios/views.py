@@ -223,8 +223,6 @@ def getInfoUser(request):
 
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
 def OlvidoPass(request):
     '''
     Vista para cuando se le olvide la contraseña al usuario
