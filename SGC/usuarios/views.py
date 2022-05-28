@@ -222,9 +222,7 @@ def getInfoUser(request):
         return Response(dic, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@api_view(['POST'])
 def OlvidoPass(request):
     '''
     Vista para cuando se le olvide la contraseña al usuario
@@ -240,10 +238,10 @@ def OlvidoPass(request):
     except Usuarios.DoesNotExist:
         return Response({'Error', 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         newP = 'contrasena_'+usuarioP
         msg = '''
-            Hola '''+usuarioP+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
+            Hola '''+str(usuario.Nombre_Usuario)+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
             hay que ser mas atento.
 
             Se ha generado una contraseña provisional para que pueda entrar. Se pide encarecidamente que en cuanto entre de nuevo

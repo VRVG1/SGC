@@ -14,4 +14,5 @@ urlpatterns = [
     path('send-genera/<pk>', EnviarGeneran),
     path('get-generan', GetGeneranUser),
     path('get-reporte/<pk>', GetReporte),
+
 ]
