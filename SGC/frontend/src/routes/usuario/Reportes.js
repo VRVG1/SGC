@@ -31,6 +31,9 @@ export const Reportes = () => {
         ID_Generacion: null,
     });
 
+    const [mostarBotonAtras, setMostarBotonAtras] = useState(false);
+    const [mostarBotonSiguiente, setMostarBotonSiguiente] = useState(true);
+
 
     const [files, setFiles] = useState('');
     const [filesTamano, setFilesTamano] = useState(true);
@@ -239,6 +242,7 @@ export const Reportes = () => {
      */
     const siguiente = () => {
         if (selMateria.index < reportesFiltrados.length - 1) {
+            setMostarBotonAtras(true);
             setFiles("");
             setSelMateria({
                 ...selMateria,
@@ -247,8 +251,12 @@ export const Reportes = () => {
                 ID_Reporte: reportesFiltrados[selMateria.index + 1].ID_Reporte,
                 ID_Generacion: reportesFiltrados[selMateria.index + 1].ID_Generacion,
             });
+            if (selMateria.index === reportesFiltrados.length - 2) {
+                setMostarBotonSiguiente(false);
+            }
         } else {
-            console.log("termino")
+            setMostarBotonSiguiente(false);
+
         }
     }
 
@@ -257,6 +265,7 @@ export const Reportes = () => {
      */
     const anterior = () => {
         if (selMateria.index > 0) {
+            setMostarBotonSiguiente(true);
             setFiles("");
             setSelMateria({
                 ...selMateria,
@@ -265,8 +274,11 @@ export const Reportes = () => {
                 ID_Reporte: reportesFiltrados[selMateria.index - 1].ID_Reporte,
                 ID_Generacion: reportesFiltrados[selMateria.index - 1].ID_Generacion,
             });
+            if (selMateria.index === 1) {
+                setMostarBotonAtras(false);
+            }
         } else {
-            console.log("terminoAtras")
+            setMostarBotonAtras(false);
         }
     }
 
@@ -373,11 +385,11 @@ export const Reportes = () => {
                                             >Enviar</button>
                                         </div>
                                         <div className='buttons_selector'>
-                                            <button className='buttons' id="anterior" onClick={anterior}>Anterior</button>
+                                            {mostarBotonAtras ? <button className='BotonAtras' id="siguiente" onClick={anterior}>Anterior</button> : <button className='BotonAtras' id="siguiente" disabled>Anterior</button>}
                                             <div className='dots'>
                                                 <SetDots />
                                             </div>
-                                            <button className='buttons' id="anterior" onClick={siguiente}>Siguiente</button>
+                                            {mostarBotonSiguiente ? <button className='BotonAdelante' id="anterior" onClick={siguiente}>Siguiente</button> : <button className='BotonAdelante' id="anterior" disabled>Siguiente</button>}
                                         </div>
                                     </> : <></>}
                             </div>
