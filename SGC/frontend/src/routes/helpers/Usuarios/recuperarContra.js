@@ -16,9 +16,10 @@ const recuperarContra = async (dataInput) => {
         })
     };
 
-    const url = "http://localhost:8000/usuario/forgotPas";
+    const url = "http://localhost:8000/usuario/forgotPass";
     const res = await fetch(url, get);
     const result =  res.statusText;
+    console.log(result);
     return result;
 }
 
