@@ -147,8 +147,17 @@ def alojanFromView(request, fk):
             return Response({'Error': ' Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
 
         AlojanX = Alojan.objects.filter(ID_Generacion=ID_Generacion)
-        serializer_class = AlojanSerializer(AlojanX, many=True)
-        return Response(serializer_class.data, status=status.HTTP_200_OK)
+        lista = []
+        for i in AlojanX:
+            pdf = str(i.Path_PDF)
+            lista.append(pdf[pdf.index('/')+1:])
+        dic = {}
+        aux = 0
+        for i in lista:
+            pdf = {aux: i}
+            dic.update(pdf)
+            aux = aux + 1
+        return Response(dic, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'DELETE'])
