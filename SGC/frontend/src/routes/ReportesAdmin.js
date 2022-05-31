@@ -109,7 +109,7 @@ const ReportesAdmin = props => {
         setShowModalAdd(true)
     }
     /**
-     * Buscar algo, pero no recuerdo el que
+     * Buscar algo, el maestro a mandar el mensaje
      * @param {*} event 
      */
     const buscador = (event) => {

@@ -4,6 +4,8 @@ import getOneAsignan from '../helpers/Asignan/getOneAsignan.js';
 import getOneRepirte from '../helpers/Reportes/getOneReporte.js';
 import getAllCarrera from '../helpers/Carreras/getAllCarrera.js';
 import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
+import getPDFName from '../helpers/Reportes/getPDFName.js';
+import Modal from '../modal/Modal.js';
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
 import _ from 'lodash';
@@ -33,6 +35,13 @@ export const Reportes = () => {
 
     const [mostarBotonAtras, setMostarBotonAtras] = useState(false);
     const [mostarBotonSiguiente, setMostarBotonSiguiente] = useState(true);
+    const [archivosPDF, setArchivosPDF] = useState([]);
+    const [showModalDatosEnviados, setShowModalDatosEnviados] = useState(false);
+    const [pendejadaDeMierda, setPendejadaDeMierda] = useState(false);
+    const [modalData, setModalData] = useState({
+        mensaje : "",
+        titulo : "",
+    });
 
 
     const [files, setFiles] = useState('');
@@ -60,22 +69,46 @@ export const Reportes = () => {
             })
     }
 
+    const getPDF = async (id) => {
+        await getPDFName(id, auth.user.token).then(res => {
+            setArchivosPDF(res);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     /**
      * Funcion para subir los archivos a la base de datos
      * @param {*} e 
      */
     const fileSummit = async (e) => {
-        e.preventDefault();
-        setLoading(true)
-        const formData = new FormData();
-        for (var i = 0; i < files.length; i++) {
-            formData.append("Path_PDF", files[i]);
-            formData.append("ID_Generacion", selMateria.ID_Generacion);
-            await uploadFile(formData);
+        console.log(Object.keys(archivosPDF).length);
+        if (Object.keys(archivosPDF).length > 0) {
+            console.log(archivosPDF);
+            setModalData({
+                mensaje: "Ya se a enviado este reporte",
+                titulo: "Reporte entregado",
+            });
+            setShowModalDatosEnviados(true);
+        } else if (files === ''){
+            setModalData({
+                mensaje: "No has seleccionado ningun archivo",
+                titulo: "Error",
+            });
+            setShowModalDatosEnviados(true);
+        } else {
+            e.preventDefault();
+            setLoading(true)
+            const formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append("Path_PDF", files[i]);
+                formData.append("ID_Generacion", selMateria.ID_Generacion);
+                await uploadFile(formData);
+            }
+            await putGeneran(auth.user.token, selMateria.ID_Generacion);
+            setLoading(false);
+            window.location.reload();
         }
-        await putGeneran(auth.user.token, selMateria.ID_Generacion);
-        setLoading(false);
-        window.location.reload();
     }
 
     /**
@@ -83,21 +116,38 @@ export const Reportes = () => {
      * @param {*} props 
      * @returns 
      */
-    const FilesShow = (props) => {
+    const FilesShow = () => {
         let mensaje = [];
         if (files.length > 0) {
             for (let i = 0; i < files.length; i++) {
                 mensaje = mensaje.concat(
-                    <div className='archivo'>
+                    <div className='archivo' key={i}>
                         <p className='archivoP' key={i}>{files[i].name}</p>
                     </div>
                 );
             }
             return mensaje;
         }
+        for (let key in archivosPDF) {
+            mensaje = mensaje.concat(
+                <div className='archivo' key={key}>
+                    <p className='archivoP' key={key}>{archivosPDF[key]}</p>
+                </div>
+            )
+        }
+        return mensaje;
         return null;
     }
+    useEffect(() => {
+        if (selMateria.ID_Asignan !== null) {
+            setArchivosPDF(getPDF(selMateria.ID_Generacion));
+        }
+    }, [selMateria]);
 
+    useEffect(() => {
+        setLoading(false);
+        setPendejadaDeMierda(true);
+    }, [archivosPDF]);
     /**
      * useEffect para obtener las materias
      */
@@ -194,6 +244,8 @@ export const Reportes = () => {
 
     const cargarReportesFiltrados = useCallback(
         async (array, index) => {
+            setMostarBotonAtras(false);
+            setMostarBotonSiguiente(true);
             setReportesFiltrados(array)
             setSelMateria({
                 ...selMateria,
@@ -202,17 +254,17 @@ export const Reportes = () => {
                 ID_Reporte: array[0].ID_Reporte,
                 index: 0
             });
-        },[])
+        }, [])
 
     /**
      * Filtra los reportes que coincidan con el reporte seleccionado
      * @param {*} index 
      */
-    const filtrarReportes = (index) => {
+    const filtrarReportes = async (index) => {
         setSelReporte(reporteName[index]);
         let array = reportes.filter(reporte => (reporte.ID_Reporte === reporteName[index].ID_Reporte));
         setLoading(true);
-        cargarReportesFiltrados(array, index);
+        await cargarReportesFiltrados(array, index);
         setLoading(false);
     }
     /**
@@ -251,11 +303,14 @@ export const Reportes = () => {
                 ID_Reporte: reportesFiltrados[selMateria.index + 1].ID_Reporte,
                 ID_Generacion: reportesFiltrados[selMateria.index + 1].ID_Generacion,
             });
+            setArchivosPDF(getPDF(reportesFiltrados[selMateria.index + 1].ID_Generacion));
             if (selMateria.index === reportesFiltrados.length - 2) {
                 setMostarBotonSiguiente(false);
+                setMostarBotonAtras(true);
             }
         } else {
             setMostarBotonSiguiente(false);
+            setMostarBotonAtras(true);
 
         }
     }
@@ -274,11 +329,14 @@ export const Reportes = () => {
                 ID_Reporte: reportesFiltrados[selMateria.index - 1].ID_Reporte,
                 ID_Generacion: reportesFiltrados[selMateria.index - 1].ID_Generacion,
             });
+            setArchivosPDF(getPDF(reportesFiltrados[selMateria.index - 1].ID_Generacion));
             if (selMateria.index === 1) {
                 setMostarBotonAtras(false);
+                setMostarBotonSiguiente(true);
             }
         } else {
             setMostarBotonAtras(false);
+            setMostarBotonSiguiente(true);
         }
     }
 
@@ -287,7 +345,7 @@ export const Reportes = () => {
         let hoy = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         let dots = [];
         let si = new Date(hoy).getTime()
-        
+
         if (reporteName.filter(reporte => (reporte.ID_Reporte === selMateria.ID_Reporte))[0].Opcional) {
             for (let i = 0; i < reportesFiltrados.length; i++) {
                 let diff = ((new Date(reporteName.filter(reporte => (reporte.ID_Reporte === reportesFiltrados[i].ID_Reporte))[0].Fecha_Entrega).getTime()) - si) / (1000 * 60 * 60 * 24)
@@ -320,15 +378,17 @@ export const Reportes = () => {
                             <div className='listReportes'>
                                 <ul>
                                     {Object.keys(reporteName).length !== 0 ? reporteName.map((reporte, index) => {
-                                        if(reporte.Opcional){
-                                        return (
-                                            <li key={index}>
-                                                <div className='listReportes__Reporte'
-                                                    onClick={() => { filtrarReportes(index) }}>
-                                                    {reporte.Nombre_Reporte}
-                                                </div>
-                                            </li>
-                                        )
+                                        if (reporte.Opcional) {
+                                            return (
+                                                <li key={index}>
+                                                    <div className='listReportes__Reporte'
+                                                        onClick={() => {
+                                                            filtrarReportes(index)
+                                                        }}>
+                                                        {reporte.Nombre_Reporte}
+                                                    </div>
+                                                </li>
+                                            )
                                         } else {
                                             return (
                                                 <li key={index}>
@@ -376,7 +436,10 @@ export const Reportes = () => {
                                                 </div>
                                                 <div className='listFile'>
                                                     <div className='fileNames-containerU'>
-                                                        <FilesShow />
+                                                        {pendejadaDeMierda ?
+                                                            <>
+                                                                <FilesShow />
+                                                            </> : <></>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -394,6 +457,10 @@ export const Reportes = () => {
                                     </> : <></>}
                             </div>
                         </div>
+                        <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={modalData.titulo}>
+                            <p className='alertMSM'>{modalData.mensaje}</p>
+                            {/* <button onClick={todoListo}>Confirmar</button> */}
+                        </Modal>
                     </> :
                         <>
                             <div className='imagen'>

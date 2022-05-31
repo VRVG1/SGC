@@ -13,8 +13,7 @@ const getPDFName = async (PK, token) => {
     const url = "http://localhost:8000/reporte/get-alojanFrom/" + PK;
     const res = await fetch(url, get);
     const result = res.statusText;
-    const data = res.json();
-    console.log("dasdasdas",data);
+    const data = await res.json();
     return data;
 }
 

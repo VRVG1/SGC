@@ -16,8 +16,6 @@ const _ = require("lodash");
 const ReportesCheck = props => {
     let auth = useContext(AuthContext);
 
-    const [showModalAdd, setShowModalAdd] = useState(false);
-    const [showModalDetails, setShowModalDetails] = useState(false);
     const [selector, setSelector] = useState("Modal-Reportes-Admin-Select-hidden")
     const [hidden, setHidden] = useState({
         hidden1: "form group reportes-check",
@@ -40,11 +38,27 @@ const ReportesCheck = props => {
     const [asignan, setAsignan] = useState([]);
     const [generan, setGeneran] = useState([]);
     const [materias, setMaterias] = useState([]);
-    
+    const [pdfNames, setPdfNames] = useState([]);
+    const [reporteMaster, setReporteMaster] = useState({
+        reporte: "",
+        maestro: "",
+    });
+
+    const [showModalArchivos, setShowModalArchivos] = useState(false);
+
     const [reportesFiltro, setReportesFiltro] = useState([]);
     const [maestrosFiltro, setMaestrosFiltro] = useState([]);
     const [asignanFiltro, setAsignanFiltro] = useState([]);
     const [generanFiltro, setGeneranFiltro] = useState([]);
+
+    const [predictionData, setPredictionData] = useState([]);
+
+    const [dataInput, setDataInput] = useState({
+        reporte: null,
+        maestro: null,
+        materia: null,
+        grupo: null,
+    });
 
     /**
      * Metodo para obtener los generan de un reporte
@@ -73,6 +87,7 @@ const ReportesCheck = props => {
     const getMaestros = useCallback(async () => {
         getAllUsuarios(auth.user.token).then(res => {
             setMaestros(res);
+            setMaestrosFiltro(res);
         }).catch(err => {
             console.log(err);
         });
@@ -104,12 +119,14 @@ const ReportesCheck = props => {
      */
     const getPDFName = useCallback(async (PK) => {
         await getPDFNames(PK, auth.user.token).then(res => {
-            console.log("Pendejada",res);
-        }).catch(err => {
+            setPdfNames(res);
+        }
+        ).catch(err => {
             console.log(err);
-        }, []);
-    }
-    , []);
+        }
+            , []);
+
+    }, []);
 
     /**
      * Hook para cargar todos los datos necesarios para la vista
@@ -125,6 +142,7 @@ const ReportesCheck = props => {
             setReportes([]);
             setMaestros([]);
             setAsignan([]);
+            setMaestrosFiltro([]);
             setGeneran([]);
             setMaterias([]);
         }
@@ -157,6 +175,57 @@ const ReportesCheck = props => {
         }
     }
 
+    const Archivos = () => {
+        let content = [];
+
+        for (let key in pdfNames) {
+            content.push(
+                <a className="links" href={`http://localhost:8000/media/Generados/` + pdfNames[key]} target="_blank"><div className='archivo'>
+                    <p className='archivoP'>{pdfNames[key]}</p>
+                </div></a>
+            )
+        }
+        return content;
+    }
+
+    /**
+ * Buscar algo, el maester y asi
+ * @param {*} event 
+ */
+    const buscador = (event) => {
+        const { value } = event.target;
+        const { name } = event.target;
+        setDataInput({
+            ...dataInput,
+            [name]: value,
+        });
+        if (name === "nombreMasters") {
+            let filteredMaestros;
+            if (value.length > 0) {
+                filteredMaestros = maestros.filter(maestro => {
+                    return maestro.Nombre_Usuario.toLowerCase().includes(value.toLowerCase());
+                });
+            } else {
+                filteredMaestros = [];
+            }
+            if (filteredMaestros.length > 0) {
+                setMaestrosFiltro(filteredMaestros);
+            } else {
+                setMaestrosFiltro(maestros);
+            }
+            setPredictionData(filteredMaestros);
+        } else if (name === "nombreMateria") {
+            let filteredMaterias;
+            if (value.length > 0) {
+                filteredMaterias = materias.filter(materia => {
+                    return materia.Nombre_Materia.toLowerCase().includes(value.toLowerCase());
+                });
+            } else {
+                filteredMaterias = [];
+            }
+            setPredictionData(filteredMaterias);
+        }
+    }
     return (
         <>
             {loading === false ? (
@@ -169,13 +238,13 @@ const ReportesCheck = props => {
                                 <div className="search-button-dialog__content">
                                     <p><input type="checkbox" defaultChecked="true" id="hidden1" name="rbtn-search" value="Maestro"
                                         onClick={changeEstado}
-                                    />Maestro</p>
+                                    />Docente</p>
 
-                                    <p><input type="checkbox" id="hidden2" name="rbtn-search" value="Carrera"
+                                    {/* <p><input type="checkbox" id="hidden2" name="rbtn-search" value="Carrera"
                                         onClick={changeEstado} />Carrera</p>
 
                                     <p><input type="checkbox" id="hidden3" name="rbtn-search" value="Grupo"
-                                        onClick={changeEstado} />Grupo</p>
+                                        onClick={changeEstado} />Grupo</p> */}
 
                                     <p><input type="checkbox" id="hidden4" name="rbtn-search" value="Materia"
                                         onClick={changeEstado} />Materia</p>
@@ -185,29 +254,65 @@ const ReportesCheck = props => {
                                 <div className={hidden.hidden1}>
                                     <input
                                         type="text"
+                                        id="nombreMasters"
+                                        name="nombreMasters"
                                         className={"input-report-check-search" + oculto.hidden1}
+                                        onChange={buscador}
+                                        value={dataInput.nombreMasters}
                                         required
                                     />
+                                    <ul className="predictionCheck">
+                                        {Object.keys(predictionData).length !== 0 ? predictionData.map((data, i) => (
+                                            <li key={i}
+                                                onClick={() => {
+                                                    setDataInput({
+                                                        ...dataInput,
+                                                        nombreMasters: data.Nombre_Usuario,
+                                                    });
+                                                    setPredictionData([]);
+                                                }}>{data.Nombre_Usuario}</li>
+                                        )) : <></>}
+                                    </ul>
                                     <span className={"highlight reportes-check" + oculto.hidden1}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden1}></span>
-                                    <label className={"reportes-check" + oculto.hidden1}>Nombre del Maestro</label>
+                                    <label className={"reportes-check" + oculto.hidden1}>Nombre del Docente</label>
                                 </div>
-                                <div className={hidden.hidden2}>
+                                {/* Carrera */}
+                                {/* <div className={hidden.hidden2}>
                                     <input
                                         type="text"
+                                        id="nombreCarrera"
+                                        name="nombreCarrera"
                                         className={"input-report-check-search" + oculto.hidden2}
+                                        onChange={buscador}
+                                        value={dataInput.nombreCarrera ?? ""}
                                         required
                                     />
+                                    <ul className="predictionCheck">
+                                        {Object.keys(predictionData).length !== 0 ? predictionData.map((data, i) => (
+                                            <li key={i}
+                                                onClick={() => {
+                                                    setDataInput({
+                                                        ...dataInput,
+                                                        nombreCarrera: data.Nombre_Usuario,
+                                                    });
+                                                    setPredictionData([]);
+                                                }}>{data.Nombre_Usuario}</li>
+                                        )) : <></>}
+                                    </ul>
                                     <span className={"highlight reportes-check" + oculto.hidden2}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden2}></span>
                                     <label className={"reportes-check" + oculto.hidden2}>Nombre de la Carrera</label>
-                                </div>
+                                </div> */}
                                 <div className={hidden.hidden3}>
-                                    <input
-                                        type="text"
-                                        className={"input-report-check-search" + oculto.hidden3}
-                                        required
-                                    />
+                                    <select className={"input-report-check-search" + oculto.hidden3}>
+                                        <option value={""}></option>
+                                        <option value={"A"}>A</option>
+                                        <option value={"B"}>B</option>
+                                        <option value={"C"}>C</option>
+                                        <option value={"D"}>D</option>
+                                        <option value={"E"}>E</option>
+                                    </select>
                                     <span className={"highlight reportes-check" + oculto.hidden3}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden3}></span>
                                     <label className={"reportes-check" + oculto.hidden3}>Grupo</label>
@@ -215,12 +320,28 @@ const ReportesCheck = props => {
                                 <div className={hidden.hidden4}>
                                     <input
                                         type="text"
+                                        id="nombreMateria"
+                                        name="nombreMateria"
                                         className={"input-report-check-search" + oculto.hidden4}
+                                        onChange={buscador}
+                                        value={dataInput.nombreMateria}
                                         required
                                     />
+                                    <ul className="predictionCheck">
+                                        {Object.keys(predictionData).length !== 0 ? predictionData.map((data, i) => (
+                                            <li key={i}
+                                                onClick={() => {
+                                                    setDataInput({
+                                                        ...dataInput,
+                                                        nombreMateria: data.Nombre_Materia,
+                                                    });
+                                                    setPredictionData([]);
+                                                }}>{data.Nombre_Materia}</li>
+                                        )) : <></>}
+                                    </ul>
                                     <span className={"highlight reportes-check" + oculto.hidden4}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden4}></span>
-                                    <label className={"reportes-check" + oculto.hidden4}>Nombre de la Materia</label>
+                                    <label className={"reportes-check" + oculto.hidden4}>Nombre de la materia</label>
                                 </div>
 
                             </form>
@@ -228,14 +349,14 @@ const ReportesCheck = props => {
                         </div>
 
                         <div className="contenedorRerportes">
-                            {Object.keys(reportes).length !== 0 && Object.keys(generan).length !== 0 ?
+                            {Object.keys(reportes).length !== 0 && Object.keys(generan).length !== 0 && Object.keys(materias).length !== 0 ?
                                 (<>
                                     {reportes.map((reporte, index) => {
                                         return (
                                             <div className="contenedorMasterReporte">
                                                 <h2 className="Reportes-Check">{reporte.Nombre_Reporte}</h2>
                                                 <div className="contenedorMaterReporteTable">
-                                                    {maestros.map((maestro, index2) => {
+                                                    {maestrosFiltro.map((maestro, index2) => {
                                                         if (maestro.Tipo_Usuario === "Docente") {
                                                             return (
                                                                 <div>
@@ -252,32 +373,51 @@ const ReportesCheck = props => {
                                                                         <tbody className="tbody-ReportesCheck">
                                                                             {asignan.map((asignan, index) => {
                                                                                 let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(segundoFiltro => segundoFiltro.ID_Asignan === asignan.ID_Asignan)[0].Estatus;
-                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan.ID_Asignan)[0].ID_Generacion
-                                                                                let pdf = getPDFName(PK);
+                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan.ID_Asignan)[0].ID_Generacion;
                                                                                 if (estado === null) {
                                                                                     estado = "No entregado"
                                                                                 }
                                                                                 if (asignan.ID_Usuario === maestro.PK) {
-                                                                                    return (
-                                                                                        <tr key={index}>
-                                                                                            <td>{materias.filter(materia => materia.ID_Materia === asignan.ID_Materia)[0].Nombre_Materia}</td>
-                                                                                            <td>{asignan.Grupo}</td>
-                                                                                            <td>{estado}</td>
-                                                                                            <td>
-                                                                                                {/* Necesito el pk de genera */}
-                                                                                                <ul>
-                                                                                                    
-                                                                                                    {_.times(5, (index) => {
-                                                                                                        return (
-                                                                                                            <li>
-                                                                                                                {"Archivo " + index}
-                                                                                                            </li>
-                                                                                                        )
-                                                                                                    })}
-                                                                                                </ul>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    )
+                                                                                    let si = materias.filter(materia => materia.ID_Materia === asignan.ID_Materia)[0].Nombre_Materia
+                                                                                    console.log(si, dataInput.nombreMateria, si.toLowerCase().includes(dataInput.nombreMateria))
+                                                                                    if (typeof(dataInput.nombreMateria) === "undefined") {
+                                                                                        return (
+                                                                                            <tr key={index}>
+                                                                                                <td>{si}</td>
+                                                                                                <td>{asignan.Grupo}</td>
+                                                                                                <td>{estado}</td>
+                                                                                                <td><button onClick={() => {
+                                                                                                    setReporteMaster({
+                                                                                                        ...reporteMaster,
+                                                                                                        reporte: reporte.Nombre_Reporte,
+                                                                                                        maestro: maestro.Nombre_Usuario,
+                                                                                                    })
+                                                                                                    setShowModalArchivos(true);
+                                                                                                    getPDFName(PK);
+                                                                                                }}>Archivos</button></td>
+                                                                                            </tr>
+                                                                                        )
+                                                                                    } else {
+                                                                                        if (si.toLowerCase().includes(dataInput.nombreMateria) || dataInput.nombreMateria === si) {
+                                                                                            return (
+                                                                                                <tr key={index}>
+
+                                                                                                    <td>{si}</td>
+                                                                                                    <td>{asignan.Grupo}</td>
+                                                                                                    <td>{estado}</td>
+                                                                                                    <td><button onClick={() => {
+                                                                                                        setReporteMaster({
+                                                                                                            ...reporteMaster,
+                                                                                                            reporte: reporte.Nombre_Reporte,
+                                                                                                            maestro: maestro.Nombre_Usuario,
+                                                                                                        })
+                                                                                                        setShowModalArchivos(true);
+                                                                                                        getPDFName(PK);
+                                                                                                    }}>Archivos</button></td>
+                                                                                                </tr>
+                                                                                            )
+                                                                                        }
+                                                                                    }
                                                                                 }
                                                                             }
                                                                             )}
@@ -295,7 +435,7 @@ const ReportesCheck = props => {
                                 :
                                 (<>
                                     <div className="Sin_Resultados">
-                                        <p>No hay reportes creados</p>
+                                        <p className="p">No hay reportes creados</p>
                                     </div>
                                     <div className="Sin_Resultados img">
                                         <img src={kanaBuscar} className="kana" alt="Sin resultados" />
@@ -305,77 +445,21 @@ const ReportesCheck = props => {
                         </div>
                     </div>
 
-
-                    <Modal show={showModalAdd} setShow={setShowModalAdd} title={"Agregar y Enviar Reporte"}>
-                        <div className="ModalReportes">
-                            <label className="LabelModalReportesCheck">Mensaje: </label>
-                            <br></br>
-                            <textarea className="textareaModalReportesCheck">
-
-                            </textarea>
-                            <form>
-                                <div className="Modal-Reportes-Admin-Radios">
-                                    <input
-                                        className="Modal-Reportes-Admin-Date"
-                                        type="date"
-                                        name="fechaEntrega"
-                                    ></input>
-
-                                    <p className="Modal-Reportes-Admin-p"><input
-                                        type="radio"
-                                        name="opc"
-                                        value={"Especifico"}
-                                        onClick={() => setSelector("Modal-Reportes-Admin-Select")}></input>Especifico</p>
-                                    <p><input
-                                        type="radio"
-                                        name="opc"
-                                        value={"General"}
-                                        onClick={() => setSelector("Modal-Reportes-Admin-Select-hidden")}></input>General</p>
-                                </div>
-                                <select className={selector}>
-                                    {_.times(8, (i) => (
-                                        <option value={i}>Opcion {i}</option>
-                                    ))}
-
-                                </select>
-                            </form>
-                            <input type="submit" value={"Guardar/Enviar"}></input>
-                        </div>
-                    </Modal>
-
-                    <Modal show={showModalDetails} setShow={setShowModalDetails} title={"Nombre del reporte"}>
-                        <div className="ModalReportes">
-                            <label className="LabelModalReportesCheck">Mensaje: </label>
-                            <br></br>
-                            <textarea className="textareaModalReportesCheck"
-                                value="Este es el mensaje que se envio en el reporte"
-                            >
-                            </textarea>
-                            <form>
-                                <div className="Modal-Reportes-Admin-Radios">
-                                    <input
-                                        className="Modal-Reportes-Admin-Date"
-                                        type="date"
-                                        name="fechaEntrega"
-                                    ></input>
-                                </div>
-                                <select className={selector}>
-                                    {_.times(8, (i) => (
-                                        <option value={i}>Opcion {i}</option>
-                                    ))}
-
-                                </select>
-                            </form>
-                            <div className="Usuarios-Detalles buttons">
-                                <input
-                                    type="submit"
-                                    value={"Cerrar"}
-                                    className="button Usuarios"></input>
-                                <input
-                                    type="submit"
-                                    value="Eliminar"
-                                    className="button Usuarios delete"></input>
-                            </div>
+                    <Modal show={showModalArchivos} setShow={setShowModalArchivos} title={reporteMaster.reporte + " - " + reporteMaster.maestro}>
+                        <div className="modalRecuperar">
+                            {Object.keys(pdfNames).length !== 0 ?
+                                <>
+                                    <Archivos />
+                                </> :
+                                <>
+                                    <div className="Sin_Resultados">
+                                        <p className="p">No hay archivos</p>
+                                    </div>
+                                    <div className="Sin_Resultados img">
+                                        <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                                    </div>
+                                </>}
+                            {/* <button onClick={() => setShowModalArchivos(false)}>Cerrar</button> */}
                         </div>
                     </Modal>
 
