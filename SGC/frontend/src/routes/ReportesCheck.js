@@ -5,6 +5,7 @@ import getAllUsuarios from "./helpers/Usuarios/getAllUsuarios.js";
 import getAsignanAllUser from "./helpers/Asignan/getAsignanAllUser.js";
 import getGeneran from "./helpers/Generan/getGeneran.js";
 import getAllMaterias from "./helpers/Materias/getAllMaterias.js";
+import getPDFNames from "./helpers/Reportes/getPDFName.js";
 import { AuthContext } from './helpers/Auth/auth-context.js';
 
 
@@ -88,7 +89,9 @@ const ReportesCheck = props => {
             console.log(err);
         }, []);
     });
-
+    /**
+     * Metodo para obtener todas las materias de la base de datos
+     */
     const getMaterias = useCallback(async () => {
         await getAllMaterias(auth.user.token).then(res => {
             setMaterias(res);
@@ -96,6 +99,17 @@ const ReportesCheck = props => {
             console.log(err);
         }, []);
     });
+    /**
+     * Metodo para obtener todos los nombres de los pdfs
+     */
+    const getPDFName = useCallback(async (PK) => {
+        await getPDFNames(PK, auth.user.token).then(res => {
+            console.log("Pendejada",res);
+        }).catch(err => {
+            console.log(err);
+        }, []);
+    }
+    , []);
 
     /**
      * Hook para cargar todos los datos necesarios para la vista
@@ -122,7 +136,6 @@ const ReportesCheck = props => {
      * @param {*} e 
      */
     const changeEstado = (e) => {
-        console.log(e.target.checked)
         if (e.target.checked === true) {
             setHidden({
                 ...hidden,
@@ -217,7 +230,6 @@ const ReportesCheck = props => {
                         <div className="contenedorRerportes">
                             {Object.keys(reportes).length !== 0 && Object.keys(generan).length !== 0 ?
                                 (<>
-                                    {console.log(generan)}
                                     {reportes.map((reporte, index) => {
                                         return (
                                             <div className="contenedorMasterReporte">
@@ -240,6 +252,8 @@ const ReportesCheck = props => {
                                                                         <tbody className="tbody-ReportesCheck">
                                                                             {asignan.map((asignan, index) => {
                                                                                 let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(segundoFiltro => segundoFiltro.ID_Asignan === asignan.ID_Asignan)[0].Estatus;
+                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan.ID_Asignan)[0].ID_Generacion
+                                                                                let pdf = getPDFName(PK);
                                                                                 if (estado === null) {
                                                                                     estado = "No entregado"
                                                                                 }
@@ -250,7 +264,9 @@ const ReportesCheck = props => {
                                                                                             <td>{asignan.Grupo}</td>
                                                                                             <td>{estado}</td>
                                                                                             <td>
+                                                                                                {/* Necesito el pk de genera */}
                                                                                                 <ul>
+                                                                                                    
                                                                                                     {_.times(5, (index) => {
                                                                                                         return (
                                                                                                             <li>
