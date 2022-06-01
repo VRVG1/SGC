@@ -8,6 +8,25 @@ from usuarios.models import Usuarios
 # SE USARÀ DESPUES PARA TAREAS EN LAS QUE SE TENGA QUE VERIFICAR EL TIEMPO RESTANTE DE ENTREGA DE REPORTES
 
 
+@shared_task(name='EnviarmsgR')
+def sendMensaje(msg, general, correo):
+
+    de = settings.DEFAULT_FROM_EMAIL
+    subject = 'Mensaje Importante SGC'
+
+    if general:
+        usuarios = Usuarios.objects.all()
+        to = []
+        for i in usuarios:
+            to.append(i.CorreoE)
+
+        for i in to:
+            send_mail(subject, msg, de, [i], fail_silently=False)
+    else:
+        to = [correo]
+        send_mail(subject, msg, de, to, fail_silently=False)
+
+
 @shared_task(name='tareaconjunta')
 def tareaconjunta():
     reportes = Reportes.objects.all()
