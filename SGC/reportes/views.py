@@ -14,6 +14,7 @@ from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from .tasks import sendMensaje
 
 # Create your views here.
 
@@ -329,3 +330,31 @@ def CrearGeneran(request, pk):
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
         print(serializer_class.errors)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def AdminSendMail(request):
+    if request.method == 'POST':
+        pk = request.data['pk']
+        if pk == str(0):
+            try:
+                msg = request.data['msg']
+                sendMensaje.delay(msg, True, None)
+                return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
+            except:
+                return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            try:
+                usuario = Usuarios.objects.get(PK=pk)
+            except Usuarios.DoesNotExist:
+                return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                msg = request.data['msg']
+                sendMensaje.delay(msg, False, usuario.CorreoE)
+                return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
+            except:
+                return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
