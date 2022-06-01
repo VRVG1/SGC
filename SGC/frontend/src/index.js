@@ -50,6 +50,7 @@ import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
 import "./styles/usuario/reportesU.scss"
 import "./styles/usuario/UserSetting.scss"
+import "./styles/sysSettings.scss"
 
 /**
   * Funcion que facilita el acceso al contexto 'AuthContext'.

@@ -374,6 +374,6 @@ def IniciarNuevoSem(request):
                     os.remove(i)
             Reportes.objects.all().delete()
             Asignan.objects.all().delete()
-            return Response({'Exito': 'Datos borrados'}, status=status.HTTP_410_GONE)
+            return Response({'Exito': 'Datos borrados'}, status=status.HTTP_200_OK)
         except:
             return Response({'Error': 'Error al borrar los datos'}, status=status.HTTP_400_BAD_REQUEST)
