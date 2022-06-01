@@ -358,3 +358,22 @@ def AdminSendMail(request):
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def IniciarNuevoSem(request):
+
+    if request.method == 'GET':
+        try:
+            os.chdir('./media/Generados')
+            pdfs = os.listdir()
+            if pdfs:
+                for i in pdfs:
+                    os.remove(i)
+            Reportes.objects.all().delete()
+            Asignan.objects.all().delete()
+            return Response({'Exito': 'Datos borrados'}, status=status.HTTP_410_GONE)
+        except:
+            return Response({'Error': 'Error al borrar los datos'}, status=status.HTTP_400_BAD_REQUEST)
