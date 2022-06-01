@@ -372,8 +372,12 @@ def IniciarNuevoSem(request):
             if pdfs:
                 for i in pdfs:
                     os.remove(i)
-            Reportes.objects.all().delete()
-            Asignan.objects.all().delete()
+                Reportes.objects.all().delete()
+                Asignan.objects.all().delete()
+            usuarios = Usuarios.objects.all()
+            for i in usuarios:
+                i.Permiso = True
+                i.save()
             return Response({'Exito': 'Datos borrados'}, status=status.HTTP_200_OK)
         except:
             return Response({'Error': 'Error al borrar los datos'}, status=status.HTTP_400_BAD_REQUEST)
