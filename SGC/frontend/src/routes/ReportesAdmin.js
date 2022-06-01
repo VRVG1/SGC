@@ -118,7 +118,11 @@ const ReportesAdmin = props => {
             return item.Nombre_Usuario.toLowerCase().includes(value.toLowerCase());
         }
         );
-        setPredictionData(filtro);
+        if (value === "") {
+            setPredictionData([]);
+        } else {
+            setPredictionData(filtro);
+        }
     }
 
     /**

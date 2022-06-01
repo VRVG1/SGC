@@ -173,6 +173,19 @@ const ReportesCheck = props => {
                 [e.target.id]: " hidden",
             });
         }
+
+        if (e.target.id === "hidden1") {
+            setDataInput({
+                ...dataInput,
+                nombreMasters: "",
+            });
+            setMaestrosFiltro(maestros);
+        } else if (e.target.id === "hidden4") {
+            setDataInput({
+                ...dataInput,
+                nombreMateria: "",
+            });
+        }
     }
 
     const Archivos = () => {
@@ -226,6 +239,17 @@ const ReportesCheck = props => {
             setPredictionData(filteredMaterias);
         }
     }
+    const actualizarBuscador = (name, filtro) => {
+        console.log(name);
+        if (name === "nombreMasters") {
+            let filteredMaestros;
+            filteredMaestros = maestros.filter(maestro => {
+                return maestro.Nombre_Usuario.toLowerCase().includes(filtro.toLowerCase());
+            });
+            console.log(filteredMaestros, filtro);
+        }
+    }
+
     return (
         <>
             {loading === false ? (
@@ -236,15 +260,15 @@ const ReportesCheck = props => {
 
                             <div className="search-button-dialog">
                                 <div className="search-button-dialog__content">
-                                    <p><input type="checkbox" defaultChecked="true" id="hidden1" name="rbtn-search" value="Maestro"
-                                        onClick={changeEstado}
-                                    />Docente</p>
 
                                     {/* <p><input type="checkbox" id="hidden2" name="rbtn-search" value="Carrera"
                                         onClick={changeEstado} />Carrera</p>
 
-                                    <p><input type="checkbox" id="hidden3" name="rbtn-search" value="Grupo"
-                                        onClick={changeEstado} />Grupo</p> */}
+                                        <p><input type="checkbox" id="hidden3" name="rbtn-search" value="Grupo"
+                                    onClick={changeEstado} />Grupo</p> */}
+                                    <p><input type="checkbox" defaultChecked="true" id="hidden1" name="rbtn-search" value="Maestro"
+                                        onClick={changeEstado}
+                                    />Docente</p>
 
                                     <p><input type="checkbox" id="hidden4" name="rbtn-search" value="Materia"
                                         onClick={changeEstado} />Materia</p>
@@ -261,18 +285,21 @@ const ReportesCheck = props => {
                                         value={dataInput.nombreMasters}
                                         required
                                     />
-                                    <ul className="predictionCheck">
+                                    {/* Coincidencias */}
+                                    {/* <ul className="predictionCheck">
                                         {Object.keys(predictionData).length !== 0 ? predictionData.map((data, i) => (
                                             <li key={i}
+                                                name="nombreMasters"
                                                 onClick={() => {
                                                     setDataInput({
                                                         ...dataInput,
                                                         nombreMasters: data.Nombre_Usuario,
                                                     });
                                                     setPredictionData([]);
+                                                    actualizarBuscador("nombreMasters", data.Nombre_Usuario);
                                                 }}>{data.Nombre_Usuario}</li>
                                         )) : <></>}
-                                    </ul>
+                                    </ul> */}
                                     <span className={"highlight reportes-check" + oculto.hidden1}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden1}></span>
                                     <label className={"reportes-check" + oculto.hidden1}>Nombre del Docente</label>
@@ -304,7 +331,7 @@ const ReportesCheck = props => {
                                     <span className={"bottomBar reportes-check" + oculto.hidden2}></span>
                                     <label className={"reportes-check" + oculto.hidden2}>Nombre de la Carrera</label>
                                 </div> */}
-                                <div className={hidden.hidden3}>
+                                {/* <div className={hidden.hidden3}>
                                     <select className={"input-report-check-search" + oculto.hidden3}>
                                         <option value={""}></option>
                                         <option value={"A"}>A</option>
@@ -316,7 +343,7 @@ const ReportesCheck = props => {
                                     <span className={"highlight reportes-check" + oculto.hidden3}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden3}></span>
                                     <label className={"reportes-check" + oculto.hidden3}>Grupo</label>
-                                </div>
+                                </div> */}
                                 <div className={hidden.hidden4}>
                                     <input
                                         type="text"
@@ -327,7 +354,8 @@ const ReportesCheck = props => {
                                         value={dataInput.nombreMateria}
                                         required
                                     />
-                                    <ul className="predictionCheck">
+                                    {/* Coincidencias */}
+                                    {/* <ul className="predictionCheck">
                                         {Object.keys(predictionData).length !== 0 ? predictionData.map((data, i) => (
                                             <li key={i}
                                                 onClick={() => {
@@ -338,7 +366,7 @@ const ReportesCheck = props => {
                                                     setPredictionData([]);
                                                 }}>{data.Nombre_Materia}</li>
                                         )) : <></>}
-                                    </ul>
+                                    </ul> */}
                                     <span className={"highlight reportes-check" + oculto.hidden4}></span>
                                     <span className={"bottomBar reportes-check" + oculto.hidden4}></span>
                                     <label className={"reportes-check" + oculto.hidden4}>Nombre de la materia</label>
@@ -379,8 +407,7 @@ const ReportesCheck = props => {
                                                                                 }
                                                                                 if (asignan.ID_Usuario === maestro.PK) {
                                                                                     let si = materias.filter(materia => materia.ID_Materia === asignan.ID_Materia)[0].Nombre_Materia
-                                                                                    console.log(si, dataInput.nombreMateria, si.toLowerCase().includes(dataInput.nombreMateria))
-                                                                                    if (typeof(dataInput.nombreMateria) === "undefined") {
+                                                                                    if (typeof (dataInput.nombreMateria) === "undefined") {
                                                                                         return (
                                                                                             <tr key={index}>
                                                                                                 <td>{si}</td>
