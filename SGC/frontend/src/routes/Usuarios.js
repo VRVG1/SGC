@@ -7,7 +7,7 @@ import postUsuario from "./helpers/Usuarios/postUsuario.js"
 import putUsuario from "./helpers/Usuarios/putUsuario.js";
 import deleteUser from "./helpers/Usuarios/deleteUser.js";
 import Loader from "./Loader.js";
-import getOneAsignan from "./helpers/Asignan/getOneAsignan.js";
+import getAllAsignanUser from "./helpers/Asignan/getAllAsignanUser.js";
 import kanaBuscar from "../img/kana-buscar.png"
 
 import { AuthContext } from "./helpers/Auth/auth-context.js";
@@ -15,6 +15,7 @@ import { AuthContext } from "./helpers/Auth/auth-context.js";
 const Usuarios = props => {
   let auth = useContext(AuthContext);
 
+  const [userAsignan, setUserAsignan] = useState([]);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalDetails, setShowModalDetails] = useState(false);
   const [showModalModify, setShowModalModify] = useState(false);
@@ -22,6 +23,7 @@ const Usuarios = props => {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [loading, setloading] = useState(false);
+  const [seleccion, setSeleccion] = useState(false);
   const [showModalResultado, setShowModalResultado] = useState(false);
   const [statusContenido, setStatusContenido] = useState('');
   const [userActualizar, setUserActualizar] = useState('');
@@ -55,13 +57,12 @@ const Usuarios = props => {
   const [password, setPassword] = useState('')
   const [pk, setPk] = useState('');
 
-  let usuarioEliminar = "Victor Rafael Valdivia Gomez"
-  let usuarioActualizar = "Pedro Nicolas Rios Vargas"
 
 
-  const getAsignan = async () => {
-    let data = await getOneAsignan(auth.user.token, 1);
-    console.log(data)
+  const getAsignan = async (pk) => {
+    let data = await getAllAsignanUser(auth.user.token, pk).then(res => {
+      setUserAsignan(res);
+    });
   }
   /**
    * Recibe los datos escritos en un input
@@ -72,6 +73,12 @@ const Usuarios = props => {
       setdataInput({
         ...dataInput,
         [event.target.name]: event.target.value
+      });
+    }
+    if (event.target.name === 'seleccion') {
+      setdataInput({
+        ...dataInput,
+        [event.target.name]: event.target.checked
       });
     }
   }
@@ -141,7 +148,8 @@ const Usuarios = props => {
       Nombre_Usuario: Nombre_Usuario,
       Tipo_Usuario: Tipo_Usuario,
       username: username,
-      password: ""
+      password: "",
+      seleccion: true,
     });
     setUserActualizar('');
     setShowModalModify(true);
@@ -166,13 +174,14 @@ const Usuarios = props => {
    */
   function detalles(id) {
     const user = userData.find(elemento => elemento.PK === id);
+    getAsignan(id)
     setCorreoE(user.CorreoE);
     setNombre_Usuario(user.Nombre_Usuario);
     setTipo_Usuario(user.Tipo_Usuario);
     setUsername(user.ID_Usuario.username);
     setPassword(user.ID_Usuario.password);
     setPk(user.PK);
-    setShowModalDetails(true);
+    setSeleccion(user.Permiso)
     setdataInput({
       ...dataInput,
       CorreoE: user.CorreoE,
@@ -180,9 +189,11 @@ const Usuarios = props => {
       Tipo_Usuario: user.Tipo_Usuario,
       username: user.ID_Usuario.username,
       password: '', //No se si poner la contra xd
-      password2: ''
+      password2: '',
+      seleccion: user.Permiso,
     });
     setUserActualizar('');
+    setShowModalDetails(true);
 
   }
   /**
@@ -211,6 +222,26 @@ const Usuarios = props => {
       return elemento !== undefined
     })
     setFiltrados(filtrados)
+  }
+  /**
+   * Metodo para mostrar en los detalles del usuario las materias que este tiene asignadas
+   * @param {*} asignan 
+   */
+  const DatosTablaDetalles = () => {
+    const datosTabla = [];
+    userAsignan.map((asigna, index) => {
+      datosTabla.push(
+        <tr key={index}>
+          <td>{asigna.ID_Materia}</td>
+          <td>{asigna.ID_Carrera}</td>
+          <td>{asigna.Grupo}</td>
+        </tr>
+      )
+    })
+    // if (tabla.length === 0) {
+    //   return <p>No tiene materias asignadas</p>
+    // }
+    return datosTabla;
   }
   return (
     <>
@@ -243,7 +274,6 @@ const Usuarios = props => {
                         <tr key={user.PK}>
                           <td onClick={() => {
                             detalles(user.PK)
-                            getAsignan()
                           }}>
                             {user.Nombre_Usuario}
                           </td>
@@ -259,9 +289,9 @@ const Usuarios = props => {
                 <div className="Sin_Resultados">
                   <p>No se encontraron resultados</p>
                 </div>
-                {/* <div className="Sin_Resultados img">
+                <div className="Sin_Resultados img">
                   <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                </div> */}
+                </div>
               </>
             )}
           </div>
@@ -371,28 +401,38 @@ const Usuarios = props => {
                       onChange={handleInputOnChange}
                       name="seleccion"
                       value={dataInput.seleccion}
+                      checked={dataInput.seleccion}
                     />
                   </div>
                 </div>
               </form>
               <div className="Tablass">
                 <div className="tablas">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Materias</th>
-                        <th>Semestre</th>
-                        <th>Grupo</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Matematicas</td>
-                        <td>1</td>
-                        <td>A</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {Object.keys(userAsignan).length !== 0 ?
+                    (<>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Materias</th>
+                            <th>Semestre</th>
+                            <th>Grupo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <DatosTablaDetalles />
+                        </tbody>
+                      </table>
+                    </>)
+                    :
+                    (<>
+                      <div className="Sin_Resultados">
+                        <p>El docente no tiene materias asignadas</p>
+                      </div>
+                      <div className="Sin_Resultados img">
+                        <img src={kanaBuscar} className="kana" alt="Sin resultados" />
+                      </div>
+                    </>)}
+
                 </div>
               </div>
               <div className="Buttons">
@@ -533,6 +573,7 @@ const Usuarios = props => {
                 {CorreoE === dataInput.CorreoE ? null : <p>Correo del Usuario pasara de: <strong className="Resaltado">{CorreoE}</strong> a <strong className="Resaltado">{dataInput.CorreoE}</strong></p>}
                 {/* {"" === dataInput.password ? null : <p>Contraseña del Usuario pasara de: <strong className="Resaltado">{password}</strong> a <strong className="Resaltado">{dataInput.password}</strong></p>} */}
                 {'' === dataInput.password ? null : <p>Contraseña del Usuario sera cambiada</p>}
+                {seleccion === dataInput.seleccion ? null : <p>Seleccion del Usuario pasara de: <strong className="Resaltado">{seleccion.toString()}</strong> a <strong className="Resaltado">{dataInput.seleccion.toString()}</strong></p>}
 
               </div>
             </div>
