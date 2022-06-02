@@ -372,7 +372,6 @@ def IniciarNuevoSem(request):
             if pdfs:
                 for i in pdfs:
                     os.remove(i)
-                Reportes.objects.all().delete()
                 Asignan.objects.all().delete()
             usuarios = Usuarios.objects.all()
             for i in usuarios:
