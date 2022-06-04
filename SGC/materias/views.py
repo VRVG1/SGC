@@ -112,6 +112,9 @@ class AsignarMateriaView(APIView):
         if serializer.is_valid():
             usuario = serializer.validated_data.get('ID_Usuario')
             materia = serializer.validated_data.get('ID_Materia')
+            carrera = serializer.validated_data.get('ID_Carrera')
+            grado = serializer.validated_data.get('Grado')
+            grupo = serializer.validated_data.get('Grupo')
             serializer.save()
             reportes = Reportes.objects.all()
             if not reportes:
@@ -128,7 +131,7 @@ class AsignarMateriaView(APIView):
                     semestre = 'Agosto - Diciembre ' + str(fecha.year)
 
                 asignan = Asignan.objects.get(
-                    ID_Usuario=usuario, ID_Materia=materia)
+                    ID_Usuario=usuario, ID_Materia=materia, ID_Carrera=carrera, Grado=grado, Grupo=grupo)
                 for x in reportes:
                     generate = Generan(
                         Estatus=None, Sememestre=semestre, ID_Asignan=asignan, ID_Reporte=x)

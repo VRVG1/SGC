@@ -50,6 +50,7 @@ import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
 import "./styles/usuario/reportesU.scss"
 import "./styles/usuario/UserSetting.scss"
+import "./styles/sysSettings.scss"
 
 /**
   * Funcion que facilita el acceso al contexto 'AuthContext'.
@@ -168,7 +169,7 @@ function UserRedirector() {
     to = "/login";
   } else {
     if  (auth.user.permission == "Administrador") {
-      to = "/admin";
+      to = "/admin/home";
     } else if (auth.user.permission == "Docente") {
       to = "/usuario/home";
     } else {

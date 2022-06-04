@@ -20,7 +20,7 @@ class Materias(models.Model):
         db_table = 'Materias'
     ID_Materia = models.CharField(max_length=8, null=False, primary_key=True)
     Nombre_Materia = models.CharField(max_length=200, null=False)
-    Carrera = models.ForeignKey(Carreras, on_delete=models.CASCADE)
+    Carrera = models.CharField(null=True, max_length=1)
 
     def __str__(self) -> str:
         return f"{self.Nombre_Materia}"

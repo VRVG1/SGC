@@ -81,7 +81,7 @@ export default class Nav extends Component {
                                 <div className="iocn-link">
                                     <span className='a'>
                                         <i className='bx bx-cog' ></i>
-                                        <span className="link_name">Ajustes del Sistema</span>
+                                        <span className="link_name">Ajustes</span>
                                     </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
@@ -90,7 +90,7 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><span className='a'><span className="link_name">Ajustes del Sistema</span></span></li>
+                                <li><span className='a'><span className="link_name">Ajustes</span></span></li>
                                 <Link className='link' to="/admin/ajustes"><li className='li'></li></Link>
                             </ul>
                         </li>

@@ -423,7 +423,7 @@ th{
 
 // En caso de que no encuentre coincidencias en las busquedas
 .kana{
-  margin-top: 4%;
+  margin: 4% auto auto auto;
   width: 30%;
   background-size: cover;
   background-position: center;
@@ -432,6 +432,7 @@ th{
 }
 .Sin_Resultados {
   overflow: none;
+  display: flex;
 }
 
 .containerDetallesUser{

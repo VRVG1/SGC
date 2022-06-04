@@ -7,6 +7,7 @@ import putReportes from "./helpers/Reportes/putReportes.js";
 import deleteReportes from "./helpers/Reportes/deleteReporte.js";
 import postSendReportes from "./helpers/Reportes/postSendReprote.js";
 import sendReportes from "./helpers/Reportes/sendReprote.js";
+import sendMail from "./helpers/Mensajeria/postMSM.js";
 import { AuthContext } from "./helpers/Auth/auth-context.js";
 
 const _ = require("lodash");
@@ -32,6 +33,7 @@ const ReportesAdmin = props => {
         Repostes_obligatorio: true,
         opc: "General",
         nombreMasters: "",
+        mensajeTXT: "",
     });
     const [tablaData, setTablaData] = useState([]);
     const [predictionData, setPredictionData] = useState([]);
@@ -109,7 +111,7 @@ const ReportesAdmin = props => {
         setShowModalAdd(true)
     }
     /**
-     * Buscar algo, pero no recuerdo el que
+     * Buscar algo, el maestro a mandar el mensaje
      * @param {*} event 
      */
     const buscador = (event) => {
@@ -118,7 +120,11 @@ const ReportesAdmin = props => {
             return item.Nombre_Usuario.toLowerCase().includes(value.toLowerCase());
         }
         );
-        setPredictionData(filtro);
+        if (value === "") {
+            setPredictionData([]);
+        } else {
+            setPredictionData(filtro);
+        }
     }
 
     /**
@@ -259,6 +265,47 @@ const ReportesAdmin = props => {
         //setActualizacion(Math.random());
     }
 
+    const mandarMensaje = async () => {
+        if (dataInput.mensajeTXT !== ""){
+            if (dataInput.opc === "General") {
+                await sendMail(auth.user.token, dataInput.mensajeTXT, "0").then((data) => {
+                    setMensaje(dataInput.mensajeTXT);
+                    setShowModalResultado(true);
+                    setShowModalDetails(false);
+                    setContenidoModal(data);
+                }
+                ).catch((error) => {
+                    setMensaje("Error al enviar el mensaje");
+                    setShowModalResultado(true);
+                    setShowModalDetails(false);
+                    setContenidoModal(error);
+                }
+                );
+            } else if (dataInput.opc === "Especifico") {
+                let mensajeResultado = '';
+                tablaData.map(element => {
+                    sendMail(auth.user.token, dataInput.mensajeTXT, element.id).then((data) => {
+                        mensajeResultado = mensajeResultado + data + '\n';
+                    }
+                    ).catch((error) => {
+                        mensajeResultado = error;
+                        setShowModalResultado(true);
+                        setShowModalDetails(false);
+                        setContenidoModal(error);
+                    }
+                    );
+                })
+                setMensaje(dataInput.mensajeTXT);
+                setShowModalResultado(true);
+                setShowModalDetails(false);
+                setContenidoModal("Correos enviados correctamente");
+            }
+        } else {
+            setContenidoModal("Agregue un mensaje");
+            setMensaje("No se puede mandar un mensaje vacio");
+            setShowModalResultado(true);
+        }
+    }
 
     return (
         <>
@@ -283,7 +330,13 @@ const ReportesAdmin = props => {
                 <button onClick={agregarReporte}>Agregar</button>
                 <div className="Reportes-Admin-mensajes">
                     <label className="Label-ReportesAdmin">Mensaje de correo:</label>
-                    <textarea className="textareaModalReportesAdmin"></textarea>
+                    <textarea 
+                    className="textareaModalReportesAdmin"
+                    name="mensajeTXT"
+                    value={dataInput.mensajeTXT}
+                    onChange={handleInputOnChange}>
+
+                    </textarea>
                     <form className="form-reportesAdmin-modal">
                         <div className="Reportes-Admin-mensajes-radios">
                             <label className="Label-ReportesAdmin">Destinatario:</label>
@@ -374,7 +427,7 @@ const ReportesAdmin = props => {
                             </form>
                         </div>
                     </div>
-                    <button onClick={() => { alert("Mensaje Enviado") }}>Enviar</button>
+                    <button onClick={mandarMensaje}>Enviar</button>
                 </div>
             </div>
 
