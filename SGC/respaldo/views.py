@@ -10,6 +10,8 @@ from wsgiref.util import FileWrapper
 from zipfile import ZipFile
 from pathlib import Path
 
+import os
+
 
 # Create your views here.
 class MakeBackup(generics.ListAPIView):
@@ -24,6 +26,28 @@ class MakeBackup(generics.ListAPIView):
     def get(self, request, format=None):
         backup_filename = 'BackupSGC.zip'
 
+        print(f'\n\n\n{os.getcwd()}\n\n\n')
+        try:
+            os.mkdir('./media')
+            print('Se creo el directorio de media.')
+        except FileExistsError:
+            print('Ya existe el directorio media.')
+        except FileNotFoundError as e:
+            raise e
+
+        try:
+            os.makedirs('./var/respaldo')
+            print('Se crearon los directorios ./var/ y ./var/respaldo/')
+        except FileExistsError:
+            print('Ya existen los directorios')
+
+        try:
+            os.mkdir('./var/backups')
+            print('Se creo el directorio ./var/backups/')
+        except FileExistsError:
+            print('Ya existe el directorio ./var/backups/')
+        except FileNotFoundError as e:
+            raise e
         # No se si se debe crear un serializer
         print('Creando respaldo de la base de datos...')
         management.call_command('dbbackup', clean=True)
