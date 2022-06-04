@@ -19,6 +19,7 @@ mail.txt
 # database
 SGC/*.sqlite3
 *.sqlite3
+*.dump
 
 
 # Celery
