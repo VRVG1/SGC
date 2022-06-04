@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Outlet, Link } from "react-router-dom";
 import { AuthContext } from '../helpers/Auth/auth-context';
+
 export default class Nav extends Component {
     constructor(props) {
         super(props);
@@ -17,6 +18,8 @@ export default class Nav extends Component {
     toggleMenu = (event) => {
         let sidebar = document.querySelector(".sidebar");
         sidebar.classList.toggle("close");
+        let icon = document.querySelector(".bx-menu");
+        icon.classList.toggle("close");
         //this.setState({
         //    collapsed: !this.state.collapsed,
         //})
@@ -50,19 +53,23 @@ export default class Nav extends Component {
         return (
             <div>
                 {afterResponse}
+                {/* <img id='bg' className='bg' src='https://cdguzman.tecnm.mx/pag/img/galeria/itcg/IMG_4756.JPG' alt='' /> */}
                 <div className="sidebar close">
                     <div className="logo-details">
-                        <Link className='link' to="/usuario/home">
+                        <Link className='link' to="/supervisor/home">
+                            {/* <i className='bx bx-store' ></i> */}
+                            {/* <img src='/home/vrvg/Documents/SGCFRONT/fron/src/itcg.jpg'></img> */}
                             <i className='bx bxs-school'></i>
                         </Link>
                         <span className="logo_name">SGC</span>
                     </div>
                     <ul className="nav-links">
+
                         <li>
-                            <Link className='link' to="/usuario/reportes">
+                            <Link to="/supervisor/reportes/check">
                                 <div className="iocn-link">
                                     <span className='a'>
-                                        <i className='bx bx-file' ></i>
+                                        <i className='bx bx-line-chart' ></i>
                                         <span className="link_name">Reportes</span>
                                     </span>
                                     <i
@@ -73,15 +80,18 @@ export default class Nav extends Component {
                             </Link>
                             <ul className="sub-menu">
                                 <li><span className='a'><span className="link_name">Reportes</span></span></li>
+                                <Link className='link' to="/supervisor/reportes/check"><li className='li'>Check</li></Link>
                             </ul>
                         </li>
 
+
+
                         <li>
-                            <Link className='link' to="/usuario/ajustes" >
+                            <Link className='link' to="/supervisor/exportardatos" >
                                 <div className="iocn-link">
                                     <span className='a'>
-                                        <i className='bx bx-cog' ></i>
-                                        <span className="link_name">Ajustes</span>
+                                        <i className='bx bxs-file-export' ></i>
+                                        <span className="link_name">Exporta Datos</span>
                                     </span>
                                     <i
                                         className='bx bxs-chevron-down arrow'
@@ -90,16 +100,19 @@ export default class Nav extends Component {
                                 </div>
                             </Link>
                             <ul className="sub-menu">
-                                <li><span className='a'><span className="link_name">Ajustes</span></span></li>
-                                <Link className='link' to="/admin/ajustes"><li className='li'></li></Link>
+                                <li><span className='a'><span className="link_name">Exportar Datos</span></span></li>
+                                <Link className='link' to="/supervisor/exportardatos"><li className='li'></li></Link>
                             </ul>
                         </li>
+
+
+
 
                         <li>
                             <div className="profile-details">
                                 <Link className='link' to="/">
                                     <div className="profile-content">
-                                        <i className='bx bx-log-out' onClick={ auth.signout }></i>
+                                        <i className='bx bx-log-out' onClick={auth.signout}></i>
                                     </div>
                                 </Link>
 

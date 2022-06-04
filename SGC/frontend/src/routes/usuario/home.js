@@ -176,7 +176,6 @@ export const Home2 = () => {
         disponible === infoUser.Permiso ? (
           <>
             <div className='usuario-container'>
-              {console.log(infoUser)}
               <div className='usuario-grid'>
                 <div className='usuario-grid__1'>
                   <div className='tabla-usr'>
@@ -193,8 +192,8 @@ export const Home2 = () => {
                       <tbody>
                         {dataTable.map((data, index) => (
                           <tr key={index}>
-                            <td>{data.carrera_ID}</td>
-                            <td>{data.materia_ID}</td>
+                            <td>{carreras.filter(carrera => carrera.ID_Carrera === data.carrera_ID)[0].Nombre_Carrera}</td>
+                            <td>{materias.filter(materia => materia.ID_Materia === data.materia_ID)[0].Nombre_Materia}</td>
                             <td>{data.grupo}</td>
                             <td>{data.semestre}</td>
                             <td> <button onClick={() => {
@@ -300,8 +299,8 @@ export const Home2 = () => {
                     <tbody>
                       {dataTable.map((data, index) => (
                         <tr key={index}>
-                          <td>{data.carrera_ID}</td>
-                          <td>{data.materia_ID}</td>
+                          <td>{carreras.filter(carrera => carrera.ID_Carrera === data.carrera_ID)[0].Nombre_Carrera}</td>
+                          <td>{materias.filter(materia => materia.ID_Materia === data.materia_ID)[0].Nombre_Materia}</td>
                           <td>{data.grupo}</td>
                           <td>{data.semestre}</td>
                         </tr>

@@ -36,6 +36,7 @@ import { LoginContext } from './routes/helpers/Auth/login-context';
 import OlvideContra from './routes/OlivdeContra';
 import { Reportes } from './routes/usuario/Reportes';
 import UserSettings from './routes/usuario/UserSetting';
+import BarNavS from "./routes/Supervisor/BarNavS.js";
 
 import "./styles/style.css";
 import "./styles/BarrNav.css"
@@ -50,6 +51,7 @@ import "./styles/usuario/home.scss"
 import "./styles/Home.scss"
 import "./styles/usuario/reportesU.scss"
 import "./styles/usuario/UserSetting.scss"
+import "./styles/sysSettings.scss"
 
 /**
   * Funcion que facilita el acceso al contexto 'AuthContext'.
@@ -168,11 +170,11 @@ function UserRedirector() {
     to = "/login";
   } else {
     if  (auth.user.permission == "Administrador") {
-      to = "/admin";
+      to = "/admin/home";
     } else if (auth.user.permission == "Docente") {
       to = "/usuario/home";
     } else {
-      to = "/supervisor";
+      to = "/supervisor/home";
     }
   }
 
@@ -230,7 +232,7 @@ function Application() {
                 </RequirePermission>
               </RequireAuth>
             }>
-            /** Poner aquí las rutas para el usuario de tipo docente **/
+            {/** Poner aquí las rutas para el usuario de tipo docente **/}
             <Route path='home' element={<Home2 />}/>
             <Route path='reportes' element={<Reportes />}/>
             <Route path='ajustes' element={<UserSettings />}/>
@@ -239,12 +241,15 @@ function Application() {
             path="/supervisor"
             element={
               <RequireAuth>
-                <RequirePermission userType={ "Espectador" }>
-                  <BarrNav />
+                <RequirePermission userType={ "Supervisor" }>
+                  <BarNavS />
                 </RequirePermission>
               </RequireAuth>
             }>
-            /** Poner aquí las rutas para el usuario de tipo espectador **/
+              <Route path="home" element={<Home />} />
+              <Route path="reportes/check" element={<ReportesCheck />} />
+              <Route path="exportardatos" element={<ExportData />} />
+            {/** Poner aquí las rutas para el usuario de tipo espectador **/}
           </Route>
         {/**
 

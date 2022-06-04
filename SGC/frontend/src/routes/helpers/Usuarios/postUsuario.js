@@ -5,7 +5,7 @@ import AuthPostBasics from '../Auth/AuthPostBasis.js';
  * @returns resultado de la operacion
  */
 const postUsuario = async (dataPost, token) => {
-    //console.log("datos", dataPost);
+    console.log("datos", dataPost);
     let post = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -13,11 +13,11 @@ const postUsuario = async (dataPost, token) => {
             ID_Usuario: {
                 username: dataPost.username,
                 password: dataPost.password,
-            },            
+            },
             Nombre_Usuario: dataPost.Nombre_Usuario,
             Tipo_Usuario: dataPost.Tipo_Usuario,
             CorreoE: dataPost.CorreoE,
-            User: dataPost.username
+            Permiso: dataPost.seleccion,
         })
     };
     post = AuthPostBasics(token, post);

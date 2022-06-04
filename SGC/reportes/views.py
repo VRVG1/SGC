@@ -1,5 +1,6 @@
 
 from datetime import date, datetime
+import os
 
 from usuarios.models import Usuarios
 from .models import Reportes, Generan, Alojan
@@ -13,6 +14,7 @@ from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from .tasks import sendMensaje
 
 # Create your views here.
 
@@ -146,8 +148,17 @@ def alojanFromView(request, fk):
             return Response({'Error': ' Generado no existe'}, status=status.HTTP_404_NOT_FOUND)
 
         AlojanX = Alojan.objects.filter(ID_Generacion=ID_Generacion)
-        serializer_class = AlojanSerializer(AlojanX, many=True)
-        return Response(serializer_class.data, status=status.HTTP_200_OK)
+        lista = []
+        for i in AlojanX:
+            pdf = str(i.Path_PDF)
+            lista.append(pdf[pdf.index('/')+1:])
+        dic = {}
+        aux = 0
+        for i in lista:
+            pdf = {aux: i}
+            dic.update(pdf)
+            aux = aux + 1
+        return Response(dic, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'DELETE'])
@@ -319,3 +330,50 @@ def CrearGeneran(request, pk):
             return Response(serializer_class.data, status=status.HTTP_202_ACCEPTED)
         print(serializer_class.errors)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def AdminSendMail(request):
+    if request.method == 'POST':
+        pk = request.data['pk']
+        if pk == str(0):
+            try:
+                msg = request.data['msg']
+                sendMensaje.delay(msg, True, None)
+                return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
+            except:
+                return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            try:
+                usuario = Usuarios.objects.get(PK=pk)
+            except Usuarios.DoesNotExist:
+                return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                msg = request.data['msg']
+                sendMensaje.delay(msg, False, usuario.CorreoE)
+                return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
+            except:
+                return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, OnlyAdminPermission])
+def IniciarNuevoSem(request):
+
+    if request.method == 'GET':
+        try:
+            os.chdir('./media/Generados')
+            pdfs = os.listdir()
+            if pdfs:
+                for i in pdfs:
+                    os.remove(i)
+            Reportes.objects.all().delete()
+            Asignan.objects.all().delete()
+            return Response({'Exito': 'Datos borrados'}, status=status.HTTP_200_OK)
+        except:
+            return Response({'Error': 'Error al borrar los datos'}, status=status.HTTP_400_BAD_REQUEST)

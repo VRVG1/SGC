@@ -45,6 +45,26 @@ $select-color: #a7a7a7;
         transition: all 0.5s ease;
     }
 }
+
+.listReportes__Reporte__cuadrado {
+    background-color: $blanco;
+    padding: 2% 2% 2% 2%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 20%;
+    border: #005b8e solid 2px;
+    // box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    // -webkit-box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    // -moz-box-shadow: 0px 1px 0px 0px rgba(0,0,0,1);
+    position: relative;
+
+    &:hover {
+        background-color: #005b8e;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.5s ease;
+    }
+}
 .cabeceraReportes {
     grid-area: cabeceraReportes;
     background-color: $blanco;
@@ -276,7 +296,7 @@ ul {
     font-weight: bold;
     text-align: center;
     cursor: pointer;
-    z-index: 20;
+    z-index: 1;
 }
 
 .file-uploadU__input {
@@ -314,24 +334,29 @@ h3{
 }
 
 .buttons_selector {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    display: grid; 
+    grid-template-columns: 0.5fr 2fr 0.5fr; 
+    grid-template-rows: 0.5fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "BotonAtras dots BotonAdelante"; 
     text-align: center;
     justify-content: space-evenly;
     align-items: center;
     margin-top: 2%;
 
-    .buttons {
+
+    .BotonAdelante {
         background-color: #005b8e;
         color: #ffffff;
         border: none;
         border-radius: 15px 15px 15px 15px;
         padding: 1.5em 3em;
-        margin: 0;
+        margin: auto;
         font-size: 1rem;
         font-weight: bold;
         cursor: pointer;
+        margin-right: 50%;
         transition: all 0.5s ease;
         &:hover {
             background-color: #2684bb;
@@ -339,16 +364,51 @@ h3{
             cursor: pointer;
             transition: all 0.5s ease;
         }
+        &:disabled {
+            background-color: #cccccc;
+            color: #ffffff;
+            cursor: default;
+            opacity: 0;
+        }
+    }
+
+    .BotonAtras {
+        background-color: #005b8e;
+        color: #ffffff;
+        border: none;
+        border-radius: 15px 15px 15px 15px;
+        padding: 1.5em 3em;
+        margin: auto;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 20%;
+        transition: all 0.5s ease;
+        &:hover {
+            background-color: #2684bb;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+        &:disabled {
+            background-color: #cccccc;
+            color: #ffffff;
+            cursor: default;
+            opacity: 0;
+        }
     }
     .dots{
         background-color: #005a8e00;
-        width: 40vw;
-        height: 5vh;
+        width: 50vw;
+        height: 10vh;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-around;
+        align-content: center;
+        margin: auto;
+
     }
 
     .dot {
@@ -372,4 +432,24 @@ h3{
     .dot.trucha{
         background-color: #FFCF14;
     }
+
+    .square{
+        background-color: #005b8e;
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        margin: 0 2px;
+    }
 }
+
+.containerFoter {
+    display: grid; 
+    grid-template-columns: 0.5fr 2fr 0.5fr; 
+    grid-template-rows: 0.5fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "BotonAtras Dots BotonAdelante"; 
+  }
+  .BotonAdelante { grid-area: BotonAdelante; }
+  .Dots { grid-area: Dots; }
+  .BotonAtras { grid-area: BotonAtras; }
