@@ -5,9 +5,7 @@ const makeRestore = (token, formData) => {
     method: 'POST',
     headers: {
     },
-    body: {
-      restorefile: formData,
-    },
+    body: formData
   };
 
   post = addHeaderAuth(token, post);

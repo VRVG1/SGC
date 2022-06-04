@@ -61,7 +61,6 @@ class RestoreData(generics.ListAPIView):
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
     def post(self, request, format=None):
-        print('Si galo el envio del form')
         print(request.FILES)
         response = HttpResponse('Recibido', content_type="text/plain",
                                 status=200)
