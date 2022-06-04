@@ -34,15 +34,15 @@ class MakeBackup(generics.ListAPIView):
 
         print('Comprimiendo archivos de respaldo...')
 
-        with ZipFile(f'var/respaldo/{backup_filename}', 'w') as backup_zip:
-            with Path('var/backups/') as backup_path:
+        with ZipFile(f'./var/respaldo/{backup_filename}', 'w') as backup_zip:
+            with Path('./var/backups/') as backup_path:
                 for file in backup_path.iterdir():
                     if file.is_file():
                         backup_zip.write(file.__str__(), arcname=file.name)
 
                 print('Archivos de respaldo comprimidos con exito.')
 
-        with open(f'var/respaldo/{backup_filename}', 'rb') as backup_zip:
+        with open(f'./var/respaldo/{backup_filename}', 'rb') as backup_zip:
             response = HttpResponse(FileWrapper(backup_zip),
                                     content_type='application/zip')
             response['Content-Disposition'] = f'attachment; filename="{backup_filename}"'
