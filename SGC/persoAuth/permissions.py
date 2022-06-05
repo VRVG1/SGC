@@ -60,3 +60,8 @@ class AdminEspectadorPermission(permissions.BasePermission):
     Permite el acceso a toda interfaz visible para un usuario de tipo
     administrador o espectador.
     """
+
+    def has_permission(self, request, view):
+        user = Usuarios.objects.get(ID_Usuario=request.user)
+
+        return user.Tipo_Usuario in ['Administrador', 'Espectador']
