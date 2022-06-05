@@ -1,16 +1,14 @@
-from urllib.request import Request
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSerializer, CambioPassSerializer, UsuarioInfoSerializer
+from .serializers import UsuarioSerializer, CambioPassSerializer, UsuarioInfoSerializer
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
 from rest_framework.authentication import TokenAuthentication
 from .tasks import ForgotPass
-
 # Create your views here.
 
 
@@ -256,7 +254,7 @@ def OlvidoPass(request):
             user = User.objects.get(username=usuario.ID_Usuario.username)
             user.set_password(newP)
             user.save()
-            ForgotPass.delay(msg, correo)
+            ForgotPass(msg, correo).delay()
             return Response({'ENVIADO', 'Correo enviado con exito'}, status=status.HTTP_200_OK)
         except:
             return Response({'ERROR', 'Error al enviar el correo'}, status=status.HTTP_400_BAD_REQUEST)

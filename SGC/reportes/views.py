@@ -4,7 +4,7 @@ import os
 
 from usuarios.models import Usuarios
 from .models import Reportes, Generan, Alojan
-from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
+from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -12,8 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorPermission
 from .tasks import sendMensaje
 
 # Create your views here.
@@ -25,7 +24,7 @@ class ReportesView(generics.ListAPIView):
     (ADMIN)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = ReportesSerializer
     queryset = Reportes.objects.all()
@@ -38,7 +37,7 @@ class GeneranView(generics.ListAPIView):
     (ADMIN)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = GeneranSerializer
     queryset = Generan.objects.all()
@@ -50,7 +49,7 @@ class AlojanView(generics.ListAPIView):
     (ADMIN)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = AlojanSerializer
     queryset = Alojan.objects.all()
@@ -341,7 +340,7 @@ def AdminSendMail(request):
         if pk == str(0):
             try:
                 msg = request.data['msg']
-                sendMensaje.delay(msg, True, None)
+                sendMensaje(msg, True, None).delay()
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
@@ -354,7 +353,7 @@ def AdminSendMail(request):
 
             try:
                 msg = request.data['msg']
-                sendMensaje.delay(msg, False, usuario.CorreoE)
+                sendMensaje(msg, False, usuario.CorreoE).delay()
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
