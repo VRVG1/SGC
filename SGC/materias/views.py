@@ -11,7 +11,7 @@ from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
 from django.contrib.auth.models import User
 from reportes.models import Generan, Reportes
-from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
+from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission, AdminEspectadorDocentePermission, AdminEspectadorPermission
 
 # Create your views here.
 
@@ -19,10 +19,10 @@ from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
 class MateriasView(generics.ListAPIView):
     '''
     Vista que muestra todas las materias registradas
-    (ADMIN Y DOCENTE)
+    (ADMIN, DOCENTE, SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, AdminDocentePermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorDocentePermission]
 
     serializer_class = MateriaSerializer
     queryset = Materias.objects.all()
@@ -44,10 +44,10 @@ class CarrerasView(generics.ListAPIView):
 class AsignanView(generics.ListAPIView):
     '''
     Vista que muestra todos los asignan registradas
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = AsignanSerializer
     queryset = Asignan.objects.all()

@@ -10,7 +10,7 @@ class Reportes(models.Model):
 
     ID_Reporte = models.AutoField(primary_key=True, null=False)
     Nombre_Reporte = models.CharField(
-        max_length=120, null=False)  # unique=True
+        max_length=120, null=False, unique=True)
     Fecha_Entrega = models.DateField(null=False)
     Descripcion = models.TextField(max_length=1000, null=True, blank=True)
     Opcional = models.BooleanField(default=False)

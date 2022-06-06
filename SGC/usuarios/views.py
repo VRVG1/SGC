@@ -6,7 +6,7 @@ from .serializers import UsuarioSerializer, CambioPassSerializer, UsuarioInfoSer
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, AdminEspectadorPermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorDocentePermission
 from rest_framework.authentication import TokenAuthentication
 from .tasks import ForgotPass
 # Create your views here.
@@ -15,10 +15,10 @@ from .tasks import ForgotPass
 class UsuarioView(generics.ListAPIView):
     '''
     Vista que permite ver todos los usuarios registrados en la BD
-    (ADMIN)
+    (ADMIN, SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
@@ -201,11 +201,11 @@ def get(request, string):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@permission_classes([IsAuthenticated, AdminEspectadorDocentePermission])
 def getInfoUser(request):
     '''
     Vista que recibe al user y devuelve sus datos para frontend
-    (DOCENTE)
+    (DOCENTE, ADMIN, ESPECTADOR)
     '''
 
     try:

@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
-from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorPermission
+from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorPermission, AdminEspectadorDocentePermission
 from .tasks import sendMensaje
 
 # Create your views here.
@@ -21,7 +21,7 @@ from .tasks import sendMensaje
 class ReportesView(generics.ListAPIView):
     '''
     Vista que permite ver todos los reportes registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, AdminEspectadorPermission]
@@ -34,7 +34,7 @@ class ReportesView(generics.ListAPIView):
 class GeneranView(generics.ListAPIView):
     '''
     Vista que permite ver todos los generan registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, AdminEspectadorPermission]
@@ -46,7 +46,7 @@ class GeneranView(generics.ListAPIView):
 class AlojanView(generics.ListAPIView):
     '''
     Vista que permite ver todos los alojan registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, AdminEspectadorPermission]
@@ -119,7 +119,6 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
-    #parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
@@ -134,11 +133,11 @@ class CreateAlojanView(APIView):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@permission_classes([IsAuthenticated, AdminEspectadorDocentePermission])
 def alojanFromView(request, fk):
     '''
     Vista que permite ver todos los alojan de una cierta generacion
-    (DOCENTE)
+    (DOCENTE, ADMIN, SUPERVISOR)
     '''
     if request.method == 'GET':
         try:
