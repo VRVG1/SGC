@@ -35,6 +35,11 @@ const ReportesAdmin = props => {
         nombreMasters: "",
         mensajeTXT: "",
     });
+    const [showModalERROR, setShowModalERROR] = useState(false);
+    const [modalContenido, setModalContenido] = useState({
+        modalTitulo: "",
+        modalMensaje: "",
+    });
     const [tablaData, setTablaData] = useState([]);
     const [predictionData, setPredictionData] = useState([]);
     const [predictionData2, setPredictionData2] = useState([]);
@@ -268,6 +273,7 @@ const ReportesAdmin = props => {
             setContenidoModal(error);
         });
         setActualizacion(Math.random());
+        setShowModalERROR(false);
     }
 
     /**
@@ -565,7 +571,14 @@ const ReportesAdmin = props => {
                             </form>
                         </div>
                         <div className="botones-rep-admin">
-                            <button className="Eliminar" onClick={deleteReprote} >Eliminar</button>
+                            <button className="Eliminar" onClick={() => {
+                                setShowModalERROR(true);
+                                setModalContenido({
+                                    ...contenidoModal,
+                                    modalTitulo: "Eliminar Reporte",
+                                    modalMensaje: "¿Está seguro que desea eliminar el reporte?",
+                                })
+                            }} >Eliminar</button>
                             <button onClick={putReporte}>Guardar</button>
                             <button onClick={sendReporte}>Enviar</button>
                         </div>
@@ -585,6 +598,15 @@ const ReportesAdmin = props => {
                         className="button ReportesAdmin-button"
                         onClick={() => setShowModalResultado(false)}
                     > OK</button>
+                </div>
+            </Modal>
+            <Modal show={showModalERROR} setShow={setShowModalERROR} title={modalContenido.modalTitulo}>
+                <div className="modalReportes">
+                    <p><strong>{modalContenido.modalMensaje}</strong></p>
+                    <div className="botones-rep-admin">
+                        <button className="Eliminar" onClick={deleteReprote}>Borrar</button>
+                        <button onClick={() => setShowModalERROR(false)} >Cancelar</button>
+                    </div>
                 </div>
             </Modal>
         </>

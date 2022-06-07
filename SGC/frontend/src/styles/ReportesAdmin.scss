@@ -578,4 +578,23 @@ button {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+
+    .botones-rep-admin {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        flex-direction: row;
+        margin-top: 2%;
+
+        .Eliminar {
+            background-color: #E00005;
+            border: none;
+
+            &:hover {
+                background-color: #ff0004;
+                border: none;
+            }
+        }
+    }
+
 }
