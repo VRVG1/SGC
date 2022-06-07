@@ -382,7 +382,7 @@ def borrarEntrega(request, pk):
     if request.method == 'DELETE':
 
         alojan = Alojan.objects.filter(ID_Generacion=pk)
-
+        generan = Generan.objects.get(pk=pk)
         if not alojan:
             return Response({'Error': 'Alojan no existe'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -400,6 +400,10 @@ def borrarEntrega(request, pk):
 
                 for i in alojan:
                     i.delete()
+
+                generan.Estatus = None
+                generan.save()
+
             except:
                 return Response({'Error': 'Error al eliminar pdf y alojan'})
             return Response({'Exito': 'PDFs borrados con exito'}, status=status.HTTP_200_OK)
