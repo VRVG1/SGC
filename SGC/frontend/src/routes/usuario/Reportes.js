@@ -83,9 +83,7 @@ export const Reportes = () => {
      * @param {*} e 
      */
     const fileSummit = async (e) => {
-        console.log(Object.keys(archivosPDF).length);
         if (Object.keys(archivosPDF).length > 0) {
-            console.log(archivosPDF);
             setModalData({
                 mensaje: "Ya se a enviado este reporte",
                 titulo: "Reporte entregado",
@@ -132,18 +130,19 @@ export const Reportes = () => {
             }
             return mensaje;
         }
+        let si = 1;
         for (let key in archivosPDF) {
             mensaje = mensaje.concat(
                 <div className='archivo' key={key}>
                     <p className='archivoP' onClick={() => {
                         setShowModalBorrar(true)
                         setIDBorrarPDF(key)
-                    }} key={key}>{archivosPDF[key]}</p>
+                    }} key={si + key}>{archivosPDF[key]}</p>
                 </div>
             )
+            si++;
         }
         return mensaje;
-        return null;
     }
     useEffect(() => {
         if (selMateria.ID_Asignan !== null) {
@@ -376,6 +375,18 @@ export const Reportes = () => {
         }
         return dots;
     }
+    /**
+     * Metodos para listar todos los archivos PDF que se van a borrar
+     */
+    const MostrarArchivos = () => {
+        let lista = [];
+        for (let key in archivosPDF) {
+            lista.push(
+                <p>{archivosPDF[key]}</p>
+            )
+        }
+        return lista;
+    }
     return (
         <>
             {loading === false ?
@@ -470,10 +481,11 @@ export const Reportes = () => {
                         </Modal>
                         <Modal show={showModalBorrar} setShow={setShowModalBorrar} title={"Eliminar Archivo"}>
                             <div className='modal-borrar'>
-                                <p className='alertMSM'>Estas seguro que deseas eliminar el archivo:</p>
-                                <p className='alertMSM'>{archivosPDF[iDBorrarPDF]}</p>
+                                <p className='alertMSM'>Estas segurode de borrar toda la entrega:</p>
+                                <MostrarArchivos />
+                                {/* <p className='alertMSM'>{archivosPDF[iDBorrarPDF]}</p> */}
                                 <button className='alertMSM' onClick={() => {
-                                    console.log(files)
+                                    console.log(selMateria.ID_Generacion)
                                 }}>Confirmar</button>
                             </div>
                         </Modal>

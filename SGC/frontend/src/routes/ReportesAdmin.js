@@ -132,27 +132,32 @@ const ReportesAdmin = props => {
      */
     const guardarReporteAdd = async () => {
         if (reprotes.filter(item => item.Nombre_Reporte === dataInput.Repostes_name).length === 0) {
-            await postAsigna(dataInput, auth.user.token).then((data) => {
-                setMensaje("Reporte agregado correctamente");
-                setShowModalResultado(true);
-                setShowModalAdd(false);
-                setContenidoModal(data);
-                setdataInput({
-                    ...dataInput,
-                    Repostes_name: "",
-                    Repostes_descripcion: '',
-                    Repostes_fecha: '',
-                    Repostes_obligatorio: true
+            if (dataInput.Repostes_name !== "" && dataInput.Repostes_descripcion !== "" && dataInput.Repostes_fecha !== "") {
+                await postAsigna(dataInput, auth.user.token).then((data) => {
+                    setMensaje("Reporte agregado correctamente");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(data);
+                    setdataInput({
+                        ...dataInput,
+                        Repostes_name: "",
+                        Repostes_descripcion: '',
+                        Repostes_fecha: '',
+                        Repostes_obligatorio: true
+                    });
+                }
+                ).catch((error) => {
+                    setMensaje("Error al agregar el reporte");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(error);
                 });
-            }
-            ).catch((error) => {
-                setMensaje("Error al agregar el reporte");
+                setActualizacion(Math.random());
+            } else {
+                setContenidoModal("Todos los campos son obligatorios");
+                setMensaje("");
                 setShowModalResultado(true);
-                setShowModalAdd(false);
-                setContenidoModal(error);
             }
-            );
-            setActualizacion(Math.random());
         } else {
             setMensaje("Ya existe un reportes con el nombre:\n" + dataInput.Repostes_name);
             setShowModalResultado(true);
@@ -164,27 +169,34 @@ const ReportesAdmin = props => {
      */
     const guardarYEnviarAdd = async () => {
         if (reprotes.filter(item => item.Nombre_Reporte === dataInput.Repostes_name).length === 0) {
-            await postSendReportes(dataInput, auth.user.token).then((data) => {
-                setMensaje("Reporte agregado y enviado correctamente");
+            if (dataInput.Repostes_name !== "" && dataInput.Repostes_descripcion !== "" && dataInput.Repostes_fecha !== "") {
+                await postSendReportes(dataInput, auth.user.token).then((data) => {
+                    setMensaje("Reporte agregado y enviado correctamente");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(data);
+                    setdataInput({
+                        ...dataInput,
+                        Repostes_name: "",
+                        Repostes_descripcion: '',
+                        Repostes_fecha: '',
+                        Repostes_obligatorio: true
+                    });
+                }
+                ).catch((error) => {
+                    setMensaje("Error al agregar y enviar el reporte");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(error);
+                }
+                );
+                setActualizacion(Math.random());
+
+            } else {
+                setContenidoModal("Todos los campos son obligatorios");
+                setMensaje("");
                 setShowModalResultado(true);
-                setShowModalAdd(false);
-                setContenidoModal(data);
-                setdataInput({
-                    ...dataInput,
-                    Repostes_name: "",
-                    Repostes_descripcion: '',
-                    Repostes_fecha: '',
-                    Repostes_obligatorio: true
-                });
             }
-            ).catch((error) => {
-                setMensaje("Error al agregar y enviar el reporte");
-                setShowModalResultado(true);
-                setShowModalAdd(false);
-                setContenidoModal(error);
-            }
-            );
-            setActualizacion(Math.random());
         } else {
             setMensaje("Ya existe un reportes con el nombre:\n" + dataInput.Repostes_name);
             setShowModalResultado(true);

@@ -240,13 +240,11 @@ const ReportesCheck = props => {
         }
     }
     const actualizarBuscador = (name, filtro) => {
-        console.log(name);
         if (name === "nombreMasters") {
             let filteredMaestros;
             filteredMaestros = maestros.filter(maestro => {
                 return maestro.Nombre_Usuario.toLowerCase().includes(filtro.toLowerCase());
             });
-            console.log(filteredMaestros, filtro);
         }
     }
 
@@ -402,7 +400,6 @@ const ReportesCheck = props => {
                                                                             {asignan.map((asignan2, index) => {
                                                                                 let estadoTxt = "";
                                                                                 let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].Estatus;
-                                                                                console.log("pene", estado)
                                                                                 let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].ID_Generacion;
                                                                                 if (estado === null) {
                                                                                     estadoTxt = "No entregado";
