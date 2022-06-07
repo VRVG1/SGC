@@ -203,12 +203,6 @@ def updateReporte(request, pk):
             return Response(serializer_class.data, status=status.HTTP_200_OK)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# HACER QUE VICTOR HAGA LA PARSE (INVESTIGAR MAS) COMO FORM-DATA O ALGO ASÍ
-# TRATAR DE EXPLICAR QUE HONGO CON EL POSTMAN
-# HACER QUE CADA QUE SE BORRE UN ASIGNA, SE BORRE EL ARCHIVO DE ESTE
-
-# TAMBIEN FUNCIONA COMO ACTUALIZAR GENERA
-
 
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
@@ -378,3 +372,34 @@ def IniciarNuevoSem(request):
             return Response({'Exito': 'Datos borrados'}, status=status.HTTP_200_OK)
         except:
             return Response({'Error': 'Error al borrar los datos'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def borrarEntrega(request, pk):
+
+    if request.method == 'DELETE':
+
+        alojan = Alojan.objects.filter(ID_Generacion=pk)
+
+        if not alojan:
+            return Response({'Error': 'Alojan no existe'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                path = './media/Generados'
+                lista = []
+                for i in alojan:
+                    pdf = str(i.Path_PDF)
+                    lista.append(pdf[pdf.index('/')+1:])
+
+                for i in lista:
+                    aux = path + '/' + str(i)
+                    if os.path.exists(aux):
+                        os.remove(aux)
+
+                for i in alojan:
+                    i.delete()
+            except:
+                return Response({'Error': 'Error al eliminar pdf y alojan'})
+            return Response({'Exito': 'PDFs borrados con exito'}, status=status.HTTP_200_OK)
