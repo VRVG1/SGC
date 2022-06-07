@@ -72,17 +72,18 @@ $select-color: #a7a7a7;
 }
 
 label.Usuarios-usr {
-    color:#111111; 
-    font-size:1rem;
-    font-weight:normal;
-    position:absolute;
-    pointer-events:none;
+    color: #111111;
+    font-size: 1rem;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
     left: -4%;
     top: 45%;
-    transition:0.2s ease all; 
-    -moz-transition:0.2s ease all; 
-    -webkit-transition:0.2s ease all;
-  }
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
 select {
     cursor: pointer;
     display: inline-block;
@@ -122,30 +123,41 @@ select {
     margin-bottom: 3%;
     margin: auto;
 
-    table{
+    table {
         border-spacing: 0;
         width: 100%;
 
         tr:nth-child(even) {
             background-color: #DDD;
-          }
-        
-          th {
+        }
+
+        th {
             background-color: #005B8E;
-          }
-        
-          th, td {
+        }
+
+        th,
+        td {
             padding: 5px;
             text-align: center;
             transition: .5s ease all;
             cursor: default;
-          }
-        
-          td:hover{
+        }
+
+        td:hover {
             background-color: rgba(167, 167, 167, 0);
-          }
+        }
     }
 }
+
+.modal-borra {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
 .alertMSM {
     font-size: 1.5rem;
+    text-align: center;
 }

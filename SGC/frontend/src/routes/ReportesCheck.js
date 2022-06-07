@@ -399,20 +399,24 @@ const ReportesCheck = props => {
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody className="tbody-ReportesCheck">
-                                                                            {asignan.map((asignan, index) => {
-                                                                                let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(segundoFiltro => segundoFiltro.ID_Asignan === asignan.ID_Asignan)[0].Estatus;
-                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan.ID_Asignan)[0].ID_Generacion;
+                                                                            {asignan.map((asignan2, index) => {
+                                                                                let estadoTxt = "";
+                                                                                let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].Estatus;
+                                                                                console.log("pene", estado)
+                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].ID_Generacion;
                                                                                 if (estado === null) {
-                                                                                    estado = "No entregado"
+                                                                                    estadoTxt = "No entregado";
+                                                                                } else {
+                                                                                    estadoTxt = estado;
                                                                                 }
-                                                                                if (asignan.ID_Usuario === maestro.PK) {
-                                                                                    let si = materias.filter(materia => materia.ID_Materia === asignan.ID_Materia)[0].Nombre_Materia
+                                                                                if (asignan2.ID_Usuario === maestro.PK) {
+                                                                                    let si = materias.filter(materia => materia.ID_Materia === asignan2.ID_Materia)[0].Nombre_Materia;
                                                                                     if (typeof (dataInput.nombreMateria) === "undefined") {
                                                                                         return (
                                                                                             <tr key={index}>
                                                                                                 <td>{si}</td>
-                                                                                                <td>{asignan.Grupo}</td>
-                                                                                                <td>{estado}</td>
+                                                                                                <td>{asignan2.Grupo}</td>
+                                                                                                <td>{estadoTxt}</td>
                                                                                                 <td><button onClick={() => {
                                                                                                     setReporteMaster({
                                                                                                         ...reporteMaster,
@@ -430,8 +434,8 @@ const ReportesCheck = props => {
                                                                                                 <tr key={index}>
 
                                                                                                     <td>{si}</td>
-                                                                                                    <td>{asignan.Grupo}</td>
-                                                                                                    <td>{estado}</td>
+                                                                                                    <td>{asignan2.Grupo}</td>
+                                                                                                    <td>{estadoTxt}</td>
                                                                                                     <td><button onClick={() => {
                                                                                                         setReporteMaster({
                                                                                                             ...reporteMaster,

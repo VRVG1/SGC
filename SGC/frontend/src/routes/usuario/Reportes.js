@@ -23,7 +23,7 @@ export const Reportes = () => {
     const [reporteName, setReporteName] = useState([]);// reporte que es uno individual para los titulos
     const [loading, setLoading] = useState(true);
     const [reportesFiltrados, setReportesFiltrados] = useState([]);// reportesFiltrados son los reportes filtrados
-    const [idsReportes, setIdsReportes] = useState([]);
+    const [iDBorrarPDF, setIDBorrarPDF] = useState(null);// idBorrarPDF es el id del reporte que se va a borrar
     const [materias, setMaterias] = useState([]);
     const [carreras, setCarreras] = useState([]);
     const [selMateria, setSelMateria] = useState({
@@ -38,9 +38,10 @@ export const Reportes = () => {
     const [archivosPDF, setArchivosPDF] = useState([]);
     const [showModalDatosEnviados, setShowModalDatosEnviados] = useState(false);
     const [pendejadaDeMierda, setPendejadaDeMierda] = useState(false);
+    const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [modalData, setModalData] = useState({
-        mensaje : "",
-        titulo : "",
+        mensaje: "",
+        titulo: "",
     });
 
 
@@ -90,7 +91,7 @@ export const Reportes = () => {
                 titulo: "Reporte entregado",
             });
             setShowModalDatosEnviados(true);
-        } else if (files === ''){
+        } else if (files === '') {
             setModalData({
                 mensaje: "No has seleccionado ningun archivo",
                 titulo: "Error",
@@ -122,7 +123,10 @@ export const Reportes = () => {
             for (let i = 0; i < files.length; i++) {
                 mensaje = mensaje.concat(
                     <div className='archivo' key={i}>
-                        <p className='archivoP' key={i}>{files[i].name}</p>
+                        <p className='archivoP' onClick={() => {
+                            setShowModalBorrar(true)
+                            setIDBorrarPDF(i)
+                        }} key={i}>{files[i].name}</p>
                     </div>
                 );
             }
@@ -131,7 +135,10 @@ export const Reportes = () => {
         for (let key in archivosPDF) {
             mensaje = mensaje.concat(
                 <div className='archivo' key={key}>
-                    <p className='archivoP' key={key}>{archivosPDF[key]}</p>
+                    <p className='archivoP' onClick={() => {
+                        setShowModalBorrar(true)
+                        setIDBorrarPDF(key)
+                    }} key={key}>{archivosPDF[key]}</p>
                 </div>
             )
         }
@@ -460,6 +467,15 @@ export const Reportes = () => {
                         <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={modalData.titulo}>
                             <p className='alertMSM'>{modalData.mensaje}</p>
                             {/* <button onClick={todoListo}>Confirmar</button> */}
+                        </Modal>
+                        <Modal show={showModalBorrar} setShow={setShowModalBorrar} title={"Eliminar Archivo"}>
+                            <div className='modal-borrar'>
+                                <p className='alertMSM'>Estas seguro que deseas eliminar el archivo:</p>
+                                <p className='alertMSM'>{archivosPDF[iDBorrarPDF]}</p>
+                                <button className='alertMSM' onClick={() => {
+                                    console.log(files)
+                                }}>Confirmar</button>
+                            </div>
                         </Modal>
                     </> :
                         <>
