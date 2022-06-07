@@ -4,7 +4,7 @@ import os
 
 from usuarios.models import Usuarios
 from .models import Reportes, Generan, Alojan
-from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer, UpdateGeneranSerializer
+from .serializers import AlojanSerializer, ReportesSerializer, GeneranSerializer
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -12,8 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from materias.models import Asignan
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorPermission, AdminEspectadorDocentePermission
 from .tasks import sendMensaje
 
 # Create your views here.
@@ -22,10 +21,10 @@ from .tasks import sendMensaje
 class ReportesView(generics.ListAPIView):
     '''
     Vista que permite ver todos los reportes registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = ReportesSerializer
     queryset = Reportes.objects.all()
@@ -35,10 +34,10 @@ class ReportesView(generics.ListAPIView):
 class GeneranView(generics.ListAPIView):
     '''
     Vista que permite ver todos los generan registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = GeneranSerializer
     queryset = Generan.objects.all()
@@ -47,10 +46,10 @@ class GeneranView(generics.ListAPIView):
 class AlojanView(generics.ListAPIView):
     '''
     Vista que permite ver todos los alojan registrados en la BD
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = AlojanSerializer
     queryset = Alojan.objects.all()
@@ -120,7 +119,6 @@ class CreateAlojanView(APIView):
     (DOCENTE)
     '''
     authentication_classes = [TokenAuthentication]
-    #parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated, AdminDocentePermission]
 
     serializer_class = AlojanSerializer
@@ -135,11 +133,11 @@ class CreateAlojanView(APIView):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@permission_classes([IsAuthenticated, AdminEspectadorDocentePermission])
 def alojanFromView(request, fk):
     '''
     Vista que permite ver todos los alojan de una cierta generacion
-    (DOCENTE)
+    (DOCENTE, ADMIN, SUPERVISOR)
     '''
     if request.method == 'GET':
         try:
@@ -341,7 +339,7 @@ def AdminSendMail(request):
         if pk == str(0):
             try:
                 msg = request.data['msg']
-                sendMensaje.delay(msg, True, None)
+                sendMensaje(msg, True, None).delay()
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
@@ -354,7 +352,7 @@ def AdminSendMail(request):
 
             try:
                 msg = request.data['msg']
-                sendMensaje.delay(msg, False, usuario.CorreoE)
+                sendMensaje(msg, False, usuario.CorreoE).delay()
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
