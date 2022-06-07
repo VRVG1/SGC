@@ -6,6 +6,7 @@ import getAllCarrera from '../helpers/Carreras/getAllCarrera.js';
 import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
 import getPDFName from '../helpers/Reportes/getPDFName.js';
 import Modal from '../modal/Modal.js';
+import deletePDF from '../helpers/usuarioReporte/deletePDF.js';
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
 import _ from 'lodash';
@@ -49,6 +50,17 @@ export const Reportes = () => {
     const [filesTamano, setFilesTamano] = useState(true);
     const [fileProgeso, setFileProgeso] = useState(false);
     const [fileResponse, setFileResponse] = useState(null);
+
+    const deletePDFS = async () => {
+        await deletePDF(auth.user.token, selMateria.ID_Generacion);
+        setShowModalBorrar(false);
+        setModalData({
+            mensaje: "Se han borrado los PDFs",
+            titulo: "Borrado",
+        });
+        setShowModalDatosEnviados(true);
+        window.location.reload();
+    }
 
     /**
      * Metodo que sirve para appendiar los archivos a subir
@@ -121,10 +133,7 @@ export const Reportes = () => {
             for (let i = 0; i < files.length; i++) {
                 mensaje = mensaje.concat(
                     <div className='archivo' key={i}>
-                        <p className='archivoP' onClick={() => {
-                            setShowModalBorrar(true)
-                            setIDBorrarPDF(i)
-                        }} key={i}>{files[i].name}</p>
+                        <p className='archivoP' key={i}>{files[i].name}</p>
                     </div>
                 );
             }
@@ -485,7 +494,8 @@ export const Reportes = () => {
                                 <MostrarArchivos />
                                 {/* <p className='alertMSM'>{archivosPDF[iDBorrarPDF]}</p> */}
                                 <button className='alertMSM' onClick={() => {
-                                    console.log(selMateria.ID_Generacion)
+                                    console.log(selMateria.ID_Generacion);
+                                    deletePDFS();
                                 }}>Confirmar</button>
                             </div>
                         </Modal>
