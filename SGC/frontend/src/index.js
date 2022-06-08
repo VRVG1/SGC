@@ -1,7 +1,7 @@
 // X  TODO: Revisar la API de React.createContext.
 // X  TODO: Realizar la conexión con el proveedor (backend).
 // X  TODO: Juntar los tutoriales de digitalocean y react-router
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import {
   BrowserRouter,
@@ -14,7 +14,7 @@ import {
 } from 'react-router-dom';
 
 import './index.css';
-import App from './App';
+//import App from './App';
 import BarrNav from "./routes/BarrNav";
 import Login from "./routes/login.js";
 import Home from "./routes/Home";
@@ -87,7 +87,7 @@ function RequireAuth(props) {
   let auth = useAuth();
   let location = useLocation();
 
-  if(!auth.user?.token) {
+  if (!auth.user?.token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -109,7 +109,7 @@ function RequirePermission(props) {
   let auth = useAuth();
   let location = useLocation();
 
-  if (!(auth.user.permission == props.userType)) {
+  if (!(auth.user.permission === props.userType)) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 
@@ -151,7 +151,7 @@ function LoginPage(props) {
     return <UserRedirector />;
   }
 
-  return (<Login submitHandler={ handleSubmit } />);
+  return (<Login submitHandler={handleSubmit} />);
 
 }
 
@@ -169,16 +169,16 @@ function UserRedirector() {
   if (!auth.user?.token) {
     to = "/login";
   } else {
-    if  (auth.user.permission == "Administrador") {
+    if (auth.user.permission === "Administrador") {
       to = "/admin/home";
-    } else if (auth.user.permission == "Docente") {
+    } else if (auth.user.permission === "Docente") {
       to = "/usuario/home";
     } else {
       to = "/supervisor/home";
     }
   }
 
-  return <Navigate to={ to } replace={ true } />;
+  return <Navigate to={to} replace={true} />;
 
 }
 
@@ -193,7 +193,7 @@ function Application() {
     <AuthProvider>
       <Routes>
         <Route>
-          <Route path="/" element={ <UserRedirector /> } />
+          <Route path="/" element={<UserRedirector />} />
           <Route
             path="/login"
             element={
@@ -201,18 +201,18 @@ function Application() {
                 <LoginPage />
               </LoginContextProvider>
             } />
-          <Route path='/recuperacion' element={ <OlvideContra /> } />
+          <Route path='/recuperacion' element={<OlvideContra />} />
           <Route
             path="/admin"
             element={
               <RequireAuth>
-                <RequirePermission userType={ "Administrador" }>
+                <RequirePermission userType={"Administrador"}>
                   <BarrNav />
                 </RequirePermission>
               </RequireAuth>
             }
           >
-    {/** Poner aquí las rutas para el usuario de tipo administrador **/}
+            {/** Poner aquí las rutas para el usuario de tipo administrador **/}
             <Route path="home" element={<Home />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="materias" element={<Materias />} />
@@ -227,31 +227,31 @@ function Application() {
             path="/usuario"
             element={
               <RequireAuth>
-                <RequirePermission userType={ "Docente" }>
+                <RequirePermission userType={"Docente"}>
                   <BarNav />
                 </RequirePermission>
               </RequireAuth>
             }>
             {/** Poner aquí las rutas para el usuario de tipo docente **/}
-            <Route path='home' element={<Home2 />}/>
-            <Route path='reportes' element={<Reportes />}/>
-            <Route path='ajustes' element={<UserSettings />}/>
+            <Route path='home' element={<Home2 />} />
+            <Route path='reportes' element={<Reportes />} />
+            <Route path='ajustes' element={<UserSettings />} />
           </Route>
           <Route
             path="/supervisor"
             element={
               <RequireAuth>
-                <RequirePermission userType={ "Supervisor" }>
+                <RequirePermission userType={"Supervisor"}>
                   <BarNavS />
                 </RequirePermission>
               </RequireAuth>
             }>
-              <Route path="home" element={<Home />} />
-              <Route path="reportes/check" element={<ReportesCheck />} />
-              <Route path="exportardatos" element={<ExportData />} />
+            <Route path="home" element={<Home />} />
+            <Route path="reportes/check" element={<ReportesCheck />} />
+            <Route path="exportardatos" element={<ExportData />} />
             {/** Poner aquí las rutas para el usuario de tipo espectador **/}
           </Route>
-        {/**
+          {/**
 
         Pasar las nuevas rutas al arbol de arriba
 

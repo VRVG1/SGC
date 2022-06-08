@@ -35,6 +35,11 @@ const ReportesAdmin = props => {
         nombreMasters: "",
         mensajeTXT: "",
     });
+    const [showModalERROR, setShowModalERROR] = useState(false);
+    const [modalContenido, setModalContenido] = useState({
+        modalTitulo: "",
+        modalMensaje: "",
+    });
     const [tablaData, setTablaData] = useState([]);
     const [predictionData, setPredictionData] = useState([]);
     const [predictionData2, setPredictionData2] = useState([]);
@@ -131,53 +136,78 @@ const ReportesAdmin = props => {
      * Manda el reporte a la base de datos para guardar, solo guardar
      */
     const guardarReporteAdd = async () => {
-        await postAsigna(dataInput, auth.user.token).then((data) => {
-            setMensaje("Reporte agregado correctamente");
+        if (reprotes.filter(item => item.Nombre_Reporte === dataInput.Repostes_name).length === 0) {
+            if (dataInput.Repostes_name !== "" && dataInput.Repostes_descripcion !== "" && dataInput.Repostes_fecha !== "") {
+                await postAsigna(dataInput, auth.user.token).then((data) => {
+                    setMensaje("Reporte agregado correctamente");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(data);
+                    setdataInput({
+                        ...dataInput,
+                        Repostes_name: "",
+                        Repostes_descripcion: '',
+                        Repostes_fecha: '',
+                        Repostes_obligatorio: true
+                    });
+                }
+                ).catch((error) => {
+                    setMensaje("Error al agregar el reporte");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(error);
+                });
+                setActualizacion(Math.random());
+            } else {
+                setContenidoModal("Todos los campos son obligatorios");
+                setMensaje("");
+                setShowModalResultado(true);
+            }
+        } else {
+            setMensaje("Ya existe un reportes con el nombre:\n" + dataInput.Repostes_name);
             setShowModalResultado(true);
-            setShowModalAdd(false);
-            setContenidoModal(data);
-            setdataInput({
-                ...dataInput,
-                Repostes_name: "",
-                Repostes_descripcion: '',
-                Repostes_fecha: '',
-                Repostes_obligatorio: true
-            });
+            setContenidoModal("El reporte ya existe");
         }
-        ).catch((error) => {
-            setMensaje("Error al agregar el reporte");
-            setShowModalResultado(true);
-            setShowModalAdd(false);
-            setContenidoModal(error);
-        }
-        );
-        setActualizacion(Math.random());
     }
     /**
      * Manda el reporte a la base de datos para guardar y enviar el reporte para los docentes
      */
     const guardarYEnviarAdd = async () => {
-        await postSendReportes(dataInput, auth.user.token).then((data) => {
-            setMensaje("Reporte agregado y enviado correctamente");
+        if (reprotes.filter(item => item.Nombre_Reporte === dataInput.Repostes_name).length === 0) {
+            if (dataInput.Repostes_name !== "" && dataInput.Repostes_descripcion !== "" && dataInput.Repostes_fecha !== "") {
+                await postSendReportes(dataInput, auth.user.token).then((data) => {
+                    setMensaje("Reporte agregado y enviado correctamente");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(data);
+                    setdataInput({
+                        ...dataInput,
+                        Repostes_name: "",
+                        Repostes_descripcion: '',
+                        Repostes_fecha: '',
+                        Repostes_obligatorio: true
+                    });
+                }
+                ).catch((error) => {
+                    setMensaje("Error al agregar y enviar el reporte");
+                    setShowModalResultado(true);
+                    setShowModalAdd(false);
+                    setContenidoModal(error);
+                }
+                );
+                setActualizacion(Math.random());
+
+            } else {
+                setContenidoModal("Todos los campos son obligatorios");
+                setMensaje("");
+                setShowModalResultado(true);
+            }
+        } else {
+            setMensaje("Ya existe un reportes con el nombre:\n" + dataInput.Repostes_name);
             setShowModalResultado(true);
-            setShowModalAdd(false);
-            setContenidoModal(data);
-            setdataInput({
-                ...dataInput,
-                Repostes_name: "",
-                Repostes_descripcion: '',
-                Repostes_fecha: '',
-                Repostes_obligatorio: true
-            });
+            setContenidoModal("El reporte ya existe");
         }
-        ).catch((error) => {
-            setMensaje("Error al agregar y enviar el reporte");
-            setShowModalResultado(true);
-            setShowModalAdd(false);
-            setContenidoModal(error);
-        }
-        );
-        setActualizacion(Math.random());
+
     }
 
     /**
@@ -243,6 +273,7 @@ const ReportesAdmin = props => {
             setContenidoModal(error);
         });
         setActualizacion(Math.random());
+        setShowModalERROR(false);
     }
 
     /**
@@ -266,7 +297,7 @@ const ReportesAdmin = props => {
     }
 
     const mandarMensaje = async () => {
-        if (dataInput.mensajeTXT !== ""){
+        if (dataInput.mensajeTXT !== "") {
             if (dataInput.opc === "General") {
                 await sendMail(auth.user.token, dataInput.mensajeTXT, "0").then((data) => {
                     setMensaje(dataInput.mensajeTXT);
@@ -330,11 +361,11 @@ const ReportesAdmin = props => {
                 <button onClick={agregarReporte}>Agregar</button>
                 <div className="Reportes-Admin-mensajes">
                     <label className="Label-ReportesAdmin">Mensaje de correo:</label>
-                    <textarea 
-                    className="textareaModalReportesAdmin"
-                    name="mensajeTXT"
-                    value={dataInput.mensajeTXT}
-                    onChange={handleInputOnChange}>
+                    <textarea
+                        className="textareaModalReportesAdmin"
+                        name="mensajeTXT"
+                        value={dataInput.mensajeTXT}
+                        onChange={handleInputOnChange}>
 
                     </textarea>
                     <form className="form-reportesAdmin-modal">
@@ -540,7 +571,14 @@ const ReportesAdmin = props => {
                             </form>
                         </div>
                         <div className="botones-rep-admin">
-                            <button className="Eliminar" onClick={deleteReprote} >Eliminar</button>
+                            <button className="Eliminar" onClick={() => {
+                                setShowModalERROR(true);
+                                setModalContenido({
+                                    ...contenidoModal,
+                                    modalTitulo: "Eliminar Reporte",
+                                    modalMensaje: "¿Está seguro que desea eliminar el reporte?",
+                                })
+                            }} >Eliminar</button>
                             <button onClick={putReporte}>Guardar</button>
                             <button onClick={sendReporte}>Enviar</button>
                         </div>
@@ -560,6 +598,15 @@ const ReportesAdmin = props => {
                         className="button ReportesAdmin-button"
                         onClick={() => setShowModalResultado(false)}
                     > OK</button>
+                </div>
+            </Modal>
+            <Modal show={showModalERROR} setShow={setShowModalERROR} title={modalContenido.modalTitulo}>
+                <div className="modalReportes">
+                    <p><strong>{modalContenido.modalMensaje}</strong></p>
+                    <div className="botones-rep-admin">
+                        <button className="Eliminar" onClick={deleteReprote}>Borrar</button>
+                        <button onClick={() => setShowModalERROR(false)} >Cancelar</button>
+                    </div>
                 </div>
             </Modal>
         </>

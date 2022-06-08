@@ -6,6 +6,7 @@ import getAllCarrera from '../helpers/Carreras/getAllCarrera.js';
 import getAllMaterias from '../helpers/Materias/getAllMaterias.js';
 import getPDFName from '../helpers/Reportes/getPDFName.js';
 import Modal from '../modal/Modal.js';
+import deletePDF from '../helpers/usuarioReporte/deletePDF.js';
 import { AuthContext } from "../helpers/Auth/auth-context.js";
 import Loader from '../Loader.js';
 import _ from 'lodash';
@@ -23,7 +24,7 @@ export const Reportes = () => {
     const [reporteName, setReporteName] = useState([]);// reporte que es uno individual para los titulos
     const [loading, setLoading] = useState(true);
     const [reportesFiltrados, setReportesFiltrados] = useState([]);// reportesFiltrados son los reportes filtrados
-    const [idsReportes, setIdsReportes] = useState([]);
+    const [iDBorrarPDF, setIDBorrarPDF] = useState(null);// idBorrarPDF es el id del reporte que se va a borrar
     const [materias, setMaterias] = useState([]);
     const [carreras, setCarreras] = useState([]);
     const [selMateria, setSelMateria] = useState({
@@ -38,9 +39,10 @@ export const Reportes = () => {
     const [archivosPDF, setArchivosPDF] = useState([]);
     const [showModalDatosEnviados, setShowModalDatosEnviados] = useState(false);
     const [pendejadaDeMierda, setPendejadaDeMierda] = useState(false);
+    const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [modalData, setModalData] = useState({
-        mensaje : "",
-        titulo : "",
+        mensaje: "",
+        titulo: "",
     });
 
 
@@ -48,6 +50,17 @@ export const Reportes = () => {
     const [filesTamano, setFilesTamano] = useState(true);
     const [fileProgeso, setFileProgeso] = useState(false);
     const [fileResponse, setFileResponse] = useState(null);
+
+    const deletePDFS = async () => {
+        await deletePDF(auth.user.token, selMateria.ID_Generacion);
+        setShowModalBorrar(false);
+        setModalData({
+            mensaje: "Se han borrado los PDFs",
+            titulo: "Borrado",
+        });
+        setShowModalDatosEnviados(true);
+        window.location.reload();
+    }
 
     /**
      * Metodo que sirve para appendiar los archivos a subir
@@ -82,15 +95,13 @@ export const Reportes = () => {
      * @param {*} e 
      */
     const fileSummit = async (e) => {
-        console.log(Object.keys(archivosPDF).length);
         if (Object.keys(archivosPDF).length > 0) {
-            console.log(archivosPDF);
             setModalData({
                 mensaje: "Ya se a enviado este reporte",
                 titulo: "Reporte entregado",
             });
             setShowModalDatosEnviados(true);
-        } else if (files === ''){
+        } else if (files === '') {
             setModalData({
                 mensaje: "No has seleccionado ningun archivo",
                 titulo: "Error",
@@ -128,15 +139,19 @@ export const Reportes = () => {
             }
             return mensaje;
         }
+        let si = 1;
         for (let key in archivosPDF) {
             mensaje = mensaje.concat(
                 <div className='archivo' key={key}>
-                    <p className='archivoP' key={key}>{archivosPDF[key]}</p>
+                    <p className='archivoP' onClick={() => {
+                        setShowModalBorrar(true)
+                        setIDBorrarPDF(key)
+                    }} key={si + key}>{archivosPDF[key]}</p>
                 </div>
             )
+            si++;
         }
         return mensaje;
-        return null;
     }
     useEffect(() => {
         if (selMateria.ID_Asignan !== null) {
@@ -369,6 +384,18 @@ export const Reportes = () => {
         }
         return dots;
     }
+    /**
+     * Metodos para listar todos los archivos PDF que se van a borrar
+     */
+    const MostrarArchivos = () => {
+        let lista = [];
+        for (let key in archivosPDF) {
+            lista.push(
+                <p>{archivosPDF[key]}</p>
+            )
+        }
+        return lista;
+    }
     return (
         <>
             {loading === false ?
@@ -460,6 +487,17 @@ export const Reportes = () => {
                         <Modal show={showModalDatosEnviados} setShow={setShowModalDatosEnviados} title={modalData.titulo}>
                             <p className='alertMSM'>{modalData.mensaje}</p>
                             {/* <button onClick={todoListo}>Confirmar</button> */}
+                        </Modal>
+                        <Modal show={showModalBorrar} setShow={setShowModalBorrar} title={"Eliminar Archivo"}>
+                            <div className='modal-borrar'>
+                                <p className='alertMSM'>Estas segurode de borrar toda la entrega:</p>
+                                <MostrarArchivos />
+                                {/* <p className='alertMSM'>{archivosPDF[iDBorrarPDF]}</p> */}
+                                <button className='alertMSM' onClick={() => {
+                                    console.log(selMateria.ID_Generacion);
+                                    deletePDFS();
+                                }}>Confirmar</button>
+                            </div>
                         </Modal>
                     </> :
                         <>

@@ -9,7 +9,7 @@ class Carreras(models.Model):
     class Meta:
         db_table = 'Carreras'
     ID_Carrera = models.CharField(max_length=8, null=False, primary_key=True)
-    Nombre_Carrera = models.CharField(max_length=80, null=False)
+    Nombre_Carrera = models.CharField(max_length=80, null=False, unique=True)
 
     def __str__(self):
         return f"{self.Nombre_Carrera}"
@@ -19,7 +19,7 @@ class Materias(models.Model):
     class Meta:
         db_table = 'Materias'
     ID_Materia = models.CharField(max_length=8, null=False, primary_key=True)
-    Nombre_Materia = models.CharField(max_length=200, null=False)
+    Nombre_Materia = models.CharField(max_length=200, null=False, unique=True)
     Carrera = models.CharField(null=True, max_length=1)
 
     def __str__(self) -> str:
