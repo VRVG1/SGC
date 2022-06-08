@@ -42,6 +42,7 @@ const Usuarios = props => {
     CorreoE: '',
     seleccion: false,
   });
+  const [userActualizarTitulo, setUserActualizarTitulo] = useState('');
   const [regex, setRegex] = useState({
     PK: /\d+/,
     username: /^[a-zA-Z\d@~._-]{0,20}$/,
@@ -130,11 +131,13 @@ const Usuarios = props => {
   useEffect(() => {
     if (userActualizar === "OK" || userActualizar === "Created" || userActualizar === "Accepted") {
       setShowModalResultado(true);
-      setStatusContenido("Se realizo la operacion con exito");
+      setStatusContenido("Operación realizada con éxito");
+      setUserActualizarTitulo("Operación exitosa");
       setActualizarUsuario(Math.random())
     } else if (userActualizar !== '') {
       setShowModalResultado(true);
-      setStatusContenido("Problemas al realizar la operacion, intente mas tarde")
+      setStatusContenido("Favor de revisar el manual de administrador");
+      setUserActualizarTitulo("Operación fallida");
       setActualizarUsuario(Math.random())
     }
     setloading(false);
@@ -256,7 +259,7 @@ const Usuarios = props => {
   const DatosTablaDetalles = () => {
     const datosTabla = [];
     userAsignan.map((asigna, index) => {
-      
+
       datosTabla.push(
         <tr key={index}>
           <td>{materia.filter(materia => materia.ID_Materia === asigna.ID_Materia)[0].Nombre_Materia}</td>
@@ -618,7 +621,7 @@ const Usuarios = props => {
             />
           </Modal>
           {/* Resultado de agregar */}
-          <Modal show={showModalResultado} setShow={setShowModalResultado} title={userActualizar}>
+          <Modal show={showModalResultado} setShow={setShowModalResultado} title={userActualizarTitulo}>
             <div className="modal group">
               <p><strong>{statusContenido}</strong></p>
             </div>

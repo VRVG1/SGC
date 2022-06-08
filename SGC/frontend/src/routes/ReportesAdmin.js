@@ -142,7 +142,7 @@ const ReportesAdmin = props => {
                     setMensaje("Reporte agregado correctamente");
                     setShowModalResultado(true);
                     setShowModalAdd(false);
-                    setContenidoModal(data);
+                    setContenidoModal("Reporte agregado correctamente");
                     setdataInput({
                         ...dataInput,
                         Repostes_name: "",
@@ -155,7 +155,7 @@ const ReportesAdmin = props => {
                     setMensaje("Error al agregar el reporte");
                     setShowModalResultado(true);
                     setShowModalAdd(false);
-                    setContenidoModal(error);
+                    setContenidoModal("Favor de revisar el manual de administrador");
                 });
                 setActualizacion(Math.random());
             } else {
@@ -179,7 +179,7 @@ const ReportesAdmin = props => {
                     setMensaje("Reporte agregado y enviado correctamente");
                     setShowModalResultado(true);
                     setShowModalAdd(false);
-                    setContenidoModal(data);
+                    setContenidoModal("Reporte agregado correctamente");
                     setdataInput({
                         ...dataInput,
                         Repostes_name: "",
@@ -192,7 +192,7 @@ const ReportesAdmin = props => {
                     setMensaje("Error al agregar y enviar el reporte");
                     setShowModalResultado(true);
                     setShowModalAdd(false);
-                    setContenidoModal(error);
+                    setContenidoModal("Favor de revisar el manual de administrador");
                 }
                 );
                 setActualizacion(Math.random());
@@ -237,7 +237,7 @@ const ReportesAdmin = props => {
             setMensaje("Reporte agregado correctamente");
             setShowModalResultado(true);
             setShowModalDetails(false);
-            setContenidoModal(data);
+            setContenidoModal("Reporte actualizado correctamente");
             setdataInput({
                 ...dataInput,
                 Repostes_name: "",
@@ -250,7 +250,7 @@ const ReportesAdmin = props => {
             setMensaje("Error al agregar el reporte");
             setShowModalResultado(true);
             setShowModalDetails(false);
-            setContenidoModal(error);
+            setContenidoModal("Favor de revisar el manual de administrador");
         }
         );
         setActualizacion(Math.random());
@@ -264,13 +264,13 @@ const ReportesAdmin = props => {
             setMensaje("Reporte eliminado correctamente");
             setShowModalResultado(true);
             setShowModalDetails(false);
-            setContenidoModal(data);
+            setContenidoModal("Operacion realizada correctamente");
         }
         ).catch((error) => {
             setMensaje("Error al eliminar el reporte");
             setShowModalResultado(true);
             setShowModalDetails(false);
-            setContenidoModal(error);
+            setContenidoModal("Favor de revisar el manual de administrador");
         });
         setActualizacion(Math.random());
         setShowModalERROR(false);
@@ -426,7 +426,7 @@ const ReportesAdmin = props => {
                                     </tbody>
                                 </table>
                             </div>
-                            <form>
+                            <div className="Chanchuya1">
                                 <div className="form group modal Materia">
                                     <input
                                         type="text"
@@ -455,7 +455,7 @@ const ReportesAdmin = props => {
                                     <span className="bottomBar Materias-main"></span>
                                     <label className="Materias-search">Nombre del Docente</label>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                     <button onClick={mandarMensaje}>Enviar</button>
