@@ -47,7 +47,7 @@ const Usuarios = props => {
     PK: /\d+/,
     username: /^[a-zA-Z\d@~._-]{0,20}$/,
     password: /.{0,20}/,
-    Nombre_Usuario: /^[A-Za-z\sÀ-ÿ]{0,100}$/,
+    Nombre_Usuario: /^[A-Za-z\sÀ-ÿ.]{0,100}$/,
     Tipo_Usuario: /.*/,
     CorreoE: /.*/,
   })

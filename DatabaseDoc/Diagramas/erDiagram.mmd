@@ -1,0 +1,63 @@
+erDiagram
+
+Usuarios {
+    auto_increment ID_Usuario PK
+    varchar-70 Nombre_Usuario
+    varchar-20 User
+    varchar-20 Password
+    choice Tipo_usuario
+    email CorreoE
+    boolean Permiso
+}
+
+Reportes {
+    auto_increment ID_Reporte PK
+    varchar-100 Nombre_Reporte
+    date Fecha_Entrega
+    varchar-1000 Descripcion
+    choice Opcional
+} 
+
+Materias {
+    varchar-8 ID_Materia PK
+    varchar-100 Nombre_Materia    
+}
+
+
+Generan {
+    auto_increment ID_Generacion PK
+    varchar-20 Estatus
+    varchar-20 Sememestre
+    int ID_Asignan FK "from Asignan"
+    int ID_Reporte FK "from Reportes"
+}
+
+Carreras {
+    varchar-8 ID_Carrera PK
+    varchar-50 Nombre_Carrera
+}
+
+Asignan {
+    auto_increment ID_Asignan PK
+    int ID_Materia FK "from Materias"
+    int ID_Usuario FK "from Usuarios"
+    int ID_Carrera FK "from Carreras"
+    varchar-50 Grado
+    choice Grupo
+}
+
+
+
+Alojan {
+    auto_increment ID_Alojan PK
+    int ID_Generacion FK " from Generan"
+    file Path_PDF
+}
+
+Usuarios ||--|{ Asignan: c 
+Materias ||--|{ Asignan: c 
+Asignan ||-- |{ Generan: c
+Reportes ||--|{ Generan: c
+Carreras||--|{Asignan: c
+Generan||--|{Alojan: c
+
