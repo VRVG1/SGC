@@ -7,11 +7,16 @@
 }
 
 * {
-  font-family: 'Roboto', sans-serif; 
+  font-family: 'Roboto', sans-serif;
   font-size: 1.15rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: 2rem;
 }
 
@@ -45,12 +50,13 @@ h2 {
   margin: 40px 8px 10px 8px;
   color: #111111;
 }
-h2.loginOlvide{
+
+h2.loginOlvide {
   margin: 10px 8px 10px 8px;
 }
 
 .wrapper {
-  margin-top: 15%;
+  margin-top: 5%;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -134,8 +140,8 @@ input[type="reset"]:active {
 
 /* Entrada de datos */
 
-.group 			  { 
-  position: relative; 
+.group {
+  position: relative;
   margin-bottom: 5%;
 }
 
@@ -154,78 +160,83 @@ input[type="email"] {
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus
-input[type="email"]:focus {
-  outline:none;
+input[type="password"]:focus input[type="email"]:focus {
+  outline: none;
 }
 
-input:focus ~ .bar:before, input:focus ~ .bar:after {
-  width:50%;
+input:focus~.bar:before,
+input:focus~.bar:after {
+  width: 50%;
 }
 
-label 				 {
-  color:#111111; 
-  font-size:1rem;
-  font-weight:normal;
-  position:absolute;
-  pointer-events:none;
+label {
+  color: #111111;
+  font-size: 1rem;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
   left: 10%;
   top: 45%;
-  transition:0.2s ease all; 
-  -moz-transition:0.2s ease all; 
-  -webkit-transition:0.2s ease all;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
 }
 
-input[type="text"]:focus ~ label, 
-input[type="text"]:valid ~ label,
-input[type="password"]:focus ~ label,
-input[type="password"]:valid ~ label,
-input[type="email"]:focus ~ label,
-input[type="email"]:valid ~ label		{
-  top:-25%;
-  font-size:0.9rem;
-  color:#111111;
+input[type="text"]:focus~label,
+input[type="text"]:valid~label,
+input[type="password"]:focus~label,
+input[type="password"]:valid~label,
+input[type="email"]:focus~label,
+input[type="email"]:valid~label {
+  top: -25%;
+  font-size: 0.9rem;
+  color: #111111;
 }
 
-.bottomBar 	{ 
+.bottomBar {
   background: #111111;
-  position:absolute; 
-  display:block; 
+  position: absolute;
+  display: block;
   height: 2px;
-  width:80%; 
+  width: 80%;
   left: 10%;
-  
-}
-.bottomBar:before, .bottomBar:after 	{
-  content:'';
-  height:2px; 
-  width:0;
-  bottom: 2%; 
-  position:absolute;
-  background:#E00005; 
-  transition:0.2s ease all; 
-  -moz-transition:0.2s ease all; 
-  -webkit-transition:0.2s ease all;
-}
-.bottomBar:before {
-  left:50%;
-}
-.bottomBar:after {
-  right:50%; 
+
 }
 
-input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
-  width:50%;
+.bottomBar:before,
+.bottomBar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 2%;
+  position: absolute;
+  background: #E00005;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.bottomBar:before {
+  left: 50%;
+}
+
+.bottomBar:after {
+  right: 50%;
+}
+
+input:focus~.bottomBar:before,
+input:focus~.bottomBar:after {
+  width: 50%;
 }
 
 .highlight {
-  position:absolute;
-  height:60%; 
-  width:100px; 
-  top:25%; 
-  left:0;
-  pointer-events:none;
-  opacity:0.5;
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 
@@ -251,6 +262,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
     -webkit-transform: translate3d(0, -100%, 0);
     transform: translate3d(0, -100%, 0);
   }
+
   100% {
     opacity: 1;
     -webkit-transform: none;
@@ -264,6 +276,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
     -webkit-transform: translate3d(0, -100%, 0);
     transform: translate3d(0, -100%, 0);
   }
+
   100% {
     opacity: 1;
     -webkit-transform: none;
@@ -288,6 +301,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
     -webkit-transform: none;
     transform: none;
   }
+
   100% {
     opacity: 0;
     -webkit-transform: translate3d(100%, 0%, 0);
@@ -301,6 +315,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
     -webkit-transform: none;
     transform: none;
   }
+
   100% {
     opacity: 0;
     -webkit-transform: translate3d(100%, 0%, 0);
@@ -313,22 +328,27 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
+
 @-moz-keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -377,7 +397,7 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
   width: 0;
   height: 0;
   visibility: collapse;
-  
+
 }
 
 .fadeIn.segundo {
@@ -400,10 +420,11 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
 
 /* Simple CSS3 Fade-in Animation */
 .underlineHover {
-  color:#005b8e;
+  color: #005b8e;
   text-decoration: none;
 
 }
+
 .underlineHover::after {
   display: block;
   margin-left: 20%;
@@ -423,10 +444,11 @@ input:focus ~ .bottomBar:before, input:focus ~ .bottomBar:after {
 }
 
 .underlineHover-regresar {
-  color:#005b8e;
+  color: #005b8e;
   text-decoration: none;
 
 }
+
 .underlineHover-regresar::after {
   display: block;
   margin-left: 38%;
@@ -476,15 +498,16 @@ button {
   margin: 2% 0%;
   border-radius: 10px;
   text-decoration: none;
-  box-shadow: 0px 0px ;
+  box-shadow: 0px 0px;
   transition: ease all 0.5s;
 }
 
-button:hover{
+button:hover {
   background-color: #0083cf;
   transform: scale(1.1);
 }
-button:active{
+
+button:active {
   transform: scale(0.98);
 }
 

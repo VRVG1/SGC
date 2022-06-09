@@ -54,7 +54,8 @@ const Materias = props => {
     const [Grado, setGrado] = useState("");
     const [Grupo, setGrupo] = useState('');
     const [Nombre_Materia, setNombre_Materia] = useState("");
-    const [ID_Carrera, setID_Carrera] = useState('');
+    const [resultadoTitulo, setResultadoTitulo] = useState("");
+    //const [ID_Carrera, setID_Carrera] = useState('');
     //const [Nombre_Carrera, setNombre_Carrera] = useState('')
 
     const [ptio, setPtio] = useState({})
@@ -99,6 +100,8 @@ const Materias = props => {
     const deleteMaterias = async () => {
         setLoading(true);
         setAddMaterias(await deleteMateria(ID_Materia, auth.user.token));
+        setResultadoTitulo("Eliminación")
+        setStatusContenido("Eliminación exitosa")
     }
 
     /**
@@ -125,6 +128,8 @@ const Materias = props => {
     const confirmModificar = async () => {
         setLoading(true);
         setAddMaterias(await putMateria(addData, ID_Materia, auth.user.token));
+        setStatusContenido("Se ha modificado la materia de manera exitosa");
+        setResultadoTitulo("Modificación fue exitosa")
     };
 
     /**
@@ -231,6 +236,8 @@ const Materias = props => {
     const postermateria = async () => {
         setLoading(true);
         setAddMaterias(await postMateria(addData, auth.user.token));
+        setStatusContenido("Se ha agregado la materia correctamente");
+        setResultadoTitulo("Materia agregada")
     }
 
     /**
@@ -239,11 +246,11 @@ const Materias = props => {
     useEffect(() => {
         if (addMaterias === "OK") {
             setShowModalResultado(true);
-            setStatusContenido("Se realizo la operacion con exito");
             setActualizarMateria(Math.random())
         } else if (addMaterias !== '') {
             setShowModalResultado(true);
             setStatusContenido("Problemas al realizar la operacion, intente mas tarde")
+            setResultadoTitulo("ERROR")
             setActualizarMateria(Math.random())
         }
         setLoading(false)
@@ -487,7 +494,7 @@ const Materias = props => {
                     </Modal>
 
                     {/* Resultado de agregar */}
-                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={addMaterias}>
+                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={resultadoTitulo}>
                         <div className="modal group">
                             <p><strong>{statusContenido}</strong></p>
                         </div>
