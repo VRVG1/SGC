@@ -18,6 +18,7 @@
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
+    width: 35em;
 }
 
 .tabla.Usuarios-rep {
@@ -90,28 +91,32 @@
         flex-direction: row;
         margin-bottom: 2%;
 
-        .tabla{
+        .tabla {
             width: 50%;
 
-            th{
+            th {
                 font-size: 1.2rem;
                 font-weight: bolder;
             }
-            th:nth-child(2){
+
+            th:nth-child(2) {
                 width: 20%;
             }
         }
+
         .inputMaterias-search {
             width: 20vw;
         }
-        .highlight.Materias{
-            width: 20vw;
-        }
-        .bottomBar.Materias-main{
+
+        .highlight.Materias {
             width: 20vw;
         }
 
-        .prediction{
+        .bottomBar.Materias-main {
+            width: 20vw;
+        }
+
+        .prediction {
             color: #111111;
             list-style-type: none;
             text-align: left;
@@ -121,18 +126,18 @@
             width: 20vw;
             z-index: 1;
 
-            li{
+            li {
                 background-color: #DDD;
 
-                &:hover{
+                &:hover {
                     background-color: #84b9d8;
                 }
             }
 
-            li:nth-child(even){
+            li:nth-child(even) {
                 background-color: #f3f3f3;
 
-                &:hover{
+                &:hover {
                     background-color: #84b9d8;
                 }
             }
@@ -172,20 +177,23 @@
         flex-direction: row;
         margin-bottom: 2%;
 
-        .tabla{
+        .tabla {
             width: 50%;
         }
+
         .inputMaterias-search {
             width: 20vw;
         }
-        .highlight.Materias{
-            width: 20vw;
-        }
-        .bottomBar.Materias-main{
+
+        .highlight.Materias {
             width: 20vw;
         }
 
-        .prediction{
+        .bottomBar.Materias-main {
+            width: 20vw;
+        }
+
+        .prediction {
             color: #111111;
             list-style-type: none;
             text-align: left;
@@ -195,12 +203,12 @@
             width: 20vw;
             z-index: 1;
 
-            li{
+            li {
                 background-color: #DDD;
-                
+
             }
 
-            li:nth-child(even){
+            li:nth-child(even) {
                 background-color: #f3f3f3;
             }
         }
@@ -552,6 +560,7 @@ div.sinIdeas {
 button {
     border: none;
 }
+
 .button.ReportesAdmin-button {
     max-width: 5em;
     width: 5em;
@@ -562,10 +571,30 @@ button {
     margin: auto;
     margin-top: 2%;
 }
+
 .modalReportes {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
     text-align: center;
+
+    .botones-rep-admin {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        flex-direction: row;
+        margin-top: 2%;
+
+        .Eliminar {
+            background-color: #E00005;
+            border: none;
+
+            &:hover {
+                background-color: #ff0004;
+                border: none;
+            }
+        }
+    }
+
 }

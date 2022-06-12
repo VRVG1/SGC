@@ -25,26 +25,26 @@ const Materias = props => {
     const [showModalModify, setShowModalModify] = useState(false);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
-    const [showModalNoCarreras, setShowModalNoCarreras] = useState(false);
+    //const [showModalNoCarreras, setShowModalNoCarreras] = useState(false);
     const [materiaData, setMateriaData] = useState([]);
     const [filtrados, setFiltrados] = useState({})
-    const [carreraData, setCareraData] = useState({});
+    //const [carreraData, setCareraData] = useState({});
     const [addData, setAddData] = useState({
         Materia_name: '',
-        materia_carrera: '',
+        //materia_carrera: '',
         Materia_semestre: '',
         Materia_grupo: '',
         Materia_ID: '',
-        Nombre_Carrera: ''
+        //Nombre_Carrera: ''
     });
     const [regex, setRegex] = useState({
         Materia_name: /^[A-Za-z\sÀ-ÿ]{0,200}$/,
-        materia_carrera: '',
+        //materia_carrera: '',
         Materia_semestre: /^\d{0,2}$/,
         Materia_grupo: /^[A-Z]{0,1}$/,
         Materia_ID: /^[A-Z]{0,3}-{0,1}[0-9]{0,4}$/
     });
-    const [actualizarCarrera, setActualizarCarrera] = useState(0);
+    //const [actualizarCarrera, setActualizarCarrera] = useState(0);
     const [actualizarMateria, setActualizarMateria] = useState(0);
     const [loading, setLoading] = useState(false);
     const [addMaterias, setAddMaterias] = useState('');
@@ -54,8 +54,9 @@ const Materias = props => {
     const [Grado, setGrado] = useState("");
     const [Grupo, setGrupo] = useState('');
     const [Nombre_Materia, setNombre_Materia] = useState("");
-    const [ID_Carrera, setID_Carrera] = useState('');
-    const [Nombre_Carrera, setNombre_Carrera] = useState('')
+    const [resultadoTitulo, setResultadoTitulo] = useState("");
+    //const [ID_Carrera, setID_Carrera] = useState('');
+    //const [Nombre_Carrera, setNombre_Carrera] = useState('')
 
     const [ptio, setPtio] = useState({})
     /**
@@ -72,20 +73,20 @@ const Materias = props => {
      * Metodo para obtener todos los datos de la 
      * carrera desde la base de datos
      */
-    const obtenerCarrera = async () => {
-        await getAllCarrera(auth.user.token).then((data) => {
-            if (data.length > 0) {
-                setCareraData(data)
-            }
-        });
-    }
+    // const obtenerCarrera = async () => {
+    //     await getAllCarrera(auth.user.token).then((data) => {
+    //         if (data.length > 0) {
+    //             setCareraData(data)
+    //         }
+    //     });
+    // }
 
     /**
      * useEffect para obtener los datos de carrera cada que se actualizen
      */
-    useEffect(() => {
-        obtenerCarrera();
-    }, [actualizarCarrera])
+    // useEffect(() => {
+    //     obtenerCarrera();
+    // }, [actualizarCarrera])
     /**
      * hook useEffect para la recoleccion de datos generales de materias
      */
@@ -99,6 +100,8 @@ const Materias = props => {
     const deleteMaterias = async () => {
         setLoading(true);
         setAddMaterias(await deleteMateria(ID_Materia, auth.user.token));
+        setResultadoTitulo("Eliminación")
+        setStatusContenido("Eliminación exitosa")
     }
 
     /**
@@ -109,11 +112,11 @@ const Materias = props => {
         setAddData({
             ...addData,
             Materia_name: Nombre_Materia,
-            materia_carrera: ID_Carrera,
+            //materia_carrera: ID_Carrera,
             Materia_semestre: Grado,
             Materia_grupo: Grupo,
             Materia_ID: ID_Materia,
-            Nombre_Carrera: Nombre_Carrera
+            //Nombre_Carrera: Nombre_Carrera
         });
         setShowModalConfirm(false);
         setShowModalModify(true);
@@ -125,6 +128,8 @@ const Materias = props => {
     const confirmModificar = async () => {
         setLoading(true);
         setAddMaterias(await putMateria(addData, ID_Materia, auth.user.token));
+        setStatusContenido("Se ha modificado la materia de manera exitosa");
+        setResultadoTitulo("Modificación fue exitosa")
     };
 
     /**
@@ -133,23 +138,23 @@ const Materias = props => {
      */
     function details(id) {
         const materia = materiaData.find(elemento => elemento.ID_Materia === id);
-        const carrera = carreraData.find(element => element.ID_Carrera === materia.Carrera);
+        //const carrera = carreraData.find(element => element.ID_Carrera === materia.Carrera);
         setGrado(materia.Grado);
         setGrupo(materia.Grupo);
         setID_Materia(materia.ID_Materia);
         setNombre_Materia(materia.Nombre_Materia);
-        setID_Carrera(carrera.ID_Carrera);
-        setNombre_Carrera(carrera.Nombre_Carrera);
+        //setID_Carrera(carrera.ID_Carrera);
+        //setNombre_Carrera(carrera.Nombre_Carrera);
         setAddMaterias('');
         setShowModalDetails(true);
         setAddData({
             ...addData,
             Materia_name: materia.Nombre_Materia,
-            materia_carrera: carrera.ID_Carrera,
+            //materia_carrera: carrera.ID_Carrera,
             Materia_semestre: materia.Grado,
             Materia_grupo: materia.Grupo,
             Materia_ID: id,
-            Nombre_Carrera: carrera.Nombre_Carrera
+            //Nombre_Carrera: carrera.Nombre_Carrera
         });
         setShowModalConfirm(false);
     }
@@ -159,22 +164,34 @@ const Materias = props => {
      * agregar y de paso muestra el formulario de agregar
      */
     const add = () => {
-        if (carreraData.length > 0) {
-            setAddData({
-                ...addData,
-                Materia_name: '',
-                materia_carrera: carreraData[0].ID_Carrera,
-                Materia_semestre: '',
-                Materia_grupo: '',
-                Materia_ID: '',
-                Nombre_Carrera: carreraData[0].Nombre_Carrera
-            });
-            setAddMaterias('');
-            setActualizarCarrera(Math.random())
-            setShowModalAdd(true);
-        } else {
-            setShowModalNoCarreras(true);
-        }
+        // if (carreraData.length > 0) {
+        //     setAddData({
+        //         ...addData,
+        //         Materia_name: '',
+        //         //materia_carrera: carreraData[0].ID_Carrera,
+        //         Materia_semestre: '',
+        //         Materia_grupo: '',
+        //         Materia_ID: '',
+        //         //Nombre_Carrera: carreraData[0].Nombre_Carrera
+        //     });
+        //     setAddMaterias('');
+        //     //setActualizarCarrera(Math.random())
+        //     setShowModalAdd(true);
+        // } else {
+        //     setShowModalNoCarreras(true);
+        // }
+        setAddData({
+            ...addData,
+            Materia_name: '',
+            //materia_carrera: carreraData[0].ID_Carrera,
+            Materia_semestre: '',
+            Materia_grupo: '',
+            Materia_ID: '',
+            //Nombre_Carrera: carreraData[0].Nombre_Carrera
+        });
+        setAddMaterias('');
+        //setActualizarCarrera(Math.random())
+        setShowModalAdd(true);
     }
     /**
      * Metodo que tienen como parametro el eventeo del input usado para guardar el valor
@@ -189,7 +206,7 @@ const Materias = props => {
                 setPtio({
                     ...ptio,
                     [event.target.name]: event.target.value,
-                    materia_carrera: carreraData.find(element => element.Nombre_Carrera === event.target.value).ID_Carrera
+                    //materia_carrera: carreraData.find(element => element.Nombre_Carrera === event.target.value).ID_Carrera
                 })
                 // setAddData({
                 //     ...addData,
@@ -202,17 +219,6 @@ const Materias = props => {
             });
         }
     }
-    /**
-     * UseEffect para actualizar los formularios
-     * Igual es buena idea guardar los datos en una variable
-     * y luego actualizar el state con el setAddData y asi
-     * no tener que actualizar el state cada que se cambie
-     * el input
-     * Eso lo puso github copilot
-     * Realmente lo que quiero decir, es usar useEffect para actualizar los datos del input para que sea mejor
-     * , pero no se la verdad creo que con solo poner [event.target.name] : event.target.value o algo asi, con eso
-     * pero no creo
-     */
     useEffect(() => {
         setAddData({
             ...addData,
@@ -230,6 +236,8 @@ const Materias = props => {
     const postermateria = async () => {
         setLoading(true);
         setAddMaterias(await postMateria(addData, auth.user.token));
+        setStatusContenido("Se ha agregado la materia correctamente");
+        setResultadoTitulo("Materia agregada")
     }
 
     /**
@@ -238,11 +246,11 @@ const Materias = props => {
     useEffect(() => {
         if (addMaterias === "OK") {
             setShowModalResultado(true);
-            setStatusContenido("Se realizo la operacion con exito");
             setActualizarMateria(Math.random())
         } else if (addMaterias !== '') {
             setShowModalResultado(true);
             setStatusContenido("Problemas al realizar la operacion, intente mas tarde")
+            setResultadoTitulo("ERROR")
             setActualizarMateria(Math.random())
         }
         setLoading(false)
@@ -315,11 +323,11 @@ const Materias = props => {
                         ) : (
                             <>
                                 <div className="Sin_Resultados">
-                                    <p>No se encontraron resultados</p>
+                                    <p className="p">No se encontraron resultados</p>
                                 </div>
-                                {/* <div className="Sin_Resultados img">
+                                <div className="Sin_Resultados img">
                                     <img src={kanaBuscar} className="kana" alt="Sin resultados" />
-                                </div> */}
+                                </div>
                             </>
                         )}
 
@@ -364,7 +372,7 @@ const Materias = props => {
                                 <label className="Materias">Nombre de Materia</label>
                             </div>
 
-                            <div className="form group modal Materia">
+                            {/* <div className="form group modal Materia">
                                 <select name="Nombre_Carrera" value={addData.Nombre_Carrera} onChange={handleSelectOnChange} >
                                     {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
                                         <option key={carrera.ID_Carrera} value={carrera.Nombre_Carrera}>{carrera.Nombre_Carrera}</option>
@@ -373,7 +381,7 @@ const Materias = props => {
                                 <span className="highlight Materias"></span>
                                 <span className="bottomBar Materias"></span>
                                 <label className="Materias">Carrera de la Materia</label>
-                            </div>
+                            </div> */}
                         </form>
                         <div className="Materias-Detalles buttons">
                             <input
@@ -423,7 +431,7 @@ const Materias = props => {
                                 <label className="Materias">Nombre de Materia</label>
                             </div>
 
-                            <div className="form group modal Materia">
+                            {/* <div className="form group modal Materia">
                                 <select name="Nombre_Carrera" value={addData.Nombre_Carrera} onChange={handleSelectOnChange} >
                                     {Object.keys(carreraData).length !== 0 ? (carreraData.map((carrera) =>
                                         <option key={carrera.ID_Carrera} value={carrera.Nombre_Carrera}>{carrera.Nombre_Carrera}</option>
@@ -432,7 +440,7 @@ const Materias = props => {
                                 <span className="highlight Materias"></span>
                                 <span className="bottomBar Materias"></span>
                                 <label className="Materias">Carrera de la Materia</label>
-                            </div>
+                            </div> */}
                         </form>
 
                         <input
@@ -468,7 +476,7 @@ const Materias = props => {
                             <div className="Usuarios-Detalles summary">
                                 {ID_Materia === addData.Materia_ID ? null : <p>ID de la materia pasara de: <strong className="Resaltado">{ID_Materia}</strong> a <strong className="Resaltado">{addData.Materia_ID}</strong></p>}
                                 {Nombre_Materia === addData.Materia_name ? null : <p>Nombre de la materia pasara de: <strong className="Resaltado">{Nombre_Materia}</strong> a <strong className="Resaltado">{addData.Materia_name}</strong></p>}
-                                {ID_Carrera === addData.materia_carrera ? null : <p>Carrera de la materia pasara de: <strong className="Resaltado">{Nombre_Carrera}</strong> a <strong className="Resaltado">{addData.Nombre_Carrera}</strong></p>}
+                                {/* {ID_Carrera === addData.materia_carrera ? null : <p>Carrera de la materia pasara de: <strong className="Resaltado">{Nombre_Carrera}</strong> a <strong className="Resaltado">{addData.Nombre_Carrera}</strong></p>} */}
                             </div>
                         </div>
                         <input
@@ -486,7 +494,7 @@ const Materias = props => {
                     </Modal>
 
                     {/* Resultado de agregar */}
-                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={addMaterias}>
+                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={resultadoTitulo}>
                         <div className="modal group">
                             <p><strong>{statusContenido}</strong></p>
                         </div>
@@ -498,7 +506,7 @@ const Materias = props => {
                         >OK</button>
                     </Modal>
                     {/* Modal no hay carreras */}
-                    <Modal show={showModalNoCarreras} setShow={setShowModalNoCarreras} title={"No hay carreras"}>
+                    {/* <Modal show={showModalNoCarreras} setShow={setShowModalNoCarreras} title={"No hay carreras"}>
                         <div className="modal group">
                             <p>No hay carreras registradas, por favor registre una carrera</p>
                         </div>
@@ -507,7 +515,7 @@ const Materias = props => {
                             className="button Materias"
                             onClick={() => setShowModalNoCarreras(false)}
                         >Cerrar</button>
-                    </Modal>
+                    </Modal> */}
 
                 </div>
             ) : (

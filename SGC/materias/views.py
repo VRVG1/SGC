@@ -11,7 +11,7 @@ from .serializers import CarreraSerializer, MateriaSerializer, AsignanSerializer
 from .models import Asignan, Materias, Carreras
 from django.contrib.auth.models import User
 from reportes.models import Generan, Reportes
-from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
+from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission, AdminEspectadorDocentePermission, AdminEspectadorPermission
 
 # Create your views here.
 
@@ -19,10 +19,10 @@ from persoAuth.permissions import OnlyAdminPermission, AdminDocentePermission
 class MateriasView(generics.ListAPIView):
     '''
     Vista que muestra todas las materias registradas
-    (ADMIN Y DOCENTE)
+    (ADMIN, DOCENTE, SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, AdminDocentePermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorDocentePermission]
 
     serializer_class = MateriaSerializer
     queryset = Materias.objects.all()
@@ -44,10 +44,10 @@ class CarrerasView(generics.ListAPIView):
 class AsignanView(generics.ListAPIView):
     '''
     Vista que muestra todos los asignan registradas
-    (ADMIN)
+    (ADMIN y SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = AsignanSerializer
     queryset = Asignan.objects.all()
@@ -112,6 +112,9 @@ class AsignarMateriaView(APIView):
         if serializer.is_valid():
             usuario = serializer.validated_data.get('ID_Usuario')
             materia = serializer.validated_data.get('ID_Materia')
+            carrera = serializer.validated_data.get('ID_Carrera')
+            grado = serializer.validated_data.get('Grado')
+            grupo = serializer.validated_data.get('Grupo')
             serializer.save()
             reportes = Reportes.objects.all()
             if not reportes:
@@ -128,7 +131,7 @@ class AsignarMateriaView(APIView):
                     semestre = 'Agosto - Diciembre ' + str(fecha.year)
 
                 asignan = Asignan.objects.get(
-                    ID_Usuario=usuario, ID_Materia=materia)
+                    ID_Usuario=usuario, ID_Materia=materia, ID_Carrera=carrera, Grado=grado, Grupo=grupo)
                 for x in reportes:
                     generate = Generan(
                         Estatus=None, Sememestre=semestre, ID_Asignan=asignan, ID_Reporte=x)
@@ -153,6 +156,26 @@ def getAsignan(request):
 
     try:
         usuario = Usuarios.objects.get(ID_Usuario=request.user)
+        asign = Asignan.objects.filter(ID_Usuario=usuario)
+    except Asignan.DoesNotExist:
+        return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AsignanSerializer(asign, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def getAsignanpk(request, pk):
+    '''
+    Vista que permite obtener todos los asignan de un docente
+    (ADMIN Y DOCENTE)
+    '''
+
+    try:
+        usuario = Usuarios.objects.get(ID_Usuario=pk)
         asign = Asignan.objects.filter(ID_Usuario=usuario)
     except Asignan.DoesNotExist:
         return Response({'Error': 'No hay asignan'}, status=status.HTTP_404_NOT_FOUND)

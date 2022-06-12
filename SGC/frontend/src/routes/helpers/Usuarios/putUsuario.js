@@ -7,9 +7,9 @@ import AuthPostBasic from '../Auth/AuthPostBasis.js';
  */
 const putUsuarios = async (dataUser, id, token) => {
     if (dataUser.seleccion === "false") {
-        dataUser.seleccion = "False";
+        dataUser.seleccion = 0;
     } else {
-        dataUser.seleccion = "True";
+        dataUser.seleccion = 1;
     }
     let post = {
         method: 'PUT',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { LoginContext } from './helpers/Auth/login-context';
+import itcg from '../img/ITCG-logo2.png';
 
 /**
   * El componente <ErrorMessage /> se encarga de renderizar el contenedor
@@ -12,7 +13,7 @@ import { LoginContext } from './helpers/Auth/login-context';
 const ErrorMessage = (props) => {
   const loginContext = props.contexto;
   let errorContainer;
-  if(loginContext.status?.failureStatus) {
+  if (loginContext.status?.failureStatus) {
     errorContainer = (
       <div className="primero-error">
         {/* <p>{ loginContext.status.error.non_field_errors }</p> */}
@@ -44,8 +45,11 @@ export const Login = (props) => {
       <div className={animation.wrapper}>
         <div id="content">
           <p className="titleLogin"> Sistema Gestion del Curso SGC </p>
-          <h2 className={animation.primero}> Login </h2>
-          <ErrorMessage loginStatus={ props.loginStatus } contexto={loginContext}/>
+          <div className={animation.primero}>
+            <img className='icon' src={itcg}></img>
+            <h2 className='loginOlvide'> Login </h2>
+          </div>
+          <ErrorMessage loginStatus={props.loginStatus} contexto={loginContext} />
           {/**
             <div className={errorM}>
             <p>Usuario o Contrasena incorrectos</p>

@@ -5,7 +5,7 @@ const getAsignanAllUser = async (token) => {
         headers: { 'Content-Type': 'application/json' },
     };
     get = AuthPostBasic(token, get);
-    const url = "http://localhost:8000/materia/getAsigan";
+    const url = "http://localhost:8000/materia/asignan";
     const res = await fetch(url, get);
     const result = await res.json();
     return result;

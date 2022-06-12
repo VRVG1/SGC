@@ -1,26 +1,24 @@
-from urllib.request import Request
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from .serializers import UsuarioSerializer, UpdateUsuarioSerializer, UserSerializer, CambioPassSerializer, UsuarioInfoSerializer
+from .serializers import UsuarioSerializer, CambioPassSerializer, UsuarioInfoSerializer
 from .models import Usuarios
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-from persoAuth.permissions import AdminDocentePermission, OnlyAdminPermission, OnlyDocentePermission
+from persoAuth.permissions import AdminDocentePermission, AdminEspectadorPermission, OnlyAdminPermission, OnlyDocentePermission, AdminEspectadorDocentePermission
 from rest_framework.authentication import TokenAuthentication
 from .tasks import ForgotPass
-
 # Create your views here.
 
 
 class UsuarioView(generics.ListAPIView):
     '''
     Vista que permite ver todos los usuarios registrados en la BD
-    (ADMIN)
+    (ADMIN, SUPERVISOR)
     '''
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, OnlyAdminPermission]
+    permission_classes = [IsAuthenticated, AdminEspectadorPermission]
 
     serializer_class = UsuarioSerializer
     queryset = Usuarios.objects.all()
@@ -122,7 +120,6 @@ def actualizar(request, pk):
         username = newUs['username']
         password = newUs['password']
 
-        print(bool(password))
         if bool(password) == False:
             pass
         else:
@@ -204,11 +201,11 @@ def get(request, string):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@permission_classes([IsAuthenticated, AdminEspectadorDocentePermission])
 def getInfoUser(request):
     '''
     Vista que recibe al user y devuelve sus datos para frontend
-    (DOCENTE)
+    (DOCENTE, ADMIN, ESPECTADOR)
     '''
 
     try:
@@ -217,13 +214,13 @@ def getInfoUser(request):
         return Response({'Error': 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        dic = {'username': usuario.ID_Usuario.username}
         usuario_serializer = UsuarioInfoSerializer(usuario)
-        return Response(usuario_serializer.data, status=status.HTTP_200_OK)
+        dic.update(usuario_serializer.data)
+        return Response(dic, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, AdminDocentePermission])
+@api_view(['POST'])
 def OlvidoPass(request):
     '''
     Vista para cuando se le olvide la contraseña al usuario
@@ -239,10 +236,10 @@ def OlvidoPass(request):
     except Usuarios.DoesNotExist:
         return Response({'Error', 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         newP = 'contrasena_'+usuarioP
         msg = '''
-            Hola '''+usuarioP+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
+            Hola '''+str(usuario.Nombre_Usuario)+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
             hay que ser mas atento.
 
             Se ha generado una contraseña provisional para que pueda entrar. Se pide encarecidamente que en cuanto entre de nuevo
@@ -257,7 +254,55 @@ def OlvidoPass(request):
             user = User.objects.get(username=usuario.ID_Usuario.username)
             user.set_password(newP)
             user.save()
-            ForgotPass.delay(msg, correo)
+            ForgotPass(msg, correo).delay()
             return Response({'ENVIADO', 'Correo enviado con exito'}, status=status.HTTP_200_OK)
         except:
             return Response({'ERROR', 'Error al enviar el correo'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
+def actualizarPropiosDatos(request, pk):
+    '''
+    Vista que permite modificar los datos basicos de un usuario por si mismo
+    (DOCENTE)
+    '''
+    try:
+        usuario = Usuarios.objects.get(PK=pk)
+        user = User.objects.get(username=usuario.ID_Usuario.username)
+    except Usuarios.DoesNotExist:
+        return Response({'ERROR': 'El usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        usuario_serializer = UsuarioSerializer(usuario)
+        return Response(usuario_serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PUT':
+        newUs = request.data['ID_Usuario']
+        username = newUs['username']
+        password = newUs['password']
+
+        if bool(password) == False:
+            pass
+        else:
+            user.set_password(password)
+            user.save(update_fields=['password'])
+
+        if bool(username) == False:
+            pass
+        else:
+            user.username = username
+            user.save(update_fields=['username'])
+
+        try:
+            usuario.PK = pk
+            usuario.ID_Usuario = user
+            usuario.Nombre_Usuario = request.data['Nombre_Usuario']
+            usuario.CorreoE = request.data['CorreoE']
+            usuario.save()
+            usuario = Usuarios.objects.get(PK=pk)
+            usuario_serializer = UsuarioSerializer(usuario)
+            return Response(usuario_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(usuario_serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)

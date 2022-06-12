@@ -13,7 +13,7 @@ const putMateria = async (dataPost, id, token) => {
         body: JSON.stringify({
             ID_Materia: dataPost.Materia_ID,
             Nombre_Materia: dataPost.Materia_name,
-            Carrera: dataPost.materia_carrera
+            Carrera: ""
         })
     };
     post = AuthPostBasics(token, post);
