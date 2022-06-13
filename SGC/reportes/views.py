@@ -333,7 +333,7 @@ def AdminSendMail(request):
         if pk == str(0):
             try:
                 msg = request.data['msg']
-                sendMensaje(msg, True, None).delay()
+                sendMensaje.delay(msg, True, None)
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
@@ -346,7 +346,7 @@ def AdminSendMail(request):
 
             try:
                 msg = request.data['msg']
-                sendMensaje(msg, False, usuario.CorreoE).delay()
+                sendMensaje.delay(msg, False, usuario.CorreoE)
                 return Response({'Exito': 'Mensaje enviado'}, status=status.HTTP_202_ACCEPTED)
             except:
                 return Response({'Error': 'Error al enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
