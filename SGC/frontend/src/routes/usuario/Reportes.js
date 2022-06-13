@@ -501,9 +501,11 @@ export const Reportes = () => {
                         </Modal>
                     </> :
                         <>
-                            <div className='imagen'>
-                                <img src={"https://i.ytimg.com/vi/yzPiayo3Dic/mqdefault.jpg"} alt="loading" />
-                                <h3 className='pito'>Sin nada que hace hijodesuchingadamadre</h3>
+                            
+
+                            <div className='Sin_Resultados img'>
+                                <img src={"/static/media/kana-buscar.7a7b8c78c2c4aaec2dd5.png"} alt="Sin resultados" />
+                                <h3 className='pito'>No hay reportes por el momento hasta que se seleccionen materias y se asginen por el administrador</h3>
 
                             </div>
                         </>}
