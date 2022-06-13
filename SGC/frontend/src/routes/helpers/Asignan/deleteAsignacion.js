@@ -5,7 +5,7 @@ const deleteAsignacion = async (token, id) => {
         headers: { 'Content-Type': 'application/json' },
     };
     get = AuthPostBasic(token, get);
-    const url = "http://localhost:8000/materiadelete-asign/" + id;
+    const url = "http://localhost:8000/materia/delete-asign/" + id;
     const res = await fetch(url, get);
     const result = await res.json();
     return result;

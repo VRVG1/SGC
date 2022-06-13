@@ -21,6 +21,9 @@ export const Home2 = () => {
   const [mensajeAlerta, setMensajeAlerta] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalDatosEnviados, setShowModalDatosEnviados] = useState(false);
+  const [send, setSend] = useState(false);
+  const [continuacion, setContinuacion] = useState(0);
+  const [boraccion, setBoraccion] = useState(0);
   const [selectedData, setSelectedData] = useState({
     carrera_ID: '',
     materia_ID: '',
@@ -92,6 +95,7 @@ export const Home2 = () => {
    */
   const getAsignan = useCallback(
     async () => {
+      if (infoUser.PK != undefined) {
         await getAllAsignanUser(auth.user.token, infoUser.PK).then((data) => {
           setAsignanMaterias(data);
         }
@@ -100,7 +104,8 @@ export const Home2 = () => {
         //console.log(err);
       }
       );
-    },
+    }
+  },
     [infoUser],
   )
   /**
@@ -119,9 +124,9 @@ export const Home2 = () => {
   
   const deleteAsignan = async (PK) => {
     await deleteAsignacion(auth.user.token, PK).then((data) => {
-      //console.log("Se elimino correctamente");
+      console.log("Se elimino correctamente");
     }).catch((err) => {
-      //console.log(err);
+      console.log(err);
     });
   } 
 
@@ -174,29 +179,76 @@ export const Home2 = () => {
     }
   }
   /**
+   * Metodo para iniciar el filtado de los datos y enviar/borrar datos en la base de datos
+   */
+  const pinga = async () => {
+    let aux = aBorrar;
+    dataTable.map(async (data) => {
+      aux.map(auxiliar => {
+        if (auxiliar.carrera_ID === data.carrera_ID && auxiliar.materia_ID === data.materia_ID && auxiliar.grupo === data.grupo && auxiliar.semestre === data.semestre) {
+          aux.splice(aux.indexOf(auxiliar), 1);
+        }
+      })
+    });
+    setABorrar(aux);
+    setBoraccion(Math.random());
+    setSend(true);
+  }
+
+  const borrar = async () => {
+    if (aBorrar.length > 0) {
+      aBorrar.map(async (data) => {
+        let a;
+        try {
+          a = asignanMaterias.filter(datos => datos.ID_Carrera === data.carrera_ID && datos.ID_Materia === data.materia_ID && datos.Grupo === data.grupo && datos.Grado.toString() === data.semestre)[0].ID_Asignan;
+          deleteAsignan(a);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    }
+  }
+  useEffect(() => {
+    if(aBorrar.length > 0 && send){
+      borrar()
+    }
+    setContinuacion(Math.random());
+  }, [aBorrar,boraccion]);
+
+  useEffect(() => {
+    console.log(dataTable, aBorrar, asignanMaterias);
+    if (continuacion !== 0 && send) {
+      if (asignanMaterias.length > 0) {
+        let aguardar = false;
+        dataTable.map(async (data) => {
+          aguardar = false;
+          asignanMaterias.map(async (data2) => {
+            if (data.carrera_ID === data2.ID_Carrera && data.materia_ID === data2.ID_Materia && data.grupo === data2.Grupo && data.semestre === data2.Grado.toString()) {
+              console.log('No hacer nada porque ya esta asignado');
+              aguardar = false;
+            } else {
+              aguardar = true;
+              console.log("mandar a guardar")
+            }
+            
+          });
+          if (aguardar) {
+            await postAsigna(data, auth.user.token, infoUser.PK);
+          }
+        });
+      } else {
+        dataTable.map(async (data) => {
+          await postAsigna(data, auth.user.token, infoUser.PK);
+        });
+      }
+      setShowModalDatosEnviados(true);
+    }
+  }, [continuacion]);
+  /**
    * Metodo para enviar los datos a la base de datos
    */
   const mandarDatos = async () => {
-    console.log(dataTable, asignanMaterias, aBorrar);
-    aBorrar.map(async (data) => {
-      let a;
-      a = asignanMaterias.filter(datos => datos.ID_Carrera === data.carrera_ID && datos.ID_Materia === data.materia_ID && datos.Grupo === data.grupo && datos.Grado.toString() === data.semestre)[0].ID_Asignan;
-      //console.log("pinga", asignanMaterias.filter(datos => datos.ID_Carrera === data.carrera_ID && datos.ID_Materia === data.materia_ID && datos.Grupo === data.grupo && datos.Grado.toString() === data.semestre)[0].ID_Asignan)
-      deleteAsignan(a);
-    })
-    
-    dataTable.map(async (data) => {
-      asignanMaterias.map(async (data2) => {
-        if (data.carrera_ID === data2.ID_Carrera && data.materia_ID === data2.ID_Materia && data.grupo === data2.Grupo && data.semestre === data2.Grado.toString()) {
-          console.log('No hacer nada porque ya esta asignado');
-        } else {
-          //await postAsigna(data, auth.user.token, infoUser.PK);
-          console.log("mandar a guardar")
-        }
-        
-      });
-    });
-    setShowModalDatosEnviados(true);
+    await pinga();
   }
   /**
    * Metodo para finalizar el proceso de seleccion de materias
@@ -270,7 +322,11 @@ export const Home2 = () => {
                             <td>{data.grupo}</td>
                             <td>{data.semestre}</td>
                             <td> <button onClick={() => {
-                              setABorrar(oldArray => [...oldArray, data]);
+                              if (aBorrar.filter(data2 => data2.carrera_ID === data.carrera_ID && data2.materia_ID === data.materia_ID && data2.grupo === data.grupo && data2.semestre === data.semestre).length === 0) {
+                                
+                                setABorrar([...aBorrar, data]);
+                              }
+                              //setABorrar(oldArray => [...oldArray, data]);
                               setDataTable(dataTable.filter(data => dataTable[index] !== data))
                             }}>Eliminar</button></td>
                           </tr>

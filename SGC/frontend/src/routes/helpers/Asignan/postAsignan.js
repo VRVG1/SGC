@@ -1,6 +1,7 @@
 import AuthPostBasics from '../Auth/AuthPostBasis.js';
 
 const postAsigna = async (dataPost, token, user_id) => {
+    console.log(dataPost);
     let post = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
