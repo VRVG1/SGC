@@ -304,6 +304,9 @@ def borrarAs(request, pkM):
         return Response(asig_serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
+        usuario = Usuarios.objects.get(ID_Usuario=asign.ID_Usuario.ID_Usuario)
+        usuario.Permiso = False
+        usuario.save()
         asign.delete()
         return Response({'Mensaje': 'Asignacion borrada'}, status=status.HTTP_200_OK)
 
