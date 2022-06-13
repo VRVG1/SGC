@@ -110,17 +110,17 @@ class AsignarMateriaView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
+            usuario = serializer.validated_data.get('ID_Usuario')
+            materia = serializer.validated_data.get('ID_Materia')
+            carrera = serializer.validated_data.get('ID_Carrera')
+            grado = serializer.validated_data.get('Grado')
+            grupo = serializer.validated_data.get('Grupo')
+
             try:
-                usuario = serializer.validated_data.get('ID_Usuario')
-                materia = serializer.validated_data.get('ID_Materia')
-                carrera = serializer.validated_data.get('ID_Carrera')
-                grado = serializer.validated_data.get('Grado')
-                grupo = serializer.validated_data.get('Grupo')
                 asignan = Asignan.objects.get(
                     ID_Usuario=usuario, ID_Materia=materia, ID_Carrera=carrera, Grado=grado, Grupo=grupo)
-                serializer.save()
             except Asignan.DoesNotExist:
-                pass
+                serializer.save()
 
             reportes = Reportes.objects.all()
             if not reportes:
