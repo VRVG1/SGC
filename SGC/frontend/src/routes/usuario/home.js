@@ -1,9 +1,11 @@
 //TODO, si el mai se equivoca y tiene que modificar las materias
 //Pedirle a la base de datos que me mande los datos que el selecciono y agregarlo a la tabla
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import getAllCarrera from '../helpers/Carreras/getAllCarrera'
 import getAllMaterias from '../helpers/Materias/getAllMaterias'
 import postAsigna from '../helpers/Asignan/postAsignan.js'
+import getAllAsignanUser from '../helpers/Asignan/getAllAsignanUser.js'
+import deleteAsignacion from '../helpers/Asignan/deleteAsignacion.js'
 import { AuthContext } from '../helpers/Auth/auth-context'
 import Modal from '../modal/Modal'
 import getInfoUser from '../helpers/Usuarios/getInfoUser'
@@ -12,7 +14,9 @@ export const Home2 = () => {
   const [infoUser, setInfoUser] = useState([]);
   const [disponible, setDisponible] = useState(true);
   const [carreras, setCarreras] = useState([]);
+  const [aBorrar, setABorrar] = useState([]);
   const [materias, setMaterias] = useState([]);
+  const [asignanMaterias, setAsignanMaterias] = useState([]);
   const [showModalAlert, setShowModalAlert] = useState(false);
   const [mensajeAlerta, setMensajeAlerta] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
@@ -49,24 +53,77 @@ export const Home2 = () => {
         }, ...data]);
       });
     }
-    const getInforUser = async () => {
-      await getInfoUser(auth.user.token).then((data) => {
-        setInfoUser(data);
-      }
-      ).catch((err) => {
-        console.log(err);
-      }
-      );
-    }
+
+    getInforUser();
     obtenerCarrera();
     obtenerMateria();
-    getInforUser();
     return () => {
       setCarreras([]);
       setMaterias([]);
       setInfoUser([]);
     }
   }, []);
+
+  useEffect(() => {
+    getAsignan();
+    return () => {
+      setAsignanMaterias([]);
+    }
+  }, [infoUser]);
+
+  useEffect(() => {
+    if (asignanMaterias.length > 0) {
+      let array = [];
+      asignanMaterias.map((data) => {
+        let data2 = [
+          {
+            carrera_ID: data.ID_Carrera,
+            materia_ID: data.ID_Materia,
+            grupo: data.Grupo,
+            semestre: data.Grado.toString(),
+          }
+        ];
+        setDataTable(oldArray => [...oldArray, ...data2]);
+      });
+    }
+  }, [asignanMaterias]);
+  /**
+   * Funcion para obtener los asignan del docente
+   */
+  const getAsignan = useCallback(
+    async () => {
+        await getAllAsignanUser(auth.user.token, infoUser.PK).then((data) => {
+          setAsignanMaterias(data);
+        }
+      
+      ).catch((err) => {
+        //console.log(err);
+      }
+      );
+    },
+    [infoUser],
+  )
+  /**
+   * Funcion para obtener los datos del usuario
+   */
+  const getInforUser = useCallback( 
+    async () => {
+    await getInfoUser(auth.user.token).then((data) => {
+      setInfoUser(data);
+    }
+    ).catch((err) => {
+      //console.log(err);
+    }
+    );
+  }, [])
+  
+  const deleteAsignan = async (PK) => {
+    await deleteAsignacion(auth.user.token, PK).then((data) => {
+      //console.log("Se elimino correctamente");
+    }).catch((err) => {
+      //console.log(err);
+    });
+  } 
 
   /**
    * Metodo para obtener los datos que se selecciones de los inputs
@@ -95,7 +152,7 @@ export const Home2 = () => {
       if (data.carrera_ID === selectedData.carrera_ID && data.materia_ID === selectedData.materia_ID && data.grupo === selectedData.grupo && data.semestre === selectedData.semestre) {
         yaEsta = true;
         setShowModalAlert(true);
-        setMensajeAlerta('Ya se a realizado esa seleccion de materias');
+        setMensajeAlerta('Ya se a asignaron esos datos');
         return;
       }
     });
@@ -120,8 +177,24 @@ export const Home2 = () => {
    * Metodo para enviar los datos a la base de datos
    */
   const mandarDatos = async () => {
+    console.log(dataTable, asignanMaterias, aBorrar);
+    aBorrar.map(async (data) => {
+      let a;
+      a = asignanMaterias.filter(datos => datos.ID_Carrera === data.carrera_ID && datos.ID_Materia === data.materia_ID && datos.Grupo === data.grupo && datos.Grado.toString() === data.semestre)[0].ID_Asignan;
+      //console.log("pinga", asignanMaterias.filter(datos => datos.ID_Carrera === data.carrera_ID && datos.ID_Materia === data.materia_ID && datos.Grupo === data.grupo && datos.Grado.toString() === data.semestre)[0].ID_Asignan)
+      deleteAsignan(a);
+    })
+    
     dataTable.map(async (data) => {
-      await postAsigna(data, auth.user.token, infoUser.PK);
+      asignanMaterias.map(async (data2) => {
+        if (data.carrera_ID === data2.ID_Carrera && data.materia_ID === data2.ID_Materia && data.grupo === data2.Grupo && data.semestre === data2.Grado.toString()) {
+          console.log('No hacer nada porque ya esta asignado');
+        } else {
+          //await postAsigna(data, auth.user.token, infoUser.PK);
+          console.log("mandar a guardar")
+        }
+        
+      });
     });
     setShowModalDatosEnviados(true);
   }
@@ -167,7 +240,7 @@ export const Home2 = () => {
   return (
     <div className='usuario-container-parent'>
       <div className='usuario-container'>
-
+       
         <Saludo/>
         <h1>Bienvenido al Sistema Gestor del Curso</h1>
       </div>
@@ -197,6 +270,7 @@ export const Home2 = () => {
                             <td>{data.grupo}</td>
                             <td>{data.semestre}</td>
                             <td> <button onClick={() => {
+                              setABorrar(oldArray => [...oldArray, data]);
                               setDataTable(dataTable.filter(data => dataTable[index] !== data))
                             }}>Eliminar</button></td>
                           </tr>
