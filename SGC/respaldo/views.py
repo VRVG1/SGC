@@ -1,16 +1,20 @@
 # from django.shortcuts import render
 from django.http import HttpResponse
-from django.core import management
+from django.core.management import call_command
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from persoAuth.permissions import OnlyAdminPermission
+from .forms import UploadFileForm
+from .uploadHandler import handleUploadFile
 
 from wsgiref.util import FileWrapper
 from zipfile import ZipFile
 from pathlib import Path
 
 import os
+
+backup_filename = 'BackupSGC.zip'
 
 
 class MakeBackup(generics.ListAPIView):
@@ -23,7 +27,6 @@ class MakeBackup(generics.ListAPIView):
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
     def get(self, request, format=None):
-        backup_filename = 'BackupSGC.zip'
 
         print(f'\n\n\n{os.getcwd()}\n\n\n')
         try:
@@ -49,10 +52,10 @@ class MakeBackup(generics.ListAPIView):
             raise e
         # No se si se debe crear un serializer
         print('Creando respaldo de la base de datos...')
-        management.call_command('dbbackup', clean=True)
+        call_command('dbbackup', clean=True)
         print('Respaldo de la base de datos realizado con exito.')
         print('Creando respaldo de los archivos media...')
-        management.call_command('mediabackup', clean=True)
+        call_command('mediabackup', clean=True)
         print('Respaldo de los archivos media realizado con exito.')
 
         print('Comprimiendo archivos de respaldo...')
@@ -85,7 +88,71 @@ class RestoreData(generics.ListAPIView):
     permission_classes = [IsAuthenticated, OnlyAdminPermission]
 
     def post(self, request, format=None):
-        print(request.FILES)
-        response = HttpResponse('Recibido', content_type="text/plain",
-                                status=200)
+        form = UploadFileForm(request.POST, request.FILES)
+        restore_path = './var/restauracion/'
+
+        try:
+            os.mkdir(restore_path)
+            print(f'Se creo el directorio {restore_path}')
+        except FileExistsError:
+            print(f'Ya existe el directorio {restore_path}')
+        except FileNotFoundError as e:
+            raise e
+
+        if form.is_valid():
+            valid_file = False
+            print('Cargando archivo de respaldo...')
+            handleUploadFile(request.FILES['restorefile'])
+            print('Archivo de respaldo cargado.')
+            print('Verificando estructura del archivo de respaldo...')
+            with ZipFile(restore_path + backup_filename) as restore_zip:
+                has_tar_file = False
+                has_dump_file = False
+                namefiles = restore_zip.namelist()
+                if 0 < len(namefiles) <= 2:
+                    for namefile in namefiles:
+                        file_type = namefile.split('.')
+                        if file_type[1] == 'tar':
+                            has_tar_file = True
+                        elif file_type[1] == 'dump':
+                            has_dump_file = True
+
+                    if not (has_tar_file and has_dump_file):
+                        response = HttpResponse('Archivo no cumple con los requisitos',
+                                                content_type="text/plain",
+                                                status=406)
+                    else:
+                        valid_file = True
+                        restore_zip.extractall(path=restore_path)
+                        for namefile in namefiles:
+                            file_type = namefile.split('.')
+                            if file_type[1] == 'tar':
+                                print('Restaurando archivos media...')
+                                call_command('mediarestore',
+                                             input_path=restore_path + namefile
+                                             )
+                                print('Archivos media restaurados.')
+                            elif file_type[1] == 'dump':
+                                print('Restaurando base de datos...')
+                                call_command('dbrestore',
+                                             input_path=restore_path + namefile
+                                             )
+                                print('Base de datos restaurada.')
+
+                            os.remove(restore_path + namefile)
+                else:
+                    response = HttpResponse('Archivo de restauración vacio',
+                                            content_type="text/plain",
+                                            status=406)
+
+            if valid_file:
+                response = HttpResponse('Restauración exitosa',
+                                        content_type="text/plain",
+                                        status=200)
+
+            os.remove(restore_path + backup_filename)
+        else:
+            response = HttpResponse('Error al subir el archivo',
+                                    content_type="text/plain",
+                                    status=408)
         return response

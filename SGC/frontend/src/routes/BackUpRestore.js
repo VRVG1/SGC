@@ -3,6 +3,7 @@ import Loader from './Loader';
 import getBackup from './helpers/RespaldoYRestauracion/getBackup'
 import makeRestore from './helpers/RespaldoYRestauracion/postRestore'
 import { AuthContext } from './helpers/Auth/auth-context'
+
 /**
  *  Componente para crear respaldo y restaurar base de datos
  * @param {*} props 
@@ -11,13 +12,14 @@ import { AuthContext } from './helpers/Auth/auth-context'
 const BackUpRestore = props => {
   let auth = useContext(AuthContext);
   const [loading, setLodaing] = useState(false);
+  const [restoreMessage, setRestoreMessage] = useState('');
 
   const useForceUpdate = () => useState()[1];
   const fileInput = useRef(null);
   const forceUpdate = useForceUpdate();
 
   //
-  //No se que hacia todo esto que comente xd
+    //NOTE: No se que hacia todo esto que comente xd
   //
   //useEffect(e => {
   //    window.addEventListener("keyup", clickFileInput);
@@ -73,8 +75,15 @@ const BackUpRestore = props => {
   function restoreSubmitHandler(event) {
     event.preventDefault();
 
+    const successCallback = (message) => {
+      setRestoreMessage(message);
+    }
+
+    const failureCallback = (message) => {
+
+    }
+
     let formData = new FormData(event.currentTarget);
-    console.log("Formulario: ", formData);
     makeRestore(auth.user.token, formData);
   }
 
@@ -114,7 +123,8 @@ const BackUpRestore = props => {
             <h1 >Restaurar</h1>
             <form
               className='conteiner-BUR_R__form'
-              onSubmit={restoreSubmitHandler} >
+              onSubmit={restoreSubmitHandler}
+            >
               <div className="file-upload">
                 <p className='subidor__p'>Soltar archivo(s)</p>
                 <div className='subidor'>
@@ -125,7 +135,7 @@ const BackUpRestore = props => {
                     onChange={forceUpdate}
                     className="file-upload__input"
                     name="restorefile"
-                    multiple
+                    required
                   />
                 </div>
               </div>
