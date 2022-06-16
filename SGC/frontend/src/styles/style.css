@@ -379,6 +379,18 @@ input:focus~.bottomBar:after {
   margin-top: 5%;
 }
 
+.success {
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+  border: 5px solid #2CE000;
+  width: 80%;
+  margin: 0 auto 2% auto;
+  background-color: #6CDB5D;
+  color: #ffffff;
+  text-align: center;
+}
+
 .primero-error {
   -webkit-animation-delay: 0.4s;
   -moz-animation-delay: 0.4s;
@@ -388,6 +400,7 @@ input:focus~.bottomBar:after {
   margin: 0 auto 2% auto;
   background-color: #db5d5f;
   color: #ffffff;
+  text-align: center;
 }
 
 .fadeIn.primero-error-hidden {

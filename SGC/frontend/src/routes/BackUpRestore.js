@@ -4,6 +4,7 @@ import getBackup from './helpers/RespaldoYRestauracion/getBackup'
 import makeRestore from './helpers/RespaldoYRestauracion/postRestore'
 import { AuthContext } from './helpers/Auth/auth-context'
 
+
 /**
  *  Componente para crear respaldo y restaurar base de datos
  * @param {*} props 
@@ -12,33 +13,31 @@ import { AuthContext } from './helpers/Auth/auth-context'
 const BackUpRestore = props => {
   let auth = useContext(AuthContext);
   const [loading, setLodaing] = useState(false);
-  const [restoreMessage, setRestoreMessage] = useState('');
+  const [restoreMessage, setRestoreMessage] = useState({});
 
   const useForceUpdate = () => useState()[1];
   const fileInput = useRef(null);
   const forceUpdate = useForceUpdate();
 
-  //
-    //NOTE: No se que hacia todo esto que comente xd
-  //
-  //useEffect(e => {
-  //    window.addEventListener("keyup", clickFileInput);
-  //    return () => window.removeEventListener("keyup", clickFileInput);
-  //});
+  function RestoreStatus(props) {
+    let messageContainer;
+    if (Object.entries(restoreMessage).length !== 0) {
+      let messageStyle;
+      if (restoreMessage.isOperationSuccess) {
+        messageStyle = 'success';
+      } else {
+        messageStyle = 'primero-error';
+      }
+      messageContainer = (
+        <div className={messageStyle}>
+          <p>{ restoreMessage.message }</p>
+        </div>
+      );
+    } else {
+      messageContainer = (<div></div>);
+    }
 
-  //function clickFileInput(e) {
-  //    if (fileInput.current.nextSibling.contains(document.activeElement)) {
-  //        // Bind space to trigger clicking of the button when focused
-  //        if (e.keyCode === 32) {
-  //            fileInput.current.click();
-  //        }
-  //    }
-  //}
-
-  function onSubmit(e) {
-    e.preventDefault();
-    console.log(e.loaded);
-    const data = new FormData(fileInput.current.files);
+    return messageContainer;
   }
 
   function fileNames() {
@@ -75,21 +74,10 @@ const BackUpRestore = props => {
   function restoreSubmitHandler(event) {
     event.preventDefault();
 
-    const successCallback = (message) => {
-      setRestoreMessage(message);
-    }
-
-    const failureCallback = (message) => {
-
-    }
-
     let formData = new FormData(event.currentTarget);
-    makeRestore(auth.user.token, formData);
-  }
-
-  function makeRestoreFile() {
-    setLodaing(true);
-    makeRestore(auth.user.token);
+    makeRestore(auth.user.token, formData, (responseMsg) => {
+      setRestoreMessage(responseMsg);
+    });
   }
 
   useEffect(() => {
@@ -121,6 +109,7 @@ const BackUpRestore = props => {
 
           <div className='conteiner-BUR__R'>
             <h1 >Restaurar</h1>
+            <RestoreStatus />
             <form
               className='conteiner-BUR_R__form'
               onSubmit={restoreSubmitHandler}
@@ -135,6 +124,7 @@ const BackUpRestore = props => {
                     onChange={forceUpdate}
                     className="file-upload__input"
                     name="restorefile"
+                    accept='.zip'
                     required
                   />
                 </div>

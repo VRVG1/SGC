@@ -1,6 +1,6 @@
-# from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.management import call_command
+from django.core.exceptions import ValidationError
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -50,7 +50,6 @@ class MakeBackup(generics.ListAPIView):
             print('Ya existe el directorio ./var/backups/')
         except FileNotFoundError as e:
             raise e
-        # No se si se debe crear un serializer
         print('Creando respaldo de la base de datos...')
         call_command('dbbackup', clean=True)
         print('Respaldo de la base de datos realizado con exito.')
@@ -129,13 +128,15 @@ class RestoreData(generics.ListAPIView):
                             if file_type[1] == 'tar':
                                 print('Restaurando archivos media...')
                                 call_command('mediarestore',
-                                             input_path=restore_path + namefile
+                                             '--noinput',
+                                             input_path=restore_path+namefile
                                              )
                                 print('Archivos media restaurados.')
                             elif file_type[1] == 'dump':
                                 print('Restaurando base de datos...')
                                 call_command('dbrestore',
-                                             input_path=restore_path + namefile
+                                             '--noinput',
+                                             input_path=restore_path+namefile
                                              )
                                 print('Base de datos restaurada.')
 
@@ -152,7 +153,17 @@ class RestoreData(generics.ListAPIView):
 
             os.remove(restore_path + backup_filename)
         else:
-            response = HttpResponse('Error al subir el archivo',
+            error_msg = 'Error al subir el archivo'
+            form_errors = form.errors.as_data()
+            if len(form_errors) > 0:
+                error_msg = ''
+                for error in form_errors['restorefile']:
+                    try:
+                        raise error
+                    except ValidationError as e:
+                        error_msg = error_msg + e.message + '\n'
+
+            response = HttpResponse(error_msg,
                                     content_type="text/plain",
                                     status=408)
         return response

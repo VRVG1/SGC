@@ -1,6 +1,6 @@
 import addHeaderAuth from '../Auth/AuthPostBasis'
 
-const makeRestore = (token, formData, successCallback, failureCallback) => {
+const makeRestore = (token, formData, callback) => {
   let post = {
     method: 'POST',
     headers: {
@@ -18,11 +18,12 @@ const makeRestore = (token, formData, successCallback, failureCallback) => {
     .then(resObj => {
       console.log('Is OK?: ', resObj.isOperationSuccess)
       console.log('Message: ', resObj.message)
-      if (resObj.isOperationSuccess) {
-        successCallback(resObj.message);
-      } else {
-        failureCallback(resObj.message);
-      }
+      callback(resObj)
+      //if (resObj.isOperationSuccess) {
+      //  successCallback(resObj.message);
+      //} else {
+      //  failureCallback(resObj.message);
+      //}
     });
 }
 
