@@ -13,6 +13,8 @@ import _ from 'lodash';
 import postReportes from '../helpers/usuarioReporte/postReportes.js';
 import putGeneran from '../helpers/usuarioReporte/putGeneran.js';
 
+import kanaBuscar from "../../img/kana-buscar.png"
+
 export const Reportes = () => {
     let auth = useContext(AuthContext);
 
@@ -502,8 +504,9 @@ export const Reportes = () => {
                     </> :
                         <>
                             <div className='imagen'>
-                                <img src={"https://i.ytimg.com/vi/yzPiayo3Dic/mqdefault.jpg"} alt="loading" />
-                                <h3 className='pito'>Sin nada que hace hijodesuchingadamadre</h3>
+                                {/* <img src={"https://i.ytimg.com/vi/yzPiayo3Dic/mqdefault.jpg"} alt="loading" /> */}
+                                <img src={kanaBuscar} alt="loading" />
+                                <h3 className='pito'>No hay materias asignadas</h3>
 
                             </div>
                         </>}
