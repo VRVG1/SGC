@@ -100,6 +100,7 @@ class RestoreData(generics.ListAPIView):
 
         if form.is_valid():
             valid_file = False
+            namefiles = ''
             print('Cargando archivo de respaldo...')
             handleUploadFile(request.FILES['restorefile'])
             print('Archivo de respaldo cargado.')
@@ -140,13 +141,15 @@ class RestoreData(generics.ListAPIView):
                                              )
                                 print('Base de datos restaurada.')
 
-                            os.remove(restore_path + namefile)
                 else:
                     response = HttpResponse('Archivo de restauración vacio',
                                             content_type="text/plain",
                                             status=406)
 
             if valid_file:
+                for namefile in namefiles:
+                    os.remove(restore_path + namefile)
+
                 response = HttpResponse('Restauración exitosa',
                                         content_type="text/plain",
                                         status=200)
