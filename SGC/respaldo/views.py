@@ -91,6 +91,11 @@ class RestoreData(generics.ListAPIView):
         form = UploadFileForm(request.POST, request.FILES)
         restore_path = './var/restauracion/'
 
+        if Path(restore_path).exists():
+            with Path(restore_path) as to_remove_path:
+                for file in to_remove_path.iterdir():
+                    if file.is_file():
+                        os.remove(file)
         try:
             os.mkdir(restore_path)
             print(f'Se creo el directorio {restore_path}')
@@ -142,21 +147,15 @@ class RestoreData(generics.ListAPIView):
                                              )
                                 print('Base de datos restaurada.')
 
-                           # os.remove(restore_path + namefile)
                 else:
                     response = HttpResponse('Archivo de restauración vacio',
                                             content_type="text/plain",
                                             status=406)
 
             if valid_file:
-                for namefile in namefiles:
-                    os.remove(restore_path + namefile)
-
                 response = HttpResponse('Restauración exitosa',
                                         content_type="text/plain",
                                         status=200)
-
-            os.remove(restore_path + backup_filename)
         else:
             error_msg = 'Error al subir el archivo'
             form_errors = form.errors.as_data()

@@ -30,7 +30,7 @@ const getBackup = (token) => {
       if (matches != null && matches[1]) {
         filename = matches[1].replace(/['"]/g, '');
       }
-  }
+    }
     return filename;
   }
 
