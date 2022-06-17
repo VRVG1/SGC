@@ -237,7 +237,7 @@ def OlvidoPass(request):
         return Response({'Error', 'Usuario no existe'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'POST':
-        newP = 'contrasena_'+usuarioP
+        newP = 'contrasena_'+usuarioP.lower()
         msg = '''
             Hola '''+str(usuario.Nombre_Usuario)+''' Recibe este correo porque olvidó su contraseña del SGC (Sistema Gestor del Curso),
             hay que ser mas atento.
@@ -254,7 +254,7 @@ def OlvidoPass(request):
             user = User.objects.get(username=usuario.ID_Usuario.username)
             user.set_password(newP)
             user.save()
-            ForgotPass(msg, correo).delay()
+            ForgotPass.delay(msg, correo)
             return Response({'ENVIADO', 'Correo enviado con exito'}, status=status.HTTP_200_OK)
         except:
             return Response({'ERROR', 'Error al enviar el correo'}, status=status.HTTP_400_BAD_REQUEST)

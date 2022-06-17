@@ -115,7 +115,13 @@ class AsignarMateriaView(APIView):
             carrera = serializer.validated_data.get('ID_Carrera')
             grado = serializer.validated_data.get('Grado')
             grupo = serializer.validated_data.get('Grupo')
-            serializer.save()
+
+            try:
+                asignan = Asignan.objects.get(
+                    ID_Usuario=usuario, ID_Materia=materia, ID_Carrera=carrera, Grado=grado, Grupo=grupo)
+            except Asignan.DoesNotExist:
+                serializer.save()
+
             reportes = Reportes.objects.all()
             if not reportes:
                 pass
@@ -277,11 +283,11 @@ def updateC(request, pk):
 
 @api_view(['GET', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, OnlyAdminPermission])
+@permission_classes([IsAuthenticated, AdminDocentePermission])
 def borrarAs(request, pkM):
     '''
     Vista que permite borrar una asignacion de la BD
-    (ADMIN)
+    (ADMIN y DOCENTE)
     '''
     try:
         asign = Asignan.objects.get(ID_Asignan=pkM)
@@ -298,6 +304,9 @@ def borrarAs(request, pkM):
         return Response(asig_serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
+        usuario = Usuarios.objects.get(ID_Usuario=asign.ID_Usuario.ID_Usuario)
+        usuario.Permiso = False
+        usuario.save()
         asign.delete()
         return Response({'Mensaje': 'Asignacion borrada'}, status=status.HTTP_200_OK)
 

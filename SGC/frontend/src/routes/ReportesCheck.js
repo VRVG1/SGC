@@ -66,6 +66,8 @@ const ReportesCheck = props => {
     const getGenerann = useCallback(async () => {
         await getGeneran(auth.user.token).then(res => {
             setGeneran(res);
+            console.log("AQUI LO DE VIC");
+            console.log(res);
         }).catch(err => {
             console.log(err);
         });
@@ -399,15 +401,24 @@ const ReportesCheck = props => {
                                                                         <tbody className="tbody-ReportesCheck">
                                                                             {asignan.map((asignan2, index) => {
                                                                                 let estadoTxt = "";
-                                                                                let estado = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].Estatus;
-                                                                                let PK = generan.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0].ID_Generacion;
-                                                                                if (estado === null) {
+                                                                                let estado = generan?.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0];
+                                                                                let PK = generan?.filter(generan => generan.ID_Reporte === reporte.ID_Reporte).filter(generan => generan.ID_Asignan === asignan2.ID_Asignan)[0];
+                                                                                if (estado?.Estatus === null || estado?.Estatus === undefined) {
                                                                                     estadoTxt = "No entregado";
                                                                                 } else {
-                                                                                    estadoTxt = estado;
+                                                                                    estadoTxt = estado.Estatus;
+                                                                                }
+                                                                                if(PK?.ID_Generacion === null || PK?.ID_Generacion === undefined) {
+                                                                                    PK = -1;
+                                                                                }else {
+                                                                                    PK = PK.ID_Generacion
                                                                                 }
                                                                                 if (asignan2.ID_Usuario === maestro.PK) {
                                                                                     let si = materias.filter(materia => materia.ID_Materia === asignan2.ID_Materia)[0].Nombre_Materia;
+                                                                                    console.log("------");
+                                                                                    console.log(estado, PK);
+
+
                                                                                     if (typeof (dataInput.nombreMateria) === "undefined") {
                                                                                         return (
                                                                                             <tr key={index}>

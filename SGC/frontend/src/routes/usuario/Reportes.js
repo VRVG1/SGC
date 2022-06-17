@@ -13,6 +13,8 @@ import _ from 'lodash';
 import postReportes from '../helpers/usuarioReporte/postReportes.js';
 import putGeneran from '../helpers/usuarioReporte/putGeneran.js';
 
+import kanaBuscar from "../../img/kana-buscar.png"
+
 export const Reportes = () => {
     let auth = useContext(AuthContext);
 

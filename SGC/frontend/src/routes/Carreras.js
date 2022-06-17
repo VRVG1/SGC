@@ -37,6 +37,7 @@ const Materias = props => {
     });
     const [statusContenido, setStatusContenido] = useState("");
     const [resultado, setResultado] = useState("");
+    const [resultadoTitulo, setResultadoTitulo] = useState("");
     const [borrado, setBorrado] = useState("");
     const [putCarreras, setPutCarreras] = useState("");
     const [loading, setLoading] = useState(false);
@@ -76,11 +77,13 @@ const Materias = props => {
      */
     useEffect(() => {
         if (resultado === "OK") {
-            setStatusContenido("Los datos se almacenaron correctamente");
+            setStatusContenido("La carrera se almacenó correcamente");
+            setResultadoTitulo("Agregado");
             setShowModalResultado(true);
             setActualizar(Math.random());
         } else if (resultado !== '') {
-            setStatusContenido("Error al almacenar los datos, intente mas tarde");
+            setStatusContenido("Error al almacenar los datos, intente más tarde");
+            setResultadoTitulo("Error");
             setShowModalResultado(true);
             setActualizar(Math.random());
         }
@@ -92,11 +95,13 @@ const Materias = props => {
      */
     useEffect(() => {
         if (borrado === "OK") {
-            setStatusContenido("Eliminacion exitosa");
+            setStatusContenido("Eliminación exitosa");
             setShowModalResultado(true);
+            setResultadoTitulo("Eliminado");
             setActualizar(Math.random());
         } else if (borrado !== '') {
-            setStatusContenido("Error al aliminar los datos, intente mas tarde");
+            setStatusContenido("Error al eliminar los datos, intente más tarde");
+            setResultadoTitulo("Error");
             setShowModalResultado(true);
             setActualizar(Math.random());
         }
@@ -108,11 +113,13 @@ const Materias = props => {
      */
     useEffect(() => {
         if (putCarreras === "OK") {
-            setStatusContenido("Los datos se actualizaron correctamente");
+            setStatusContenido("Se modificó la carrera exitosamente");
+            setResultadoTitulo("Modificación exitosa");
             setShowModalResultado(true);
             setActualizar(Math.random());
         } else if (putCarreras !== '') {
-            setStatusContenido("Error al actualizar los datos, intente mas tarde");
+            setStatusContenido("Error al actualizar los datos, intente más tarde");
+            setResultadoTitulo("Error");
             setShowModalResultado(true);
             setActualizar(Math.random());
         }
@@ -379,7 +386,7 @@ const Materias = props => {
                     <Modal show={showModalConfirm} setShow={setShowModalConfirm} title={"Modificar"}>
                         <div className="modal group">
                             <p>Realmente esta seguro que quiere actualizar los datos de la Carrera:</p>
-                            <br/>
+                            <br />
                             {ID_Carrera === datainput.id_carrera ? null : <p>ID de la carrera pasara de: <strong className="Resaltado">{ID_Carrera}</strong> a <strong className="Resaltado">{datainput.id_carrera}</strong></p>}
                             {nombre_Carrera === datainput.carrera_nombre ? null : <p>Nombre de la carrera pasara de: <strong className="Resaltado">{nombre_Carrera}</strong> a <strong className="Resaltado">{datainput.carrera_nombre}</strong></p>}
                         </div>
@@ -398,7 +405,7 @@ const Materias = props => {
                     </Modal>
 
                     {/* Resultado de agregar */}
-                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={resultado || borrado}>
+                    <Modal show={showModalResultado} setShow={setShowModalResultado} title={resultadoTitulo || borrado}>
                         <div className="modal group">
                             <p><strong>{statusContenido}</strong></p>
                         </div>
