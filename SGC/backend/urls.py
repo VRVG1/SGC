@@ -26,4 +26,5 @@ urlpatterns = [
     path('reporte/', include('reportes.urls')),
     path('verificacion/', include('persoAuth.urls')),
     path('respaldo/', include('respaldo.urls')),
+    path('exportar/', include('exportar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
