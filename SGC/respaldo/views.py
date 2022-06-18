@@ -51,7 +51,7 @@ class MakeBackup(generics.ListAPIView):
         except FileNotFoundError as e:
             raise e
         print('Creando respaldo de la base de datos...')
-        call_command('dbbackup', clean=True)
+        call_command('dbbackup', '-v 2', clean=True)
         print('Respaldo de la base de datos realizado con exito.')
         print('Creando respaldo de los archivos media...')
         call_command('mediabackup', clean=True)
