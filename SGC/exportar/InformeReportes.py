@@ -171,7 +171,7 @@ class InformeReportes:
                         self.dscp_cnt_format)
         worksheet.write(f'F{self.row}',                     # Grupo
                         cell_text[2],
-                        self.dscp_format)
+                        self.dscp_cnt_format)
         worksheet.merge_range(f'G{self.row}:I{self.row}',   # Nombre Reporte
                               cell_text[3],
                               self.dscp_format)
