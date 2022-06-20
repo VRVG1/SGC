@@ -109,14 +109,15 @@ class InformeReportes:
                                   self.dscp_format)
             self.increseRow()
 
-    def buildMainTableHeaders(self):
+    def buildMainTableHeaders(self, name):
         worksheet = self.worksheet
         # Construyendo tabla principal
         # Encabezados
         self.increseRow(2)
         # row_codigo = 9
         worksheet.merge_range(f'B{self.row}:L{self.row}',
-                              'Nombre Profesor',
+                              # 'Nombre Profesor',
+                              name,
                               self.headers_format)
         self.increseRow()
         # self.row += 1
@@ -145,7 +146,7 @@ class InformeReportes:
         self.resetRowCount()
         self.worksheet = self.workbook.add_worksheet(name)
         self.buildColorsTable()
-        self.buildMainTableHeaders()
+        self.buildMainTableHeaders(name)
 
     def addRow(self, cell_text):
         """
