@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from persoAuth.permissions import OnlyAdminPermission
 from .forms import UploadFileForm
 from .uploadHandler import handleUploadFile
+from .utils import removeMediaFiles, removeDBData
 
 from wsgiref.util import FileWrapper
 from zipfile import ZipFile
@@ -51,7 +52,14 @@ class MakeBackup(generics.ListAPIView):
         except FileNotFoundError as e:
             raise e
         print('Creando respaldo de la base de datos...')
-        call_command('dbbackup', clean=True)
+        # Estructura del comando ejecutado
+        # dumpdata --output ./var/backups/backup_notokens.json --verbosity 3 -e authtoken.token
+        call_command('dumpdata',
+                     format='json',
+                     output='./var/backups/backup.json',
+                     # verbosity='3',
+                     # exclude=['authtoken.token']
+                     )
         print('Respaldo de la base de datos realizado con exito.')
         print('Creando respaldo de los archivos media...')
         call_command('mediabackup', clean=True)
@@ -65,7 +73,7 @@ class MakeBackup(generics.ListAPIView):
                     if file.is_file():
                         backup_zip.write(file.__str__(), arcname=file.name)
 
-                print('Archivos de respaldo comprimidos con exito.')
+            print('Archivos de respaldo comprimidos con exito.')
 
         with open(f'./var/respaldo/{backup_filename}', 'rb') as backup_zip:
             response = HttpResponse(FileWrapper(backup_zip),
@@ -90,11 +98,14 @@ class RestoreData(generics.ListAPIView):
         form = UploadFileForm(request.POST, request.FILES)
         restore_path = './var/restauracion/'
 
+        # Se limpia el directorio de restauración, esto para evitar la
+        # acumulación de multiples archivos en este.
         if Path(restore_path).exists():
             with Path(restore_path) as to_remove_path:
                 for file in to_remove_path.iterdir():
                     if file.is_file():
                         os.remove(file)
+
         try:
             os.mkdir(restore_path)
             print(f'Se creo el directorio {restore_path}')
@@ -111,39 +122,49 @@ class RestoreData(generics.ListAPIView):
             print('Archivo de respaldo cargado.')
             print('Verificando estructura del archivo de respaldo...')
             with ZipFile(restore_path + backup_filename) as restore_zip:
-                has_tar_file = False
-                has_dump_file = False
+                # En caso de que los formatos de archivos del backup cambien,
+                # modifica alguno de estos elementos
+                file_types = ['tar', 'json']  # [0] mediabackup, [1] dbbackup
+                has_mediabackup_file = False
+                has_dbbackup_file = False
                 namefiles = restore_zip.namelist()
                 if 0 < len(namefiles) <= 2:
                     for namefile in namefiles:
                         file_type = namefile.split('.')
-                        if file_type[1] == 'tar':
-                            has_tar_file = True
-                        elif file_type[1] == 'dump':
-                            has_dump_file = True
+                        if file_type[1] == file_types[0]:  # tar
+                            has_mediabackup_file = True
+                        elif file_type[1] == file_types[1]:  # json
+                            has_dbbackup_file = True
 
-                    if not (has_tar_file and has_dump_file):
+                    if not (has_mediabackup_file and has_dbbackup_file):
                         response = HttpResponse('Archivo no cumple con los requisitos',
                                                 content_type="text/plain",
                                                 status=406)
                     else:
+                        # Elimina los datos en el directorio media.
+                        removeMediaFiles()
+                        # Elimina los datos de la base de datos con flush
+                        removeDBData(True)
                         valid_file = True
                         restore_zip.extractall(path=restore_path)
                         for namefile in namefiles:
                             file_type = namefile.split('.')
-                            if file_type[1] == 'tar':
+                            if file_type[1] == file_types[0]:  # tar
                                 print('Restaurando archivos media...')
                                 call_command('mediarestore',
                                              '--noinput',
                                              input_path=restore_path+namefile
                                              )
                                 print('Archivos media restaurados.')
-                            elif file_type[1] == 'dump':
+                            elif file_type[1] == file_types[1]:  # json
                                 print('Restaurando base de datos...')
-                                call_command('dbrestore',
-                                             '--noinput',
-                                             input_path=restore_path+namefile
-                                             )
+                                call_command('loaddata',
+                                             restore_path+namefile,
+                                             format='json')
+                                # call_command('dbrestore',
+                                #              '--noinput',
+                                #              input_path=restore_path+namefile
+                                #              )
                                 print('Base de datos restaurada.')
 
                 else:
