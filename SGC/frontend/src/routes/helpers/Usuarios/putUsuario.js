@@ -6,10 +6,10 @@ import AuthPostBasic from '../Auth/AuthPostBasis.js';
  * @returns 
  */
 const putUsuarios = async (dataUser, id, token) => {
-    if (dataUser.seleccion === "false") {
-        dataUser.seleccion = 0;
-    } else {
+    if (dataUser.seleccion) {
         dataUser.seleccion = 1;
+    } else {
+        dataUser.seleccion = 0;
     }
     let post = {
         method: 'PUT',
@@ -26,13 +26,11 @@ const putUsuarios = async (dataUser, id, token) => {
             CorreoE: dataUser.CorreoE,
             Permiso: dataUser.seleccion,
         })
-
     }
     post = AuthPostBasic(token, post);
     const url = "http://localhost:8000/usuario/update-user/" + id;
     const res = await fetch(url, post);
     const result = res.statusText;
-    console.log("dasd",result)
     return result;
 }
 

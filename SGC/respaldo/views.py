@@ -52,9 +52,7 @@ class MakeBackup(generics.ListAPIView):
         except FileNotFoundError as e:
             raise e
         print('Creando respaldo de la base de datos...')
-<<<<<<< HEAD
-        call_command('dbbackup', '-v 2', clean=True)
-=======
+
         # Estructura del comando ejecutado
         # dumpdata --output ./var/backups/backup_notokens.json --verbosity 3 -e authtoken.token
         call_command('dumpdata',
@@ -63,7 +61,7 @@ class MakeBackup(generics.ListAPIView):
                      # verbosity='3',
                      # exclude=['authtoken.token']
                      )
->>>>>>> f37e02966bc83252d6a9b9489db83fc3bb32787b
+
         print('Respaldo de la base de datos realizado con exito.')
         print('Creando respaldo de los archivos media...')
         call_command('mediabackup', clean=True)
