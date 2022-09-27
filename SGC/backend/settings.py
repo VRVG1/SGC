@@ -16,6 +16,7 @@ from celery.schedules import crontab
 #imports para la generacion de llave screta
 import string
 import random
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -166,9 +167,9 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'reportesreminderitcg@gmail.com'
 
-with open('./mail.txt') as i:
-    EMAIL_HOST_PASSWORD = i.read().strip()
-
+# with open('./mail.txt') as i:
+#    EMAIL_HOST_PASSWORD = i.read().strip()
+EMAIL_HOST_PASSWORD = os.environ['mail'].strip()
 CELERY_BEAT_SCHEDULE = {
     'enviarmail': {
         'task': 'tareaconjunta',
