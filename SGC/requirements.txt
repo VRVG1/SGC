@@ -12,6 +12,7 @@ django-dbbackup==4.0.0b0
 djangorestframework==3.13.1
 gevent==21.12.0
 greenlet==1.1.3
+gunicorn==20.1.0
 html5lib==1.1
 kombu==5.2.4
 prompt-toolkit==3.0.31
